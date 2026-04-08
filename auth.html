@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion ONECCA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #021e79;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h2 {
+            color: #021e79;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #ffbf00;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #e6ac00;
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .tab {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab button {
+            flex: 1;
+            margin: 0 5px;
+            background: #eee;
+            color: #333;
+        }
+        .tab button.active {
+            background: #021e79;
+            color: white;
+        }
+        .form {
+            display: none;
+        }
+        .form.active {
+            display: block;
+        }
+        .msg {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: none;
+            font-size: 14px;
+        }
+        .msg.error {
+            background: #ffebee;
+            color: #c62828;
+            display: block;
+        }
+        .msg.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: block;
+        }
+        .msg.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            display: block;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        .footer a {
+            color: #021e79;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-home {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .back-home a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        .back-home a:hover {
+            color: #ffbf00;
+        }
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>🔐 ONECCA</h2>
+    
+    <div class="tab">
+        <button id="btnLogin" class="active">Connexion</button>
+        <button id="btnRegister">Inscription</button>
+    </div>
+    
+    <div id="msg" class="msg"></div>
+    
+    <div id="loginForm" class="form active">
+        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+        <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
+        <button id="doLogin">Se connecter</button>
+    </div>
+    
+    <div id="registerForm" class="form">
+        <input type="text" id="regName" placeholder="Nom complet" autocomplete="name">
+        <input type="email" id="regEmail" placeholder="Email" autocomplete="email">
+        <input type="password" id="regPassword" placeholder="Mot de passe (6+ caractères)" autocomplete="new-password">
+        <button id="doRegister">Créer mon compte</button>
+    </div>
+    
+    <div class="footer">
+        <a id="forgotLink">Mot de passe oublié ?</a>
+    </div>
+    
+    <div class="back-home">
+        <a href="/">← Retour à l'annuaire</a>
+    </div>
+</div>
+
+<script>
+const API = window.location.origin;
+
+// Éléments DOM
+const btnLogin = document.getElementById('btnLogin');
+const btnRegister = document.getElementById('btnRegister');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const msgDiv = document.getElementById('msg');
+const doLoginBtn = document.getElementById('doLogin');
+const doRegisterBtn = document.getElementById('doRegister');
+
+// Onglets
+btnLogin.onclick = () => {
+    btnLogin.classList.add('active');
+    btnRegister.classList.remove('active');
+    loginForm.classList.add('active');
+    registerForm.classList.remove('active');
+    msgDiv.className = 'msg';
+    clearMessage();
+};
+
+btnRegister.onclick = () => {
+    btnRegister.classList.add('active');
+    btnLogin.classList.remove('active');
+    registerForm.classList.add('active');
+    loginForm.classList.remove('active');
+    msgDiv.className = 'msg';
+    clearMessage();
+};
+
+function clearMessage() {
+    msgDiv.style.display = 'none';
+    msgDiv.textContent = '';
+}
+
+function showMessage(text, isError = false, isInfo = false) {
+    msgDiv.textContent = text;
+    if (isError) {
+        msgDiv.className = 'msg error';
+    } else if (isInfo) {
+        msgDiv.className = 'msg info';
+    } else {
+        msgDiv.className = 'msg success';
+    }
+    msgDiv.style.display = 'block';
+    setTimeout(() => {
+        if (msgDiv.textContent === text) {
+            msgDiv.className = 'msg';
+            msgDiv.style.display = 'none';
+        }
+    }, 4000);
+}
+
+function setButtonLoading(button, isLoading) {
+    if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner"></span> Chargement...';
+    } else {
+        button.disabled = false;
+        button.innerHTML = button.id === 'doLogin' ? 'Se connecter' : 'Créer mon compte';
+    }
+}
+
+// Vérifier si déjà connecté
+function checkAlreadyLoggedIn() {
+    const token = localStorage.getItem('userToken');
+    if (token) {
+        showMessage('Vous êtes déjà connecté ! Redirection...', false, true);
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1500);
+        return true;
+    }
+    return false;
+}
+
+// INSCRIPTION
+doRegisterBtn.onclick = async () => {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    
+    // Validation
+    if (!name) {
+        showMessage('Veuillez entrer votre nom complet', true);
+        return;
+    }
+    if (!email) {
+        showMessage('Veuillez entrer votre email', true);
+        return;
+    }
+    if (!email.includes('@')) {
+        showMessage('Veuillez entrer un email valide', true);
+        return;
+    }
+    if (password.length < 6) {
+        showMessage('Le mot de passe doit contenir au moins 6 caractères', true);
+        return;
+    }
+    
+    setButtonLoading(doRegisterBtn, true);
+    
+    try {
+        console.log('📝 Tentative d\'inscription:', { name, email });
+        
+        const res = await fetch(API + '/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, phone: '', password })
+        });
+        
+        const data = await res.json();
+        console.log('📝 Réponse inscription:', data);
+        
+        if (res.ok && data.success === true) {
+            showMessage('✅ Compte créé avec succès ! Connectez-vous maintenant', false);
+            // Réinitialiser le formulaire
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            // Basculer vers l'onglet connexion
+            btnLogin.click();
+            document.getElementById('loginEmail').value = email;
+        } else {
+            const errorMsg = data.detail || 'Erreur lors de l\'inscription';
+            showMessage('❌ ' + errorMsg, true);
+        }
+    } catch (err) {
+        console.error('❌ Erreur réseau inscription:', err);
+        showMessage('❌ Impossible de contacter le serveur. Vérifiez que le serveur est démarré.', true);
+    } finally {
+        setButtonLoading(doRegisterBtn, false);
+    }
+};
+
+// CONNEXION
+doLoginBtn.onclick = async () => {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email) {
+        showMessage('Veuillez entrer votre email', true);
+        return;
+    }
+    if (!password) {
+        showMessage('Veuillez entrer votre mot de passe', true);
+        return;
+    }
+    
+    setButtonLoading(doLoginBtn, true);
+    
+    try {
+        console.log('🔐 Tentative de connexion:', { email });
+        
+        const res = await fetch(API + '/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await res.json();
+        console.log('🔐 Réponse connexion:', data);
+        
+        if (res.ok && data.success === true) {
+            // Sauvegarde des données
+            localStorage.setItem('userToken', data.token);
+            localStorage.setItem('userEmail', data.user.email);
+            localStorage.setItem('userName', data.user.name);
+            localStorage.setItem('userPhone', data.user.phone || '');
+            localStorage.setItem('userId', data.user.id);
+            
+            console.log('✅ Connexion réussie, données sauvegardées');
+            console.log('   - Token:', data.token.substring(0, 20) + '...');
+            console.log('   - Nom:', data.user.name);
+            console.log('   - Email:', data.user.email);
+            
+            showMessage('✅ Connexion réussie ! Redirection...', false);
+            
+            setTimeout(() => {
+                window.location.href = '/?login=success';
+            }, 1000);
+        } else {
+            const errorMsg = data.detail || 'Email ou mot de passe incorrect';
+            showMessage('❌ ' + errorMsg, true);
+            document.getElementById('loginPassword').value = '';
+        }
+    } catch (err) {
+        console.error('❌ Erreur réseau connexion:', err);
+        showMessage('❌ Impossible de contacter le serveur. Vérifiez que le serveur est démarré sur le port 8000.', true);
+    } finally {
+        setButtonLoading(doLoginBtn, false);
+    }
+};
+
+// Mot de passe oublié
+document.getElementById('forgotLink').onclick = () => {
+    const email = document.getElementById('loginEmail').value;
+    if (email) {
+        showMessage(`📧 Un email de réinitialisation sera envoyé à ${email} (fonctionnalité à venir)`, false, true);
+    } else {
+        showMessage('📧 Veuillez entrer votre email ci-dessus pour réinitialiser votre mot de passe', false, true);
+    }
+};
+
+// Vérifier l'état de connexion au chargement
+checkAlreadyLoggedIn();
+
+// Permettre la validation avec la touche Entrée
+document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') doLoginBtn.click();
+});
+document.getElementById('regPassword').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') doRegisterBtn.click();
+});
+
+// Test de connexion au serveur au chargement
+async function testServerConnection() {
+    try {
+        const res = await fetch(API + '/api/members');
+        if (res.ok) {
+            console.log('✅ Serveur accessible');
+        } else {
+            console.warn('⚠️ Serveur répond mais avec erreur:', res.status);
+        }
+    } catch (err) {
+        console.error('❌ Serveur inaccessible:', err);
+        showMessage('⚠️ Impossible de contacter le serveur. Vérifiez que le serveur est démarré (python server_api.py)', true);
+    }
+}
+testServerConnection();
+</script>
+</body>
+</html>
