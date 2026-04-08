@@ -1241,6 +1241,285 @@ a { color: inherit; text-decoration: none; }
   </div>
 </div>
 
+
+
+<!-- DASHBOARD UTILISATEUR -->
+<div class="modal-overlay" id="dashboardModal">
+    <div class="modal-box" style="max-width: 900px;">
+        <div class="modal-logo">📊</div>
+        <h2>Mon tableau de bord</h2>
+        <p class="modal-subtitle" id="dashboardUserName"></p>
+        
+        <!-- Statistiques -->
+        <div class="dashboard-stats" id="dashboardStats"></div>
+        
+        <!-- Onglets du dashboard -->
+        <div class="dashboard-tabs">
+            <button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button>
+            <button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button>
+            <button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button>
+        </div>
+        
+        <!-- Contenu des onglets -->
+        <div id="dashboardRequestsTab" class="dashboard-tab-content active">
+            <div id="accessRequestsList" class="dashboard-list"></div>
+        </div>
+        
+        <div id="dashboardPaymentsTab" class="dashboard-tab-content">
+            <div id="paymentsList" class="dashboard-list"></div>
+        </div>
+        
+        <div id="dashboardSubscriptionTab" class="dashboard-tab-content">
+            <div id="subscriptionInfo" class="subscription-info"></div>
+        </div>
+        
+        <div class="modal-cancel" id="dashboardClose">Fermer</div>
+    </div>
+</div>
+
+<style>
+/* Styles pour le dashboard */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 25px;
+    padding: 10px 0;
+}
+
+.stat-dashboard-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-dashboard-number {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+[data-theme="dark"] .stat-dashboard-number {
+    color: var(--accent);
+}
+
+.stat-dashboard-label {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-dashboard-card.pending .stat-dashboard-number { color: #f59e0b; }
+.stat-dashboard-card.approved .stat-dashboard-number { color: #10b981; }
+.stat-dashboard-card.rejected .stat-dashboard-number { color: #ef4444; }
+
+.dashboard-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 10px;
+}
+
+.dashboard-tab {
+    padding: 8px 20px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.dashboard-tab:hover {
+    color: var(--accent);
+    background: var(--color-border-light);
+}
+
+.dashboard-tab.active {
+    color: var(--accent);
+    background: var(--accent-light);
+    border-bottom: 2px solid var(--accent);
+}
+
+.dashboard-tab-content {
+    display: none;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.dashboard-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.dashboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dashboard-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-item:hover {
+    background: var(--color-card-hover);
+}
+
+.request-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-approved {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+[data-theme="dark"] .status-pending { background: #451a03; color: #fbbf24; }
+[data-theme="dark"] .status-approved { background: #064e3b; color: #34d399; }
+[data-theme="dark"] .status-rejected { background: #7f1d1d; color: #f87171; }
+
+.dashboard-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dashboard-item-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-text);
+}
+
+.dashboard-item-date {
+    font-size: 11px;
+    color: var(--color-text-faint);
+}
+
+.dashboard-item-details {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--color-border);
+}
+
+.dashboard-item-details span {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.expiry-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #fef3c7;
+    color: #d97706;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.subscription-info {
+    text-align: center;
+    padding: 30px;
+}
+
+.subscription-active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.subscription-inactive {
+    background: var(--color-surface);
+    border: 2px dashed var(--color-border);
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.payment-amount {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+[data-theme="dark"] .payment-amount {
+    color: var(--accent);
+}
+
+.payment-status-completed {
+    color: #10b981;
+}
+
+.payment-status-pending {
+    color: #f59e0b;
+}
+
+.payment-status-failed {
+    color: #ef4444;
+}
+
+.dashboard-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: var(--primary-dark);
+    text-decoration: none;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,191,0,0.3);
+}
+</style>
+  
+
 <script>
 (function() {
 'use strict';
