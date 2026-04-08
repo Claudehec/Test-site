@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - ONECCA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #021e79 0%, #0a2d99 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .admin-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffbf00, #ffd633);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
+        }
+
+        h1 {
+            color: #021e79;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #ffbf00;
+            box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #ffbf00;
+            color: #021e79;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: #e6ac00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 191, 0, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+            text-align: left;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #ffbf00;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #021e79;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-card">
+            <div class="admin-icon">
+                🔒
+            </div>
+            <h1>Accès Administrateur</h1>
+            <p class="subtitle">ONECCA - Tableau de l'Ordre National</p>
+
+            <div class="input-group">
+                <label>Mot de passe</label>
+                <input type="password" id="adminPassword" placeholder="Entrez votre mot de passe" autofocus>
+            </div>
+
+            <button class="btn-login" id="loginBtn">
+                Accéder au panneau
+            </button>
+
+            <div class="error-message" id="errorMsg">
+                ⚠️ Mot de passe incorrect
+            </div>
+
+            <a href="/" class="back-link">← Retour à l'annuaire</a>
+        </div>
+        <div class="footer">
+            Accès réservé aux administrateurs
+        </div>
+    </div>
+
+    <script>
+        const API = window.location.origin;
+        const ADMIN_PASSWORD = 'ONECCA2026';
+        
+        const loginBtn = document.getElementById('loginBtn');
+        const passwordInput = document.getElementById('adminPassword');
+        const errorMsg = document.getElementById('errorMsg');
+
+        async function loginAdmin() {
+            const password = passwordInput.value.trim();
+            
+            if (!password) {
+                errorMsg.textContent = '⚠️ Veuillez entrer le mot de passe administrateur';
+                errorMsg.classList.add('show');
+                return;
+            }
+            
+            // Désactiver le bouton pendant la requête
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner"></span> Vérification...';
+            errorMsg.classList.remove('show');
+            
+            try {
+                const response = await fetch(API + '/api/admin/login', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success === true) {
+                    // Mot de passe correct - redirection
+                    window.location.href = '/?admin=ONECCA2026';
+                } else {
+                    // Mot de passe incorrect
+                    errorMsg.textContent = '⚠️ Mot de passe administrateur incorrect';
+                    errorMsg.classList.add('show');
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            } catch (err) {
+                console.error('Erreur:', err);
+                errorMsg.textContent = '⚠️ Erreur de connexion au serveur. Vérifiez que le serveur est démarré.';
+                errorMsg.classList.add('show');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Accéder au panneau';
+            }
+        }
+
+        // Événement au clic
+        loginBtn.addEventListener('click', loginAdmin);
+        
+        // Validation avec la touche Entrée
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginAdmin();
+            }
+        });
+    </script>
+</body>
+</html>
