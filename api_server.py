@@ -787,5 +787,177 @@ async def serve_auth():
         </html>
         """)
 
+
+# ===== STATIC FILES =====
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open("index.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/index.html", response_class=HTMLResponse)
+async def read_index():
+    with open("index.html", "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/auth.html", response_class=HTMLResponse)
+async def serve_auth():
+    try:
+        with open("auth.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return HTMLResponse(content="""
+        <!DOCTYPE html>
+        <html>
+        <head><title>Authentification ONECCA</title><meta charset="UTF-8"></head>
+        <body style="font-family:Arial;padding:20px;background:#021e79;display:flex;align-items:center;justify-content:center;min-height:100vh">
+        <div style="background:white;padding:40px;border-radius:20px;text-align:center">
+            <h2 style="color:#021e79">🔐 ONECCA</h2>
+            <p>Page d'authentification en cours de chargement...</p>
+            <a href="/" style="color:#ffbf00">← Retour</a>
+        </div>
+        </body>
+        </html>
+        """)
+
+# Route pour la page admin
+@app.get("/admin_login.html", response_class=HTMLResponse)
+async def serve_admin_login():
+    try:
+        with open("admin_login.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        # Fallback intégré si le fichier n'existe pas
+        return HTMLResponse(content="""
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Administration - ONECCA</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background: linear-gradient(135deg, #021e79 0%, #0a2d99 100%);
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                }
+                .admin-card {
+                    background: white;
+                    border-radius: 24px;
+                    padding: 40px;
+                    max-width: 400px;
+                    width: 100%;
+                    text-align: center;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                }
+                .admin-icon {
+                    width: 70px;
+                    height: 70px;
+                    background: linear-gradient(135deg, #ffbf00, #ffd633);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                    font-size: 32px;
+                }
+                h1 { color: #021e79; margin-bottom: 8px; font-size: 24px; }
+                .subtitle { color: #64748b; font-size: 14px; margin-bottom: 30px; }
+                input {
+                    width: 100%;
+                    padding: 14px;
+                    margin: 10px 0;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 12px;
+                    font-size: 14px;
+                    outline: none;
+                }
+                input:focus { border-color: #ffbf00; box-shadow: 0 0 0 3px rgba(255,191,0,0.1); }
+                button {
+                    width: 100%;
+                    padding: 14px;
+                    background: #ffbf00;
+                    color: #021e79;
+                    border: none;
+                    border-radius: 12px;
+                    font-weight: 700;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    margin-top: 10px;
+                }
+                button:hover { background: #e6ac00; transform: translateY(-2px); }
+                .error {
+                    background: #fee2e2;
+                    color: #dc2626;
+                    padding: 12px;
+                    border-radius: 10px;
+                    font-size: 13px;
+                    margin-top: 15px;
+                    display: none;
+                }
+                .error.show { display: block; }
+                .back-link {
+                    margin-top: 20px;
+                    display: inline-block;
+                    color: #94a3b8;
+                    text-decoration: none;
+                    font-size: 13px;
+                }
+                .back-link:hover { color: #ffbf00; }
+            </style>
+        </head>
+        <body>
+            <div class="admin-card">
+                <div class="admin-icon">🔒</div>
+                <h1>Accès Administrateur</h1>
+                <p class="subtitle">ONECCA - Tableau de l'Ordre National</p>
+                <input type="password" id="adminPassword" placeholder="Mot de passe administrateur" autofocus>
+                <button onclick="loginAdmin()">Accéder au panneau</button>
+                <div id="errorMsg" class="error"></div>
+                <a href="/" class="back-link">← Retour à l'annuaire</a>
+            </div>
+            <script>
+                async function loginAdmin() {
+                    const password = document.getElementById('adminPassword').value;
+                    const errorDiv = document.getElementById('errorMsg');
+                    if (!password) {
+                        errorDiv.textContent = 'Veuillez entrer le mot de passe';
+                        errorDiv.classList.add('show');
+                        return;
+                    }
+                    try {
+                        const response = await fetch('/api/admin/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ password: password })
+                        });
+                        const data = await response.json();
+                        if (data.success === true) {
+                            window.location.href = '/?admin=ONECCA2026';
+                        } else {
+                            errorDiv.textContent = 'Mot de passe incorrect';
+                            errorDiv.classList.add('show');
+                        }
+                    } catch (err) {
+                        errorDiv.textContent = 'Erreur de connexion au serveur';
+                        errorDiv.classList.add('show');
+                    }
+                }
+                document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') loginAdmin();
+                });
+            </script>
+        </body>
+        </html>
+        """)
+
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
