@@ -2014,6 +2014,236 @@ if (isAdmin) {
   document.getElementById('btnExitAdmin')?.addEventListener('click', () => { const url = new URL(window.location); url.searchParams.delete('admin'); window.location.href = url.toString(); });
 }
 
+
+
+
+// ===== DASHBOARD FUNCTIONS =====
+
+async function openDashboard() {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+        alert('Veuillez vous connecter');
+        window.location.href = '/auth.html';
+        return;
+    }
+    
+    const modal = document.getElementById('dashboardModal');
+    modal.classList.add('open');
+    
+    // Afficher le nom de l'utilisateur
+    const userName = localStorage.getItem('userName');
+    document.getElementById('dashboardUserName').textContent = `Bonjour ${userName || ''}`;
+    
+    // Charger les données
+    await loadDashboardData();
+}
+
+async function loadDashboardData() {
+    const token = localStorage.getItem('userToken');
+    
+    try {
+        const response = await fetch('/api/user/dashboard', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+            renderDashboardStats(data.stats);
+            renderAccessRequests(data.access_requests);
+            renderPayments(data.payments);
+            renderSubscriptionInfo(data.active_subscription, data.stats);
+        } else {
+            console.error('Erreur chargement dashboard:', data);
+        }
+    } catch (err) {
+        console.error('Erreur:', err);
+    }
+}
+
+function renderDashboardStats(stats) {
+    const container = document.getElementById('dashboardStats');
+    container.innerHTML = `
+        <div class="stat-dashboard-card">
+            <div class="stat-dashboard-number">${stats.total_requests || 0}</div>
+            <div class="stat-dashboard-label">Total demandes</div>
+        </div>
+        <div class="stat-dashboard-card pending">
+            <div class="stat-dashboard-number">${stats.pending_requests || 0}</div>
+            <div class="stat-dashboard-label">En attente</div>
+        </div>
+        <div class="stat-dashboard-card approved">
+            <div class="stat-dashboard-number">${stats.approved_requests || 0}</div>
+            <div class="stat-dashboard-label">Approuvées</div>
+        </div>
+        <div class="stat-dashboard-card rejected">
+            <div class="stat-dashboard-number">${stats.rejected_requests || 0}</div>
+            <div class="stat-dashboard-label">Rejetées</div>
+        </div>
+        <div class="stat-dashboard-card">
+            <div class="stat-dashboard-number">${stats.total_paid?.toLocaleString() || 0} FCFA</div>
+            <div class="stat-dashboard-label">Total dépensé</div>
+        </div>
+    `;
+}
+
+function renderAccessRequests(requests) {
+    const container = document.getElementById('accessRequestsList');
+    
+    if (!requests || requests.length === 0) {
+        container.innerHTML = '<div class="dashboard-item" style="text-align:center">Aucune demande effectuée</div>';
+        return;
+    }
+    
+    container.innerHTML = requests.map(req => {
+        let statusClass = '';
+        let statusText = '';
+        
+        switch(req.status) {
+            case 'pending':
+                statusClass = 'status-pending';
+                statusText = '⏳ En attente';
+                break;
+            case 'approved':
+                statusClass = 'status-approved';
+                statusText = '✅ Approuvé';
+                break;
+            case 'rejected':
+                statusClass = 'status-rejected';
+                statusText = '❌ Rejeté';
+                break;
+            default:
+                statusClass = 'status-pending';
+                statusText = req.status;
+        }
+        
+        const expiryInfo = req.expires_at && req.status === 'approved' 
+            ? `<span class="expiry-badge">Expire le ${new Date(req.expires_at).toLocaleDateString('fr-FR')}</span>` 
+            : '';
+        
+        return `
+            <div class="dashboard-item">
+                <div class="dashboard-item-header">
+                    <div class="dashboard-item-title">
+                        ${req.member_name || req.member_nom || `Membre #${req.member_id}`}
+                        ${expiryInfo}
+                    </div>
+                    <div class="request-status ${statusClass}">${statusText}</div>
+                </div>
+                <div class="dashboard-item-date">
+                    Demandé le ${new Date(req.created_at).toLocaleDateString('fr-FR')} à ${new Date(req.created_at).toLocaleTimeString('fr-FR')}
+                </div>
+                ${req.approved_at ? `<div class="dashboard-item-details">✅ Approuvé le ${new Date(req.approved_at).toLocaleDateString('fr-FR')}</div>` : ''}
+                ${req.payment_amount ? `<div class="dashboard-item-details">💰 Montant: ${req.payment_amount.toLocaleString()} FCFA</div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function renderPayments(payments) {
+    const container = document.getElementById('paymentsList');
+    
+    if (!payments || payments.length === 0) {
+        container.innerHTML = '<div class="dashboard-item" style="text-align:center">Aucun paiement effectué</div>';
+        return;
+    }
+    
+    container.innerHTML = payments.map(payment => {
+        let statusClass = '';
+        let statusText = '';
+        
+        switch(payment.status) {
+            case 'completed':
+                statusClass = 'payment-status-completed';
+                statusText = '✅ Complété';
+                break;
+            case 'pending':
+                statusClass = 'payment-status-pending';
+                statusText = '⏳ En attente';
+                break;
+            case 'failed':
+                statusClass = 'payment-status-failed';
+                statusText = '❌ Échoué';
+                break;
+            default:
+                statusClass = '';
+                statusText = payment.status;
+        }
+        
+        return `
+            <div class="dashboard-item">
+                <div class="dashboard-item-header">
+                    <div class="dashboard-item-title">
+                        <span class="payment-amount">${payment.amount.toLocaleString()} FCFA</span>
+                    </div>
+                    <div class="${statusClass}">${statusText}</div>
+                </div>
+                <div class="dashboard-item-date">
+                    ${new Date(payment.created_at).toLocaleDateString('fr-FR')} à ${new Date(payment.created_at).toLocaleTimeString('fr-FR')}
+                </div>
+                <div class="dashboard-item-details">
+                    <span>📱 Méthode: ${payment.method || 'Non spécifié'}</span>
+                    <span>🆔 Référence: ${payment.reference || 'N/A'}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderSubscriptionInfo(subscription, stats) {
+    const container = document.getElementById('subscriptionInfo');
+    
+    if (stats.has_active_subscription && subscription) {
+        container.innerHTML = `
+            <div class="subscription-active">
+                <div style="font-size: 48px; margin-bottom: 15px;">⭐</div>
+                <h3 style="margin-bottom: 10px;">Abonnement actif !</h3>
+                <p>Vous avez un accès illimité à tous les membres</p>
+                <p style="margin-top: 15px; font-size: 14px; opacity: 0.9">
+                    Expire le ${new Date(subscription.expires_at).toLocaleDateString('fr-FR')}
+                </p>
+            </div>
+            <a href="/" class="dashboard-link">🔓 Accéder à tous les membres</a>
+        `;
+    } else {
+        container.innerHTML = `
+            <div class="subscription-inactive">
+                <div style="font-size: 48px; margin-bottom: 15px;">🔒</div>
+                <h3 style="margin-bottom: 10px;">Aucun abonnement actif</h3>
+                <p>Débloquez un accès illimité à tous les membres</p>
+                <p style="margin-top: 10px; font-size: 14px; color: var(--color-text-muted)">
+                    Abonnement mensuel: 25 000 FCFA<br>
+                    Accès illimité pendant 30 jours
+                </p>
+                <a href="/" class="dashboard-link">💰 Débloquer l'accès illimité</a>
+            </div>
+        `;
+    }
+}
+
+// Onglets du dashboard
+document.querySelectorAll('.dashboard-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const tabId = tab.dataset.tab;
+        
+        document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.dashboard-tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(`dashboard${tabId.charAt(0).toUpperCase() + tabId.slice(1)}Tab`).classList.add('active');
+    });
+});
+
+// Bouton dashboard
+document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
+
+// Fermeture du dashboard
+document.getElementById('dashboardClose')?.addEventListener('click', () => {
+    document.getElementById('dashboardModal').classList.remove('open');
+});
+
+
+  
+
 init();
 })();
 </script>
