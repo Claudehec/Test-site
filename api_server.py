@@ -960,6 +960,119 @@ async def serve_admin_login():
         """)
 
 
+# ===== USER DASHBOARD ENDPOINTS =====
+
+@app.get("/api/user/dashboard")
+async def get_user_dashboard(current_user: dict = Depends(get_current_user)):
+    """Get complete dashboard data for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    # Get all access requests with member details
+    cursor.execute("""
+        SELECT r.*, 
+               m.nom as member_nom,
+               m.ville as member_ville
+        FROM contact_access_requests r
+        LEFT JOIN members m ON r.member_id = m.id
+        WHERE r.user_id = ?
+        ORDER BY r.created_at DESC
+    """, (current_user["id"],))
+    
+    access_requests = [dict(row) for row in cursor.fetchall()]
+    
+    # Get all payments
+    cursor.execute("""
+        SELECT * FROM payments 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC
+    """, (current_user["id"],))
+    
+    payments = [dict(row) for row in cursor.fetchall()]
+    
+    # Get active subscriptions
+    cursor.execute("""
+        SELECT * FROM contact_access_requests 
+        WHERE user_id = ? 
+        AND status = 'approved'
+        AND expires_at > datetime('now')
+        AND member_id = 0
+        ORDER BY expires_at DESC
+        LIMIT 1
+    """, (current_user["id"],))
+    
+    active_subscription = cursor.fetchone()
+    
+    # Count statistics
+    stats = {
+        "total_requests": len(access_requests),
+        "pending_requests": len([r for r in access_requests if r["status"] == "pending"]),
+        "approved_requests": len([r for r in access_requests if r["status"] == "approved"]),
+        "rejected_requests": len([r for r in access_requests if r["status"] == "rejected"]),
+        "active_access_count": len([r for r in access_requests if r["status"] == "approved" and r["expires_at"] and r["expires_at"] > datetime.now().isoformat()]),
+        "total_paid": sum([p["amount"] for p in payments if p["status"] == "completed"]),
+        "has_active_subscription": active_subscription is not None,
+        "subscription_expires_at": active_subscription["expires_at"] if active_subscription else None
+    }
+    
+    conn.close()
+    
+    return {
+        "user": current_user,
+        "stats": stats,
+        "access_requests": access_requests,
+        "payments": payments,
+        "active_subscription": dict(active_subscription) if active_subscription else None
+    }
+
+@app.get("/api/user/access-requests")
+async def get_user_access_requests(current_user: dict = Depends(get_current_user)):
+    """Get all access requests for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT r.*, m.nom as member_nom
+        FROM contact_access_requests r
+        LEFT JOIN members m ON r.member_id = m.id
+        WHERE r.user_id = ?
+        ORDER BY r.created_at DESC
+    """, (current_user["id"],))
+    
+    requests = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"requests": requests}
+
+@app.get("/api/user/payments")
+async def get_user_payments(current_user: dict = Depends(get_current_user)):
+    """Get all payments for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT * FROM payments 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC
+    """, (current_user["id"],))
+    
+    payments = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"payments": payments}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
