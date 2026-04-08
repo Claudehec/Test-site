@@ -5,22 +5,29 @@ import sqlite3
 import json
 import hashlib
 import os
+import secrets
+import jwt
 from contextlib import asynccontextmanager
-from datetime import datetime
-
-from fastapi import FastAPI, HTTPException, Header
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from datetime import datetime, timedelta
 from typing import Optional
-import os
-# Ajoutez cette ligne juste après les imports existants
+
+from fastapi import FastAPI, HTTPException, Header, Request, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
+
+# ===== CONFIGURATION =====
 PORT = int(os.environ.get("PORT", 8000))
+JWT_SECRET = os.environ.get("JWT_SECRET", "your-super-secret-jwt-key-change-this-in-production")
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRY_HOURS = 24 * 7  # 7 days
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "onecca.db")
-DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "onecca_data.json")
+DATA_PATH = os.path.join(os.path.dirname(__file__), "onecca_data.json")  # Fixed path
 
 ADMIN_PASSWORD = "ONECCA2026"
 
+# ===== DATABASE =====
 def get_db():
     db = sqlite3.connect(DB_PATH, check_same_thread=False)
     db.row_factory = sqlite3.Row
@@ -61,6 +68,71 @@ def init_db(db):
             lu INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
+
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            phone TEXT,
+            password_hash TEXT NOT NULL,
+            reset_token TEXT,
+            reset_token_expiry TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- User sessions for JWT tokens
+        CREATE TABLE IF NOT EXISTS user_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            token TEXT NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+
+        -- Access requests for member contact details
+        CREATE TABLE IF NOT EXISTS contact_access_requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            member_id INTEGER NOT NULL,
+            member_name TEXT NOT NULL,
+            status TEXT DEFAULT 'pending',
+            payment_method TEXT,
+            payment_amount REAL,
+            payment_reference TEXT,
+            payment_date TIMESTAMP,
+            approved_by INTEGER,
+            approved_at TIMESTAMP,
+            expires_at TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (approved_by) REFERENCES users(id)
+        );
+
+        -- Payment records
+        CREATE TABLE IF NOT EXISTS payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            amount REAL NOT NULL,
+            currency TEXT DEFAULT 'XAF',
+            method TEXT,
+            reference TEXT UNIQUE,
+            status TEXT DEFAULT 'pending',
+            member_id INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        );
+
+        -- Pricing configuration
+        CREATE TABLE IF NOT EXISTS pricing (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item_type TEXT NOT NULL,
+            price REAL NOT NULL,
+            currency TEXT DEFAULT 'XAF',
+            description TEXT,
+            is_active INTEGER DEFAULT 1
+        );
     """)
     db.commit()
 
@@ -97,6 +169,14 @@ def seed_data(db):
     
     # Set default: coordinates hidden
     db.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('show_contacts', 'false')")
+    
+    # Set default pricing
+    db.executescript("""
+        INSERT OR IGNORE INTO pricing (item_type, price, description) VALUES 
+            ('single_contact', 5000, 'Accès aux coordonnées d''un membre pour 30 jours'),
+            ('monthly_subscription', 25000, 'Accès illimité à tous les membres pour 30 jours'),
+            ('yearly_subscription', 250000, 'Accès illimité à tous les membres pour 1 an');
+    """)
     db.commit()
     print(f"Seeded {sum(len(v) for v in data.values())} members")
 
@@ -104,6 +184,7 @@ db = get_db()
 init_db(db)
 seed_data(db)
 
+# ===== LIFESPAN =====
 @asynccontextmanager
 async def lifespan(app):
     yield
@@ -112,10 +193,75 @@ async def lifespan(app):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-# ===== AUTH HELPER =====
+# ===== HELPER FUNCTIONS =====
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def generate_token():
+    return secrets.token_urlsafe(32)
+
+def create_jwt_token(user_id: int, email: str) -> str:
+    """Create JWT token for user authentication"""
+    expiry = datetime.utcnow() + timedelta(hours=JWT_EXPIRY_HOURS)
+    payload = {
+        "user_id": user_id,
+        "email": email,
+        "exp": expiry,
+        "iat": datetime.utcnow()
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def verify_jwt_token(token: str) -> Optional[dict]:
+    """Verify JWT token and return payload"""
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
+def get_current_user(authorization: str = Header(default="")) -> Optional[dict]:
+    """Get current user from JWT token"""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    
+    token = authorization.replace("Bearer ", "")
+    payload = verify_jwt_token(token)
+    
+    if not payload:
+        return None
+    
+    # Verify user still exists
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, email, phone FROM users WHERE id = ?", (payload["user_id"],))
+    user = cursor.fetchone()
+    conn.close()
+    
+    if not user:
+        return None
+    
+    return dict(user)
+
 def check_admin(auth: str):
     if auth != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Non autorisé")
+
+def check_active_subscription(user_id: int) -> bool:
+    """Check if user has an active subscription"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM contact_access_requests 
+        WHERE user_id = ? AND status = 'approved' 
+        AND expires_at > datetime('now')
+        AND member_id = 0
+        LIMIT 1
+    """, (user_id,))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
 
 # ===== PUBLIC ENDPOINTS =====
 
@@ -174,6 +320,245 @@ def submit_contact(req: ContactRequest):
     db.commit()
     return {"message": "Votre demande a bien été envoyée. Nous vous contacterons rapidement."}
 
+# ===== AUTH ENDPOINTS =====
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class RegisterRequest(BaseModel):
+    name: str
+    email: str
+    phone: str = ""
+    password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+@app.post("/api/auth/register")
+async def register(request: RegisterRequest):
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT id FROM users WHERE email = ?", (request.email,))
+    if cursor.fetchone():
+        conn.close()
+        raise HTTPException(status_code=400, detail="Cet email est déjà utilisé")
+    
+    password_hash = hash_password(request.password)
+    cursor.execute("""
+        INSERT INTO users (name, email, phone, password_hash)
+        VALUES (?, ?, ?, ?)
+    """, (request.name, request.email, request.phone, password_hash))
+    
+    user_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    
+    return {"success": True, "user_id": user_id}
+
+@app.post("/api/auth/login")
+async def login(request: LoginRequest):
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT * FROM users WHERE email = ?", (request.email,))
+    user = cursor.fetchone()
+    
+    if not user or user["password_hash"] != hash_password(request.password):
+        conn.close()
+        raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
+    
+    # Create JWT token
+    token = create_jwt_token(user["id"], user["email"])
+    
+    # Store session
+    expires_at = datetime.utcnow() + timedelta(hours=JWT_EXPIRY_HOURS)
+    cursor.execute("""
+        INSERT INTO user_sessions (user_id, token, expires_at)
+        VALUES (?, ?, ?)
+    """, (user["id"], token, expires_at.isoformat()))
+    conn.commit()
+    conn.close()
+    
+    return {
+        "success": True,
+        "token": token,
+        "user": {
+            "id": user["id"],
+            "name": user["name"],
+            "email": user["email"],
+            "phone": user["phone"]
+        }
+    }
+
+@app.post("/api/auth/logout")
+async def logout(authorization: str = Header(default="")):
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.replace("Bearer ", "")
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM user_sessions WHERE token = ?", (token,))
+        conn.commit()
+        conn.close()
+    return {"success": True}
+
+@app.get("/api/auth/me")
+async def get_me(current_user: dict = Depends(get_current_user)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    return {"user": current_user}
+
+# ===== ACCESS & PAYMENT ENDPOINTS =====
+
+class AccessRequest(BaseModel):
+    member_id: int
+    member_name: str
+
+class PaymentInitRequest(BaseModel):
+    amount: float
+    method: str
+    phone_number: Optional[str] = None
+    member_id: int
+
+@app.post("/api/access/request")
+async def request_contact_access(
+    request: AccessRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Request access to a member's contact details"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    # Check if request already exists
+    cursor.execute("""
+        SELECT id, status FROM contact_access_requests 
+        WHERE user_id = ? AND member_id = ? AND status IN ('pending', 'approved')
+        AND (expires_at IS NULL OR expires_at > datetime('now'))
+    """, (current_user["id"], request.member_id))
+    existing = cursor.fetchone()
+    
+    if existing:
+        conn.close()
+        return {
+            "exists": True,
+            "request_id": existing["id"],
+            "status": existing["status"],
+            "message": "Une demande existe déjà"
+        }
+    
+    # Create new request
+    cursor.execute("""
+        INSERT INTO contact_access_requests (user_id, member_id, member_name, status)
+        VALUES (?, ?, ?, 'pending')
+    """, (current_user["id"], request.member_id, request.member_name))
+    
+    request_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    
+    return {
+        "success": True,
+        "request_id": request_id,
+        "status": "pending",
+        "message": "Demande envoyée à l'administrateur"
+    }
+
+@app.get("/api/access/my-requests")
+async def get_my_access_requests(current_user: dict = Depends(get_current_user)):
+    """Get all access requests for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT * FROM contact_access_requests 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC
+    """, (current_user["id"],))
+    
+    requests = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"requests": requests}
+
+@app.get("/api/access/check/{member_id}")
+async def check_member_access(
+    member_id: int,
+    current_user: dict = Depends(get_current_user)
+):
+    """Check if user has access to a member's contact details"""
+    if not current_user:
+        return {"has_access": False, "reason": "non_authentifie"}
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    # Check individual access
+    cursor.execute("""
+        SELECT * FROM contact_access_requests 
+        WHERE user_id = ? AND member_id = ? 
+        AND status = 'approved' 
+        AND expires_at > datetime('now')
+        LIMIT 1
+    """, (current_user["id"], member_id))
+    
+    access = cursor.fetchone()
+    
+    if access:
+        conn.close()
+        return {"has_access": True, "expires_at": access["expires_at"], "type": "single"}
+    
+    # Check subscription
+    has_subscription = check_active_subscription(current_user["id"])
+    conn.close()
+    
+    if has_subscription:
+        return {"has_access": True, "subscription": True, "type": "subscription"}
+    
+    return {"has_access": False, "reason": "non_paye"}
+
+@app.post("/api/payment/initiate")
+async def initiate_payment(
+    payment: PaymentInitRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Initiate a payment for access"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    # Generate unique reference
+    import uuid
+    reference = f"PAY-{uuid.uuid4().hex[:8].upper()}"
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO payments (user_id, amount, method, reference, status, member_id)
+        VALUES (?, ?, ?, ?, 'pending', ?)
+    """, (current_user["id"], payment.amount, payment.method, reference, payment.member_id))
+    
+    payment_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    
+    # For demo, return instructions
+    return {
+        "success": True,
+        "reference": reference,
+        "payment_id": payment_id,
+        "instructions": "Veuillez contacter l'administrateur pour finaliser votre paiement. Référence: " + reference
+    }
+
 # ===== ADMIN ENDPOINTS =====
 
 @app.post("/api/admin/login")
@@ -206,7 +591,6 @@ class MemberCreate(BaseModel):
 @app.post("/api/admin/members", status_code=201)
 def add_member(member: MemberCreate, x_admin_auth: str = Header(default="")):
     check_admin(x_admin_auth)
-    # Auto-increment num within section
     max_num = db.execute("SELECT MAX(num) FROM members WHERE section=?", (member.section,)).fetchone()[0]
     new_num = (max_num or 0) + 1
     
@@ -240,7 +624,6 @@ def delete_member(member_id: int, x_admin_auth: str = Header(default="")):
 
 @app.get("/api/admin/members")
 def admin_get_members(x_admin_auth: str = Header(default="")):
-    """Admin: get all members with full contact info."""
     check_admin(x_admin_auth)
     rows = db.execute("SELECT * FROM members ORDER BY section, num").fetchall()
     result = {}
@@ -271,7 +654,109 @@ def delete_contact(contact_id: int, x_admin_auth: str = Header(default="")):
     db.commit()
     return {"deleted": contact_id}
 
-from fastapi.responses import HTMLResponse
+@app.get("/api/admin/access-requests")
+def get_access_requests(x_admin_auth: str = Header(default="")):
+    """Admin: get all pending access requests"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT r.*, u.name as user_name, u.email as user_email
+        FROM contact_access_requests r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.status = 'pending'
+        ORDER BY r.created_at DESC
+    """)
+    
+    requests = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"requests": requests}
+
+@app.post("/api/admin/access-requests/{request_id}/approve")
+def approve_access_request(
+    request_id: int,
+    x_admin_auth: str = Header(default="")
+):
+    """Admin: approve an access request"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    # Get request to check if it's for a specific member or subscription
+    cursor.execute("SELECT member_id FROM contact_access_requests WHERE id = ?", (request_id,))
+    req = cursor.fetchone()
+    
+    # Set expiration (30 days for single, 30/365 for subscription)
+    expires_at = "datetime('now', '+30 days')"
+    
+    cursor.execute(f"""
+        UPDATE contact_access_requests 
+        SET status = 'approved', 
+            approved_at = datetime('now'),
+            expires_at = {expires_at}
+        WHERE id = ?
+    """, (request_id,))
+    
+    conn.commit()
+    conn.close()
+    
+    return {"success": True, "message": "Accès approuvé"}
+
+@app.post("/api/admin/access-requests/{request_id}/reject")
+def reject_access_request(
+    request_id: int,
+    x_admin_auth: str = Header(default="")
+):
+    """Admin: reject an access request"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE contact_access_requests 
+        SET status = 'rejected' 
+        WHERE id = ?
+    """, (request_id,))
+    conn.commit()
+    conn.close()
+    
+    return {"success": True, "message": "Demande rejetée"}
+
+@app.get("/api/admin/stats")
+def admin_stats(x_admin_auth: str = Header(default="")):
+    """Admin: get statistics"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT COUNT(*) as total FROM users")
+    users = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT COUNT(*) as total FROM contact_access_requests WHERE status = 'pending'")
+    pending_requests = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT COUNT(*) as total FROM contact_access_requests WHERE status = 'approved'")
+    approved_requests = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT COUNT(*) as total FROM contact_requests WHERE lu = 0")
+    unread_contacts = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    return {
+        "total_users": users,
+        "pending_access_requests": pending_requests,
+        "approved_access_requests": approved_requests,
+        "unread_contact_requests": unread_contacts
+    }
+
+# ===== STATIC FILES =====
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -292,129 +777,15 @@ async def serve_auth():
         return HTMLResponse(content="""
         <!DOCTYPE html>
         <html>
-        <head><title>Auth</title><meta charset="UTF-8"></head>
+        <head><title>Authentification ONECCA</title><meta charset="UTF-8"></head>
         <body style="font-family:Arial;padding:20px">
-        <h2>Page d'authentification</h2>
-        <p>Le fichier auth.html n'a pas encore été créé.</p>
-        <p>Veuillez créer le fichier auth.html à la racine du projet.</p>
-        <a href="/">Retour à l'accueil</a>
+        <h2>🔐 ONECCA - Authentification</h2>
+        <p>Le fichier auth.html est en cours de préparation.</p>
+        <p>Veuillez rafraîchir la page ou contacter l'administrateur.</p>
+        <a href="/">← Retour à l'accueil</a>
         </body>
         </html>
-        """, status_code=404)
-
-# ===== AUTHENTIFICATION UTILISATEURS =====
-import hashlib
-import secrets
-from datetime import datetime, timedelta
-
-# Table des utilisateurs
-def init_auth_db():
-    conn = sqlite3.connect("onecca.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            phone TEXT,
-            password_hash TEXT NOT NULL,
-            reset_token TEXT,
-            reset_token_expiry TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-init_auth_db()
-
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def generate_token():
-    return secrets.token_urlsafe(32)
-
-class LoginRequest(BaseModel):
-    email: str
-    password: str
-
-class RegisterRequest(BaseModel):
-    name: str
-    email: str
-    phone: str = ""
-    password: str
-
-class ForgotPasswordRequest(BaseModel):
-    email: str
-
-@app.post("/api/auth/register")
-async def register(request: RegisterRequest):
-    conn = sqlite3.connect("onecca.db")
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT id FROM users WHERE email = ?", (request.email,))
-    if cursor.fetchone():
-        conn.close()
-        raise HTTPException(status_code=400, detail="Cet email est déjà utilisé")
-    
-    password_hash = hash_password(request.password)
-    cursor.execute("""
-        INSERT INTO users (name, email, phone, password_hash)
-        VALUES (?, ?, ?, ?)
-    """, (request.name, request.email, request.phone, password_hash))
-    
-    user_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    
-    return {"success": True, "user_id": user_id}
-
-@app.post("/api/auth/login")
-async def login(request: LoginRequest):
-    conn = sqlite3.connect("onecca.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT * FROM users WHERE email = ?", (request.email,))
-    user = cursor.fetchone()
-    conn.close()
-    
-    if not user or user["password_hash"] != hash_password(request.password):
-        raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
-    
-    token = generate_token()
-    
-    return {
-        "success": True,
-        "token": token,
-        "user": {
-            "id": user["id"],
-            "name": user["name"],
-            "email": user["email"],
-            "phone": user["phone"]
-        }
-    }
-
-@app.post("/api/auth/forgot-password")
-async def forgot_password(request: ForgotPasswordRequest):
-    conn = sqlite3.connect("onecca.db")
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT id FROM users WHERE email = ?", (request.email,))
-    user = cursor.fetchone()
-    
-    if user:
-        token = generate_token()
-        expiry = (datetime.now() + timedelta(hours=1)).isoformat()
-        cursor.execute("""
-            UPDATE users SET reset_token = ?, reset_token_expiry = ?
-            WHERE email = ?
-        """, (token, expiry, request.email))
-        conn.commit()
-        print(f"Reset token for {request.email}: {token}")
-    
-    conn.close()
-    return {"success": True}
+        """)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
