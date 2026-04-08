@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPARK - Tableau de l'Ordre 2026</title>
+<title>ONECCA - Tableau de l'Ordre National des Experts-Comptables du Cameroun 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
-/* ===== DESIGN TOKENS ===== */
+/* ===== DESIGN TOKENS (conservé identique à votre version) ===== */
 :root, [data-theme="light"] {
   --font-body: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
   --primary: #021e79;
@@ -113,9 +113,7 @@ a { color: inherit; text-decoration: none; }
   z-index: 100;
   box-shadow: 0 2px 12px rgba(2,30,121,0.3);
 }
-[data-theme="dark"] .header {
-  background: #0a1a4a;
-}
+[data-theme="dark"] .header { background: #0a1a4a; }
 .header-top {
   display: flex;
   align-items: center;
@@ -151,7 +149,7 @@ a { color: inherit; text-decoration: none; }
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 .btn-icon {
   width: 38px;
@@ -165,15 +163,100 @@ a { color: inherit; text-decoration: none; }
 }
 .btn-icon:hover { background: rgba(255,255,255,0.15); }
 
+/* Boutons Connexion et Inscription */
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+.btn-auth {
+  padding: 8px 20px;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-login {
+  background: white;
+  color: var(--primary);
+}
+.btn-login:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+.btn-register {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.btn-register:hover {
+  background: var(--accent);
+  color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Menu utilisateur */
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  padding: 4px 16px 4px 8px;
+  border-radius: 60px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ffbf00, #ffd633);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #021e79;
+}
+.user-name {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+.logout-button {
+  width: 36px;
+  height: 36px;
+  background: rgba(220,38,38,0.15);
+  border: 1px solid rgba(220,38,38,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.logout-button svg { stroke: #fca5a5; }
+.logout-button:hover {
+  background: rgba(220,38,38,0.3);
+  transform: scale(1.05);
+}
+
 /* ===== ADMIN TOOLBAR ===== */
 .admin-toolbar {
   display: none;
   background: var(--primary-dark);
   border-bottom: 2px solid var(--accent);
-  padding: 0;
 }
 .admin-toolbar.visible { display: block; }
-[data-theme="dark"] .admin-toolbar { background: #060e30; }
 .admin-toolbar-inner {
   max-width: 1400px;
   margin: 0 auto;
@@ -190,14 +273,13 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
 }
 .admin-toolbar-actions {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
   margin-left: auto;
+  flex-wrap: wrap;
 }
 .admin-btn {
   display: flex;
@@ -208,23 +290,13 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-xs);
   font-weight: 700;
   transition: all var(--transition);
-  white-space: nowrap;
   cursor: pointer;
 }
-.admin-btn-primary {
-  background: var(--accent);
-  color: #212326;
-}
+.admin-btn-primary { background: var(--accent); color: #212326; }
 .admin-btn-primary:hover { background: var(--accent-hover); }
-.admin-btn-secondary {
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-}
+.admin-btn-secondary { background: rgba(255,255,255,0.12); color: #fff; }
 .admin-btn-secondary:hover { background: rgba(255,255,255,0.2); }
-.admin-btn-danger {
-  background: rgba(220,38,38,0.15);
-  color: #fca5a5;
-}
+.admin-btn-danger { background: rgba(220,38,38,0.15); color: #fca5a5; }
 .admin-btn-danger:hover { background: rgba(220,38,38,0.25); }
 .admin-badge {
   background: #dc2626;
@@ -233,8 +305,6 @@ a { color: inherit; text-decoration: none; }
   font-weight: 900;
   padding: 1px 6px;
   border-radius: 99px;
-  min-width: 18px;
-  text-align: center;
 }
 
 /* Toggle switch */
@@ -246,7 +316,6 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-xs);
   font-weight: 700;
   cursor: pointer;
-  white-space: nowrap;
 }
 .toggle-track {
   position: relative;
@@ -255,7 +324,6 @@ a { color: inherit; text-decoration: none; }
   background: rgba(255,255,255,0.2);
   border-radius: 99px;
   transition: background var(--transition);
-  flex-shrink: 0;
 }
 .toggle-track.on { background: #22c55e; }
 .toggle-thumb {
@@ -269,19 +337,15 @@ a { color: inherit; text-decoration: none; }
   transition: transform var(--transition);
 }
 .toggle-track.on .toggle-thumb { transform: translateX(18px); }
-.toggle-status {
-  color: var(--accent);
-  font-weight: 900;
-}
+.toggle-status { color: var(--accent); font-weight: 900; }
 
-/* ===== MODAL OVERLAY (shared) ===== */
+/* ===== MODAL OVERLAY ===== */
 .modal-overlay {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(2,30,121,0.5);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -292,10 +356,9 @@ a { color: inherit; text-decoration: none; }
   background: var(--color-card-bg);
   border-radius: var(--radius-xl);
   padding: 40px;
-  max-width: 500px;
+  max-width: 550px;
   width: 100%;
   box-shadow: var(--shadow-lg);
-  position: relative;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -322,12 +385,9 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   margin-bottom: 24px;
-  line-height: 1.5;
   text-align: center;
 }
-.modal-input-group {
-  margin-bottom: 14px;
-}
+.modal-input-group { margin-bottom: 14px; }
 .modal-input-group label {
   display: block;
   font-size: var(--text-xs);
@@ -335,7 +395,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--color-text-muted);
   margin-bottom: 4px;
 }
-.modal-input-group label .required { color: #dc2626; }
 .modal-input-group input,
 .modal-input-group select,
 .modal-input-group textarea {
@@ -348,38 +407,29 @@ a { color: inherit; text-decoration: none; }
   outline: none;
   transition: border-color var(--transition);
 }
-.modal-input-group textarea { resize: vertical; min-height: 80px; }
 .modal-input-group input:focus,
-.modal-input-group select:focus,
-.modal-input-group textarea:focus { border-color: var(--primary); }
-[data-theme="dark"] .modal-input-group input:focus,
-[data-theme="dark"] .modal-input-group select:focus,
-[data-theme="dark"] .modal-input-group textarea:focus { border-color: var(--accent); }
-.modal-input-group input::placeholder,
-.modal-input-group textarea::placeholder { color: var(--color-text-faint); }
+.modal-input-group select:focus { border-color: var(--primary); }
 .modal-error {
   display: none;
   color: #dc2626;
   font-size: var(--text-sm);
   font-weight: 700;
-  margin-bottom: 12px;
   padding: 8px 12px;
   background: #fef2f2;
   border-radius: var(--radius-sm);
+  margin-bottom: 12px;
 }
-[data-theme="dark"] .modal-error { background: #3b1111; color: #f87171; }
 .modal-error.show { display: block; }
 .modal-success {
   display: none;
   color: #16a34a;
   font-size: var(--text-sm);
   font-weight: 700;
-  margin-bottom: 12px;
   padding: 8px 12px;
   background: #f0fdf4;
   border-radius: var(--radius-sm);
+  margin-bottom: 12px;
 }
-[data-theme="dark"] .modal-success { background: #0f2e1a; color: #4ade80; }
 .modal-success.show { display: block; }
 .modal-btn-primary {
   width: 100%;
@@ -390,7 +440,6 @@ a { color: inherit; text-decoration: none; }
   font-weight: 900;
   border-radius: var(--radius-md);
   transition: background var(--transition);
-  letter-spacing: 0.02em;
 }
 .modal-btn-primary:hover { background: var(--accent-hover); }
 .modal-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -406,43 +455,117 @@ a { color: inherit; text-decoration: none; }
 }
 .modal-cancel:hover { color: var(--color-text); }
 
-/* ===== CARD LOCKED ===== */
+/* Pricing cards */
+.pricing-options {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.pricing-card {
+  flex: 1;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.pricing-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.pricing-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.pricing-card .price {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--primary);
+}
+[data-theme="dark"] .pricing-card .price { color: var(--accent); }
+.pricing-card .period {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+}
+.pricing-card .feature {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin: 5px 0;
+}
+.payment-methods { margin: 20px 0; }
+.methods-grid {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+.method-btn {
+  flex: 1;
+  padding: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.method-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.method-btn.selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--primary-dark);
+}
+.payment-status {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  display: none;
+}
+.payment-status.show { display: block; }
+.payment-status.success { background: #dcfce7; color: #16a34a; }
+.payment-status.error { background: #fee2e2; color: #dc2626; }
+
+/* Card locked with unlock button */
 .card-locked {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 10px;
   font-size: var(--text-xs);
   color: var(--color-text-faint);
-  margin-top: 6px;
-  padding: 6px 10px;
+  margin-top: 8px;
+  padding: 8px 12px;
   background: var(--color-surface);
   border-radius: var(--radius-sm);
   border: 1px dashed var(--color-border);
 }
-
-/* ===== CONTACT FLOATING BUTTON ===== */
-.contact-fab {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+.unlock-btn {
   background: var(--accent);
   color: var(--primary-dark);
-  padding: 12px 28px;
-  border-radius: 99px;
-  font-size: var(--text-sm);
-  font-weight: 900;
-  box-shadow: 0 4px 20px rgba(255,191,0,0.4), var(--shadow-lg);
-  z-index: 50;
-  transition: all var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
   white-space: nowrap;
-  letter-spacing: 0.01em;
 }
-.contact-fab:hover { background: var(--accent-hover); transform: translateX(-50%) translateY(-2px); box-shadow: 0 6px 28px rgba(255,191,0,0.5), var(--shadow-lg); }
-[data-theme="dark"] .contact-fab { color: #212326; }
+.unlock-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.02);
+}
+.login-link {
+  color: var(--accent);
+  text-decoration: underline;
+  font-weight: 600;
+}
 
 /* ===== STATS DASHBOARD ===== */
 .stats-section {
@@ -460,7 +583,6 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  user-select: none;
 }
 .stats-toggle h2 {
   font-size: var(--text-lg);
@@ -471,15 +593,9 @@ a { color: inherit; text-decoration: none; }
   gap: 8px;
 }
 [data-theme="dark"] .stats-toggle h2 { color: var(--accent); }
-.stats-toggle .chevron {
-  transition: transform var(--transition);
-  color: var(--color-text-muted);
-}
+.stats-toggle .chevron { transition: transform var(--transition); }
 .stats-toggle.open .chevron { transform: rotate(180deg); }
-.stats-body {
-  display: none;
-  margin-top: 20px;
-}
+.stats-body { display: none; margin-top: 20px; }
 .stats-body.open { display: block; }
 .stats-grid {
   display: grid;
@@ -498,7 +614,6 @@ a { color: inherit; text-decoration: none; }
   font-size: var(--text-xl);
   font-weight: 900;
   color: var(--primary);
-  line-height: 1.2;
 }
 [data-theme="dark"] .stat-card .stat-number { color: var(--accent); }
 .stat-card .stat-label {
@@ -507,8 +622,6 @@ a { color: inherit; text-decoration: none; }
   margin-top: 4px;
   font-weight: 700;
 }
-.stat-card.accent .stat-number { color: var(--accent); }
-[data-theme="dark"] .stat-card.accent .stat-number { color: var(--accent); }
 .charts-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -519,12 +632,6 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 20px;
-}
-.chart-box h3 {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--color-text);
 }
 .chart-box canvas { max-height: 220px; }
 
@@ -545,17 +652,11 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   gap: 12px;
 }
-
-/* Tabs */
 .tabs {
   display: flex;
   gap: 4px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 2px;
 }
-.tabs::-webkit-scrollbar { display: none; }
 .tab-btn {
   display: flex;
   align-items: center;
@@ -570,24 +671,13 @@ a { color: inherit; text-decoration: none; }
   background: transparent;
 }
 .tab-btn:hover { background: var(--color-border-light); color: var(--color-text); }
-.tab-btn.active {
-  background: var(--primary);
-  color: #fff;
-}
-[data-theme="dark"] .tab-btn.active { background: var(--primary-light); }
+.tab-btn.active { background: var(--primary); color: #fff; }
 .tab-badge {
   background: rgba(255,255,255,0.25);
   padding: 1px 7px;
   border-radius: 99px;
   font-size: 11px;
-  font-weight: 700;
 }
-.tab-btn:not(.active) .tab-badge {
-  background: var(--color-border);
-  color: var(--color-text-muted);
-}
-
-/* Filters row */
 .filters-row {
   display: flex;
   gap: 10px;
@@ -605,7 +695,6 @@ a { color: inherit; text-decoration: none; }
   top: 50%;
   transform: translateY(-50%);
   color: var(--color-text-faint);
-  pointer-events: none;
 }
 .search-box input {
   width: 100%;
@@ -614,30 +703,17 @@ a { color: inherit; text-decoration: none; }
   border-radius: var(--radius-md);
   background: var(--color-card-bg);
   font-size: var(--text-sm);
-  transition: border-color var(--transition), box-shadow var(--transition);
   outline: none;
 }
-.search-box input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(2,30,121,0.12);
-}
-[data-theme="dark"] .search-box input:focus { box-shadow: 0 0 0 3px rgba(255,191,0,0.15); border-color: var(--accent); }
 .city-select {
   padding: 9px 32px 9px 12px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-card-bg);
   font-size: var(--text-sm);
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23707070' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
   cursor: pointer;
   min-width: 140px;
-  outline: none;
 }
-.city-select:focus { border-color: var(--primary); }
-[data-theme="dark"] .city-select:focus { border-color: var(--accent); }
 .btn-export {
   display: flex;
   align-items: center;
@@ -648,12 +724,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   font-weight: 700;
-  transition: background var(--transition);
-  white-space: nowrap;
 }
-.btn-export:hover { background: var(--accent-hover); }
-
-/* Alphabet bar */
 .alpha-bar {
   display: flex;
   flex-wrap: wrap;
@@ -671,28 +742,9 @@ a { color: inherit; text-decoration: none; }
   transition: all var(--transition);
   color: var(--color-text-muted);
 }
-.alpha-btn:hover { background: var(--color-border-light); color: var(--color-text); }
-.alpha-btn.active {
-  background: var(--accent);
-  color: #212326;
-}
+.alpha-btn:hover { background: var(--color-border-light); }
+.alpha-btn.active { background: var(--accent); color: #212326; }
 .alpha-btn.disabled { opacity: 0.3; pointer-events: none; }
-
-/* ===== RESULTS INFO ===== */
-.results-bar {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 16px 24px 4px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.results-count {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  font-weight: 700;
-}
-.results-count strong { color: var(--color-text); }
 
 /* ===== CARD GRID ===== */
 .main-content {
@@ -700,9 +752,19 @@ a { color: inherit; text-decoration: none; }
   margin: 0 auto;
   padding: 8px 24px 48px;
 }
+.results-bar {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 24px 4px;
+}
+.results-count {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: 700;
+}
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 14px;
 }
 .card {
@@ -710,9 +772,8 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 20px;
-  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+  transition: all var(--transition);
   position: relative;
-  overflow: hidden;
 }
 .card::before {
   content: '';
@@ -730,7 +791,6 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(-1px);
   border-color: var(--primary);
 }
-[data-theme="dark"] .card:hover { border-color: var(--accent); }
 .card:hover::before { opacity: 1; }
 .card-num {
   position: absolute;
@@ -749,7 +809,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--primary);
   margin-bottom: 4px;
   padding-right: 50px;
-  line-height: 1.3;
 }
 [data-theme="dark"] .card-name { color: var(--accent); }
 .card-inscription {
@@ -760,7 +819,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 6px;
 }
-.card-inscription .badge-insc {
+.badge-insc {
   background: var(--accent-light);
   border: 1px solid rgba(255,191,0,0.3);
   color: var(--primary);
@@ -769,36 +828,23 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   font-size: 11px;
 }
-[data-theme="dark"] .card-inscription .badge-insc {
-  background: rgba(255,191,0,0.12);
-  border-color: rgba(255,191,0,0.25);
-  color: var(--accent);
-}
-.card-details {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.card-details { display: flex; flex-direction: column; gap: 6px; }
 .card-row {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   font-size: var(--text-sm);
   color: var(--color-text-muted);
-  line-height: 1.45;
 }
 .card-row svg {
   flex-shrink: 0;
   margin-top: 2px;
-  color: var(--color-text-faint);
 }
 .card-row a {
   color: var(--primary);
   transition: color var(--transition);
 }
 .card-row a:hover { color: var(--accent); text-decoration: underline; }
-[data-theme="dark"] .card-row a { color: var(--accent); }
-[data-theme="dark"] .card-row a:hover { color: #ffe066; }
 .city-tag {
   display: inline-flex;
   align-items: center;
@@ -810,10 +856,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 11px;
   font-weight: 700;
   margin-top: 8px;
-  letter-spacing: 0.02em;
 }
-
-/* Admin card actions */
 .card-admin-actions {
   display: flex;
   gap: 6px;
@@ -827,152 +870,11 @@ a { color: inherit; text-decoration: none; }
   font-size: 11px;
   font-weight: 700;
   transition: all var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
-.card-admin-btn.edit {
-  background: rgba(2,30,121,0.08);
-  color: var(--primary);
-}
+.card-admin-btn.edit { background: rgba(2,30,121,0.08); color: var(--primary); }
 .card-admin-btn.edit:hover { background: rgba(2,30,121,0.15); }
-[data-theme="dark"] .card-admin-btn.edit { background: rgba(255,191,0,0.1); color: var(--accent); }
-[data-theme="dark"] .card-admin-btn.edit:hover { background: rgba(255,191,0,0.2); }
-.card-admin-btn.delete {
-  background: rgba(220,38,38,0.08);
-  color: #dc2626;
-}
+.card-admin-btn.delete { background: rgba(220,38,38,0.08); color: #dc2626; }
 .card-admin-btn.delete:hover { background: rgba(220,38,38,0.15); }
-[data-theme="dark"] .card-admin-btn.delete { background: rgba(220,38,38,0.12); color: #f87171; }
-
-/* ===== CONTACT REQUESTS PANEL ===== */
-.contacts-panel {
-  display: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 480px;
-  max-width: 100vw;
-  background: var(--color-card-bg);
-  box-shadow: -8px 0 32px rgba(0,0,0,0.2);
-  z-index: 1001;
-  flex-direction: column;
-  overflow: hidden;
-}
-.contacts-panel.open { display: flex; }
-.contacts-panel-header {
-  padding: 20px 24px;
-  background: var(--primary);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-[data-theme="dark"] .contacts-panel-header { background: #0a1a4a; }
-.contacts-panel-header h3 {
-  font-size: var(--text-lg);
-  font-weight: 900;
-}
-.contacts-panel-close {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  transition: background var(--transition);
-}
-.contacts-panel-close:hover { background: rgba(255,255,255,0.15); }
-.contacts-panel-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-}
-.contact-request-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin-bottom: 12px;
-  transition: all var(--transition);
-}
-.contact-request-card.unread {
-  border-left: 3px solid var(--accent);
-  background: var(--accent-light);
-}
-[data-theme="dark"] .contact-request-card.unread { background: rgba(255,191,0,0.06); }
-.contact-request-card .cr-name {
-  font-weight: 900;
-  font-size: var(--text-sm);
-  color: var(--color-text);
-  margin-bottom: 2px;
-}
-.contact-request-card .cr-company {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-}
-.contact-request-card .cr-info {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  margin-top: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.contact-request-card .cr-message {
-  font-size: var(--text-sm);
-  color: var(--color-text);
-  margin-top: 8px;
-  padding: 8px 10px;
-  background: var(--color-card-bg);
-  border-radius: var(--radius-sm);
-  line-height: 1.5;
-}
-.contact-request-card .cr-date {
-  font-size: 10px;
-  color: var(--color-text-faint);
-  margin-top: 8px;
-}
-.contact-request-card .cr-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-}
-.cr-btn {
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-  font-weight: 700;
-  transition: all var(--transition);
-}
-.cr-btn.mark-read {
-  background: rgba(2,30,121,0.08);
-  color: var(--primary);
-}
-.cr-btn.mark-read:hover { background: rgba(2,30,121,0.15); }
-[data-theme="dark"] .cr-btn.mark-read { background: rgba(255,191,0,0.1); color: var(--accent); }
-.cr-btn.cr-delete {
-  background: rgba(220,38,38,0.08);
-  color: #dc2626;
-}
-.cr-btn.cr-delete:hover { background: rgba(220,38,38,0.15); }
-[data-theme="dark"] .cr-btn.cr-delete { background: rgba(220,38,38,0.12); color: #f87171; }
-.contacts-panel-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 1000;
-}
-.contacts-panel-overlay.open { display: block; }
-.contacts-empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
 
 /* ===== PAGINATION ===== */
 .pagination {
@@ -994,30 +896,10 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   transition: all var(--transition);
   color: var(--color-text-muted);
-  padding: 0 8px;
 }
 .page-btn:hover { background: var(--color-border-light); color: var(--color-text); }
-.page-btn.active {
-  background: var(--primary);
-  color: #fff;
-}
-[data-theme="dark"] .page-btn.active { background: var(--primary-light); }
+.page-btn.active { background: var(--primary); color: #fff; }
 .page-btn:disabled { opacity: 0.4; pointer-events: none; }
-.page-ellipsis {
-  color: var(--color-text-faint);
-  padding: 0 4px;
-  font-weight: 700;
-}
-
-/* ===== EMPTY STATE ===== */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--color-text-muted);
-}
-.empty-state svg { margin: 0 auto 16px; color: var(--color-text-faint); }
-.empty-state h3 { font-size: var(--text-lg); margin-bottom: 6px; color: var(--color-text); }
-.empty-state p { font-size: var(--text-sm); }
 
 /* ===== FOOTER ===== */
 .footer {
@@ -1027,11 +909,30 @@ a { color: inherit; text-decoration: none; }
   padding: 24px;
   font-size: var(--text-xs);
   margin-top: auto;
+  position: relative;
 }
-[data-theme="dark"] .footer { background: #0a1a4a; }
 .footer strong { color: var(--accent); }
+.footer-admin {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+.footer-admin:hover { opacity: 0.7; }
+.admin-secret {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.admin-secret:hover { color: var(--accent); background: rgba(255,255,255,0.1); }
 
-/* ===== BACK TO TOP ===== */
 .back-to-top {
   position: fixed;
   bottom: 24px;
@@ -1044,133 +945,50 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-lg);
   opacity: 0;
   pointer-events: none;
   transition: all var(--transition);
   z-index: 49;
 }
 .back-to-top.visible { opacity: 1; pointer-events: auto; }
-.back-to-top:hover { background: var(--primary-light); transform: translateY(-2px); }
 
-/* ===== CONFIRM DIALOG ===== */
-.confirm-overlay {
-  display: none;
+.contact-fab {
   position: fixed;
-  inset: 0;
-  background: rgba(2,30,121,0.5);
-  backdrop-filter: blur(8px);
-  z-index: 1100;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.confirm-overlay.open { display: flex; }
-.confirm-box {
-  background: var(--color-card-bg);
-  border-radius: var(--radius-xl);
-  padding: 32px;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: var(--shadow-lg);
-  text-align: center;
-}
-.confirm-box h3 {
-  font-size: var(--text-lg);
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: var(--primary-dark);
+  padding: 12px 28px;
+  border-radius: 99px;
+  font-size: var(--text-sm);
   font-weight: 900;
-  margin-bottom: 8px;
-  color: var(--color-text);
-}
-.confirm-box p {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-bottom: 20px;
-}
-.confirm-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-.confirm-btn {
-  padding: 10px 24px;
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-weight: 700;
+  z-index: 50;
   transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
-.confirm-btn.cancel {
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
-}
-.confirm-btn.cancel:hover { background: var(--color-border-light); }
-.confirm-btn.danger {
-  background: #dc2626;
-  color: #fff;
-}
-.confirm-btn.danger:hover { background: #b91c1c; }
-
-/* ===== PRINT ===== */
-@media print {
-  .header, .toolbar, .stats-section, .pagination, .footer, .back-to-top, .btn-export, .btn-icon, .modal-overlay, .card-locked, .contact-fab, .admin-toolbar, .card-admin-actions, .contacts-panel, .contacts-panel-overlay, .confirm-overlay { display: none !important; }
-  .main-content { padding: 0; }
-  .card-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
-  .card::before { display: none; }
-  .results-bar { padding: 8px 0; }
-  body { background: #fff; color: #000; }
-}
+.contact-fab:hover { background: var(--accent-hover); transform: translateX(-50%) translateY(-2px); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .header-top { padding: 8px 16px; }
-  .header-logo img { height: 38px; }
   .header-text h1 { font-size: 11px; }
   .header-text .subtitle { display: none; }
   .toolbar { top: 58px; }
-  .toolbar-inner { padding: 0 16px; }
-  .tabs { gap: 3px; }
-  .tab-btn { padding: 6px 12px; font-size: 12px; }
   .filters-row { flex-direction: column; }
-  .search-box { min-width: 100%; }
-  .city-select { width: 100%; }
-  .alpha-btn { width: 26px; height: 26px; font-size: 11px; }
-  .main-content { padding: 8px 16px 40px; }
+  .search-box, .city-select { width: 100%; }
   .card-grid { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .charts-row { grid-template-columns: 1fr; }
-  .results-bar { padding: 12px 16px 4px; }
-  .stats-container { padding: 0 16px; }
-  .header-actions { gap: 4px; }
+  .auth-buttons { gap: 5px; }
+  .btn-auth { padding: 6px 12px; font-size: 12px; }
+  .user-name { display: none; }
+  .user-menu { padding: 4px; }
+  .logout-button { width: 32px; height: 32px; }
   .modal-box { padding: 28px 20px; }
-  .admin-toolbar-inner { padding: 8px 16px; gap: 10px; }
-  .admin-toolbar-title { font-size: 12px; }
-  .admin-btn { padding: 6px 10px; font-size: 11px; }
-  .contact-fab { font-size: 12px; padding: 10px 20px; bottom: 16px; }
-  .contacts-panel { width: 100vw; }
 }
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.card-grid .card {
-  animation: fadeInUp 0.3s ease both;
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
-}
-.modal-box.shake { animation: shake 0.4s ease; }
-
-/* Slide-in panel animation */
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-.contacts-panel.open { animation: slideInRight 0.3s ease; }
 </style>
 </head>
 <body>
@@ -1180,142 +998,38 @@ a { color: inherit; text-decoration: none; }
   <div class="header-top">
     <div class="header-brand">
       <div class="header-logo">
-        
+        <img src="logoonecca.png" alt="ONECCA" onerror="this.style.display='none'">
       </div>
       <div class="header-text">
-        <img src="logoonecca.jpg" alt="ONECCA">
         <h1>Tableau de l'Ordre National des Experts-Comptables du Cameroun — 2026</h1>
         <div class="subtitle">Annuaire officiel des membres inscrits au tableau de l'Ordre</div>
       </div>
     </div>
     <div class="header-actions">
-      <!-- Menu utilisateur connecté (caché par défaut) -->
-      <div id="userMenu" style="display: none;">
-        <span id="userName" style="color: white; font-size: 14px; margin-right: 10px;"></span>
+      <!-- Menu utilisateur connecté -->
+      <div id="userMenu" class="user-menu" style="display: none;">
+        <div class="user-info">
+          <div class="user-avatar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <span id="userName" class="user-name"></span>
+        </div>
         <button id="logoutBtn" class="logout-button" title="Se déconnecter">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
-    </svg>
-</button>
-
-<style>
-.logout-button {
-    width: 38px;
-    height: 38px;
-    background: rgba(220, 38, 38, 0.15);
-    border: 1px solid rgba(220, 38, 38, 0.3);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-}
-
-.logout-button svg {
-    stroke: #fca5a5;
-    transition: all 0.3s ease;
-}
-
-.logout-button:hover {
-    background: rgba(220, 38, 38, 0.3);
-    transform: scale(1.05);
-    border-color: rgba(220, 38, 38, 0.5);
-}
-
-.logout-button:hover svg {
-    stroke: #f87171;
-    transform: translateX(2px);
-}
-
-.logout-button:active {
-    transform: scale(0.95);
-}
-
-/* Tooltip */
-.logout-button::before {
-    content: "Déconnexion";
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 8px;
-    padding: 6px 12px;
-    background: #1e293b;
-    color: white;
-    font-size: 12px;
-    font-weight: 500;
-    border-radius: 8px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-5px);
-    transition: all 0.2s ease;
-    pointer-events: none;
-    z-index: 100;
-}
-
-.logout-button:hover::before {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-</style>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
       </div>
-      <!-- Bouton connexion (visible par défaut) -->
-      <a href="/auth.html" id="loginBtn" class="btn-user">
-    <div class="user-avatar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-        </svg>
-    </div>
-    <span>Se connecter</span>
-</a>
-
-<style>
-.btn-user {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 20px 8px 12px;
-    background: transparent;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 40px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: 1.5px solid rgba(255,255,255,0.3);
-}
-
-.btn-user .user-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.btn-user:hover {
-    border-color: #ffbf00;
-    background: rgba(255,191,0,0.1);
-}
-
-.btn-user:hover .user-avatar {
-    background: #ffbf00;
-    color: #021e79;
-}
-
-[data-theme="dark"] .btn-user {
-    border-color: rgba(255,191,0,0.4);
-}
-</style>
+      <!-- Boutons Connexion/Inscription -->
+      <div class="auth-buttons" id="authButtons">
+        <a href="/auth.html" class="btn-auth btn-login">🔐 Connexion</a>
+        <a href="/auth.html" class="btn-auth btn-register">📝 Inscription</a>
+      </div>
       <!-- Bouton thème -->
       <button class="btn-icon" data-theme-toggle>🌙</button>
     </div>
@@ -1325,7 +1039,7 @@ a { color: inherit; text-decoration: none; }
 <!-- ADMIN TOOLBAR -->
 <div class="admin-toolbar" id="adminToolbar">
   <div class="admin-toolbar-inner">
-    <div class="admin-toolbar-title">&#x1f527; Panneau d'administration</div>
+    <div class="admin-toolbar-title">🔧 Panneau d'administration</div>
     <div class="admin-toolbar-actions">
       <div class="toggle-switch" id="contactsToggle">
         <span>Coordonnées :</span>
@@ -1334,11 +1048,14 @@ a { color: inherit; text-decoration: none; }
         </div>
         <span class="toggle-status" id="toggleStatus">—</span>
       </div>
-      <button class="admin-btn admin-btn-primary" id="btnAddMember">&#x2795; Ajouter un membre</button>
-      <button class="admin-btn admin-btn-secondary" id="btnContacts">
-        &#x1f4e8; Demandes <span class="admin-badge" id="contactsBadge">0</span>
+      <button class="admin-btn admin-btn-primary" id="btnAddMember">➕ Ajouter un membre</button>
+      <button class="admin-btn admin-btn-secondary" id="btnAccessRequests">
+        📋 Demandes accès <span class="admin-badge" id="accessRequestsBadge">0</span>
       </button>
-      <button class="admin-btn admin-btn-danger" id="btnExitAdmin">&#x1f6aa; Quitter l'admin</button>
+      <button class="admin-btn admin-btn-secondary" id="btnContacts">
+        📨 Demandes <span class="admin-badge" id="contactsBadge">0</span>
+      </button>
+      <button class="admin-btn admin-btn-danger" id="btnExitAdmin">🚪 Quitter l'admin</button>
     </div>
   </div>
 </div>
@@ -1347,23 +1064,14 @@ a { color: inherit; text-decoration: none; }
 <section class="stats-section">
   <div class="stats-container">
     <div class="stats-toggle" id="statsToggle">
-      <h2>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>
-        Statistiques
-      </h2>
+      <h2>📊 Statistiques</h2>
       <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
     </div>
     <div class="stats-body" id="statsBody">
       <div class="stats-grid" id="statsGrid"></div>
       <div class="charts-row">
-        <div class="chart-box">
-          <h3>Répartition par section</h3>
-          <canvas id="chartSection"></canvas>
-        </div>
-        <div class="chart-box">
-          <h3>Répartition par ville</h3>
-          <canvas id="chartCity"></canvas>
-        </div>
+        <div class="chart-box"><h3>Répartition par section</h3><canvas id="chartSection"></canvas></div>
+        <div class="chart-box"><h3>Répartition par ville</h3><canvas id="chartCity"></canvas></div>
       </div>
     </div>
   </div>
@@ -1390,22 +1098,15 @@ a { color: inherit; text-decoration: none; }
         <option value="Bangangté">Bangangté</option>
         <option value="Autre">Autre</option>
       </select>
-      <button class="btn-export" onclick="window.print()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Imprimer
-      </button>
+      <button class="btn-export" onclick="window.print()">🖨️ Imprimer</button>
     </div>
     <div class="alpha-bar" id="alphaBar"></div>
   </div>
 </div>
 
-<!-- RESULTS BAR -->
-<div class="results-bar">
-  <span class="results-count" id="resultsCount"></span>
-</div>
+<div class="results-bar"><span class="results-count" id="resultsCount"></span></div>
 
-<!-- MAIN CONTENT -->
-<main class="main-content" id="mainContent">
+<main class="main-content">
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text">Chargement de l'annuaire…</div>
@@ -1414,138 +1115,118 @@ a { color: inherit; text-decoration: none; }
   <div class="pagination" id="pagination"></div>
 </main>
 
-<!-- FOOTER -->
 <footer class="footer">
-  <strong>ONECCA</strong> — Ordre National des Experts-Comptables du Cameroun &middot; Tableau 2026<br>
-  &copy; 2026 Tous droits réservés
+  <strong>ONECCA</strong> — Ordre National des Experts-Comptables du Cameroun · Tableau 2026<br>
+  © 2026 Tous droits réservés
+  <div class="footer-admin">
+    <a href="/admin_login.html" class="admin-secret" title="Accès administrateur">⚙️ admin</a>
+  </div>
 </footer>
 
-<!-- BACK TO TOP -->
-<button class="back-to-top" id="backToTop" aria-label="Retour en haut">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
-</button>
+<button class="back-to-top" id="backToTop">↑</button>
+<button class="contact-fab" id="contactFab">🔍 À la recherche d'un expert-comptable ? Contactez-nous</button>
 
-<!-- CONTACT FLOATING BUTTON -->
-<button class="contact-fab" id="contactFab">
-  &#x1f50d; À la recherche d'un expert-comptable ? Contactez-nous
-</button>
-
-<!-- CONTACT FORM MODAL -->
+<!-- MODAL CONTACT -->
 <div class="modal-overlay" id="contactModal">
   <div class="modal-box">
-    <div class="modal-logo">&#x1f4e7;</div>
+    <div class="modal-logo">📧</div>
     <h2>Demande de mise en relation</h2>
     <p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p>
-    <div class="modal-success" id="contactSuccess">&#x2713; Votre demande a bien été envoyée. Nous vous contacterons rapidement.</div>
+    <div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div>
     <div class="modal-error" id="contactError"></div>
     <form id="contactForm">
-      <div class="modal-input-group">
-        <label>Nom complet <span class="required">*</span></label>
-        <input type="text" name="nom" required placeholder="Votre nom complet">
-      </div>
-      <div class="modal-input-group">
-        <label>Entreprise</label>
-        <input type="text" name="entreprise" placeholder="Nom de votre entreprise">
-      </div>
-      <div class="modal-input-group">
-        <label>Email <span class="required">*</span></label>
-        <input type="email" name="email" required placeholder="votre@email.com">
-      </div>
-      <div class="modal-input-group">
-        <label>Téléphone</label>
-        <input type="tel" name="telephone" placeholder="6XX XX XX XX">
-      </div>
-      <div class="modal-input-group">
-        <label>Commentaire / Message</label>
-        <textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea>
-      </div>
-      <button type="submit" class="modal-btn-primary" id="contactSubmitBtn">Envoyer ma demande</button>
+      <div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div>
+      <div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div>
+      <div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div>
+      <div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div>
+      <div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div>
+      <button type="submit" class="modal-btn-primary">Envoyer ma demande</button>
     </form>
     <div class="modal-cancel" id="contactCancel">Annuler</div>
   </div>
 </div>
 
-<!-- MEMBER FORM MODAL (admin) -->
+<!-- MODAL PAIEMENT / DÉBLOQUAGE -->
+<div class="modal-overlay" id="accessModal">
+  <div class="modal-box">
+    <div class="modal-logo">🔓</div>
+    <h2>Débloquer les coordonnées</h2>
+    <p class="modal-subtitle" id="accessMemberName"></p>
+    <div class="pricing-options">
+      <div class="pricing-card" data-price="5000" data-type="single">
+        <div class="price">5 000 FCFA</div>
+        <div class="period">Accès unique</div>
+        <div class="feature">✓ Coordonnées d'un membre</div>
+        <div class="feature">✓ Valable 30 jours</div>
+      </div>
+      <div class="pricing-card" data-price="25000" data-type="subscription">
+        <div class="price">25 000 FCFA</div>
+        <div class="period">Abonnement mensuel</div>
+        <div class="feature">✓ Accès illimité</div>
+        <div class="feature">✓ Tous les membres</div>
+        <div class="feature">✓ Valable 30 jours</div>
+      </div>
+    </div>
+    <div class="payment-methods">
+      <h4>Mode de paiement</h4>
+      <div class="methods-grid">
+        <button class="method-btn" data-method="orange_money">📱 Orange Money</button>
+        <button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button>
+        <button class="method-btn" data-method="card">💳 Carte bancaire</button>
+      </div>
+      <input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);">
+    </div>
+    <div id="paymentStatus" class="payment-status"></div>
+    <button id="payBtn" class="modal-btn-primary">Payer et débloquer</button>
+    <div class="modal-cancel" id="accessCancel">Annuler</div>
+  </div>
+</div>
+
+<!-- MODAL MEMBER FORM (admin) -->
 <div class="modal-overlay" id="memberModal">
   <div class="modal-box">
-    <div class="modal-logo">&#x1f464;</div>
+    <div class="modal-logo">👤</div>
     <h2 id="memberModalTitle">Ajouter un membre</h2>
     <p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p>
     <div class="modal-error" id="memberError"></div>
     <form id="memberForm">
       <input type="hidden" name="id" id="memberFormId">
-      <div class="modal-input-group">
-        <label>Section <span class="required">*</span></label>
-        <select name="section" required>
-          <option value="">— Choisir —</option>
-          <option value="liberaux">Experts-Comptables Libéraux</option>
-          <option value="societes">Sociétés d'Expertise Comptable</option>
-          <option value="salaries">Experts-Comptables Salariés</option>
-          <option value="stagiaires">Experts-Comptables Stagiaires</option>
-        </select>
-      </div>
-      <div class="modal-input-group">
-        <label>Nom <span class="required">*</span></label>
-        <input type="text" name="nom" required placeholder="Nom complet">
-      </div>
-      <div class="modal-input-group">
-        <label>N° inscription</label>
-        <input type="text" name="inscription_num" placeholder="Ex: 182 ECP">
-      </div>
-      <div class="modal-input-group">
-        <label>Date d'inscription</label>
-        <input type="text" name="inscription_date" placeholder="JJ/MM/AAAA">
-      </div>
-      <div class="modal-input-group">
-        <label>BP</label>
-        <input type="text" name="bp" placeholder="BP: ...">
-      </div>
-      <div class="modal-input-group">
-        <label>Tél 1</label>
-        <input type="text" name="tel1" placeholder="6XX XX XX XX">
-      </div>
-      <div class="modal-input-group">
-        <label>Tél 2</label>
-        <input type="text" name="tel2" placeholder="6XX XX XX XX">
-      </div>
-      <div class="modal-input-group">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="email@exemple.com">
-      </div>
-      <div class="modal-input-group">
-        <label>Adresse</label>
-        <input type="text" name="adresse" placeholder="Adresse complète">
-      </div>
-      <div class="modal-input-group">
-        <label>Ville</label>
-        <select name="ville">
-          <option value="">— Choisir —</option>
-          <option value="Douala">Douala</option>
-          <option value="Yaoundé">Yaoundé</option>
-          <option value="Buéa">Buéa</option>
-          <option value="Limbé">Limbé</option>
-          <option value="Bamenda">Bamenda</option>
-          <option value="Bafoussam">Bafoussam</option>
-          <option value="Maroua">Maroua</option>
-          <option value="Bangangté">Bangangté</option>
-        </select>
-      </div>
-      <button type="submit" class="modal-btn-primary" id="memberSubmitBtn">Enregistrer</button>
+      <div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div>
+      <div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div>
+      <div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div>
+      <div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div>
+      <div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div>
+      <div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div>
+      <div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div>
+      <div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div>
+      <div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div>
+      <div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div>
+      <button type="submit" class="modal-btn-primary">Enregistrer</button>
     </form>
     <div class="modal-cancel" id="memberCancel">Annuler</div>
   </div>
 </div>
 
-<!-- CONTACT REQUESTS PANEL (admin) -->
-<div class="contacts-panel-overlay" id="contactsPanelOverlay"></div>
-<div class="contacts-panel" id="contactsPanel">
-  <div class="contacts-panel-header">
-    <h3>&#x1f4e8; Demandes de contact</h3>
-    <button class="contacts-panel-close" id="contactsPanelClose">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
-    </button>
+<!-- PANEL DEMANDES D'ACCÈS (admin) -->
+<div class="modal-overlay" id="accessRequestsPanel">
+  <div class="modal-box" style="max-width: 700px;">
+    <div class="modal-logo">📋</div>
+    <h2>Demandes de déblocage</h2>
+    <p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p>
+    <div id="accessRequestsList"></div>
+    <div class="modal-cancel" id="accessRequestsClose">Fermer</div>
   </div>
-  <div class="contacts-panel-body" id="contactsPanelBody"></div>
+</div>
+
+<!-- PANEL CONTACT REQUESTS (admin) -->
+<div class="modal-overlay" id="contactsPanel">
+  <div class="modal-box" style="max-width: 600px;">
+    <div class="modal-logo">📨</div>
+    <h2>Demandes de contact</h2>
+    <p class="modal-subtitle">Messages des visiteurs</p>
+    <div id="contactsPanelBody"></div>
+    <div class="modal-cancel" id="contactsPanelClose">Fermer</div>
+  </div>
 </div>
 
 <!-- CONFIRM DIALOG -->
@@ -1564,7 +1245,6 @@ a { color: inherit; text-decoration: none; }
 (function() {
 'use strict';
 
-// ===== API CONFIG =====
 const API = window.location.origin;
 const ADMIN_KEY = 'ONECCA2026';
 const urlParams = new URLSearchParams(window.location.search);
@@ -1572,10 +1252,10 @@ const isAdmin = (urlParams.get('admin') === ADMIN_KEY);
 const ADMIN_HEADER = { 'x-admin-auth': ADMIN_KEY };
 
 const SECTIONS = [
-  { key: 'liberaux', label: "Section I \u2014 Experts-Comptables Lib\u00e9raux", short: 'Lib\u00e9raux' },
-  { key: 'societes', label: "Section II \u2014 Soci\u00e9t\u00e9s d'Expertise Comptable", short: 'Soci\u00e9t\u00e9s' },
-  { key: 'salaries', label: "Section III \u2014 Experts-Comptables Salari\u00e9s", short: 'Salari\u00e9s' },
-  { key: 'stagiaires', label: "Section IV \u2014 Experts-Comptables Stagiaires", short: 'Stagiaires' }
+  { key: 'liberaux', label: "Section I — Experts-Comptables Libéraux", short: 'Libéraux' },
+  { key: 'societes', label: "Section II — Sociétés d'Expertise Comptable", short: 'Sociétés' },
+  { key: 'salaries', label: "Section III — Experts-Comptables Salariés", short: 'Salariés' },
+  { key: 'stagiaires', label: "Section IV — Experts-Comptables Stagiaires", short: 'Stagiaires' }
 ];
 
 const ITEMS_PER_PAGE = 24;
@@ -1586,101 +1266,11 @@ let alphaFilter = '';
 let currentPage = 1;
 let RAW = { liberaux: [], societes: [], salaries: [], stagiaires: [] };
 let showContacts = false;
-let contactRequests = [];
-
-  // ===== GESTION UTILISATEUR =====
-// ===== GESTION UTILISATEUR =====
-let isUserLoggedIn = false;
 let currentUser = null;
+let isUserLoggedIn = false;
+let accessCache = new Map(); // Cache des accès par member_id
 
-function checkUserAuth() {
-    const token = localStorage.getItem('userToken');
-    const userName = localStorage.getItem('userName');
-    
-    const userMenu = document.getElementById('userMenu');
-    const loginBtn = document.getElementById('loginBtn');
-    const userNameSpan = document.getElementById('userName');
-    
-    if (token && userName && userMenu && loginBtn) {
-        isUserLoggedIn = true;
-        currentUser = { name: userName, email: localStorage.getItem('userEmail') };
-        userMenu.style.display = 'block';
-        loginBtn.style.display = 'none';
-        if (userNameSpan) userNameSpan.textContent = userName.split(' ')[0];
-        // Les membres connectés voient les coordonnées
-        showContacts = true;
-    } else {
-        isUserLoggedIn = false;
-        currentUser = null;
-        if (userMenu) userMenu.style.display = 'none';
-        if (loginBtn) loginBtn.style.display = 'flex';
-    }
-}
-
-// Bouton de déconnexion
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userPhone');
-        window.location.reload();
-    });
-}
-
-// Vérifier l'état de connexion au chargement
-checkUserAuth();
-
-// Si l'utilisateur vient de se connecter
-if (window.location.search.includes('login=success')) {
-    checkUserAuth();
-    window.history.replaceState({}, document.title, window.location.pathname);
-}
-// Modifier la fonction loadMembers pour prendre en compte l'auth utilisateur
-async function loadMembers() {
-  if (isAdmin) {
-    const data = await apiGet('/api/admin/members', true);
-    RAW = data.members || data;
-    showContacts = true;
-  } else {
-    const data = await apiGet('/api/members', false);
-    RAW = data.members || data;
-    // Si utilisateur connecté, afficher les coordonnées
-    showContacts = isUserLoggedIn || data.show_contacts || false;
-  }
-}
-
-// ===== DARK MODE =====
-const toggle = document.querySelector('[data-theme-toggle]');
-const htmlEl = document.documentElement;
-let theme = (window.matchMedia && matchMedia('(prefers-color-scheme:dark)').matches) ? 'dark' : 'light';
-htmlEl.setAttribute('data-theme', theme);
-updateToggleIcon();
-
-toggle.addEventListener('click', () => {
-  theme = theme === 'dark' ? 'light' : 'dark';
-  htmlEl.setAttribute('data-theme', theme);
-  updateToggleIcon();
-  renderCharts();
-});
-
-function updateToggleIcon() {
-  toggle.innerHTML = theme === 'dark'
-    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
-    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-  toggle.setAttribute('aria-label', theme === 'dark' ? 'Mode clair' : 'Mode sombre');
-}
-
-// ===== STATS TOGGLE =====
-const statsToggle = document.getElementById('statsToggle');
-const statsBody = document.getElementById('statsBody');
-statsToggle.addEventListener('click', () => {
-  statsToggle.classList.toggle('open');
-  statsBody.classList.toggle('open');
-});
-
-// ===== HELPERS =====
+// ===== HELPER FUNCTIONS =====
 function escapeHtml(str) {
   if (!str) return '';
   const div = document.createElement('div');
@@ -1709,7 +1299,7 @@ async function apiPost(url, body, admin) {
 async function apiPut(url, body, admin) {
   const headers = { 'Content-Type': 'application/json' };
   if (admin) Object.assign(headers, ADMIN_HEADER);
-  const res = await fetch(API + url, { method: 'PUT', headers, body: body ? JSON.stringify(body) : undefined });
+  const res = await fetch(API + url, { method: 'PUT', headers, body: JSON.stringify(body) });
   if (!res.ok) throw new Error('Erreur serveur');
   return res.json();
 }
@@ -1721,131 +1311,235 @@ async function apiDelete(url, admin) {
   return res.json();
 }
 
-// ===== CONFIRM DIALOG =====
-let confirmResolve = null;
-function showConfirm(title, message) {
-  return new Promise(resolve => {
-    confirmResolve = resolve;
-    document.getElementById('confirmTitle').textContent = title;
-    document.getElementById('confirmMessage').textContent = message;
-    document.getElementById('confirmOverlay').classList.add('open');
-  });
-}
-document.getElementById('confirmCancel').addEventListener('click', () => {
-  document.getElementById('confirmOverlay').classList.remove('open');
-  if (confirmResolve) { confirmResolve(false); confirmResolve = null; }
-});
-document.getElementById('confirmOk').addEventListener('click', () => {
-  document.getElementById('confirmOverlay').classList.remove('open');
-  if (confirmResolve) { confirmResolve(true); confirmResolve = null; }
-});
-
-// ===== RENDER STATS =====
-function renderStats() {
-  const total = SECTIONS.reduce((s, sec) => s + RAW[sec.key].length, 0);
-  const statsGrid = document.getElementById('statsGrid');
-  let html = '<div class="stat-card accent"><div class="stat-number">' + total + '</div><div class="stat-label">Total membres</div></div>';
-  SECTIONS.forEach(sec => {
-    html += '<div class="stat-card"><div class="stat-number">' + RAW[sec.key].length + '</div><div class="stat-label">' + sec.short + '</div></div>';
-  });
-  statsGrid.innerHTML = html;
-}
-
-// ===== RENDER CHARTS =====
-let chartSection = null, chartCity = null;
-function renderCharts() {
-  const isDark = theme === 'dark';
-  const textColor = isDark ? '#9a9ea6' : '#707070';
-  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-
-  const sectionData = SECTIONS.map(s => RAW[s.key].length);
-  const sectionLabels = SECTIONS.map(s => s.short);
-  const sectionColors = ['#021e79', '#1a3599', '#ffbf00', '#e6ac00'];
-
-  if (chartSection) chartSection.destroy();
-  chartSection = new Chart(document.getElementById('chartSection'), {
-    type: 'doughnut',
-    data: {
-      labels: sectionLabels,
-      datasets: [{ data: sectionData, backgroundColor: sectionColors, borderWidth: 0 }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: textColor, font: { family: 'Lato', size: 11 }, padding: 12, usePointStyle: true, pointStyleWidth: 8 } }
-      }
-    }
-  });
-
-  const allEntries = SECTIONS.flatMap(sec => RAW[sec.key]);
-  const cityMap = {};
-  allEntries.forEach(e => { const v = e.ville || 'Autre'; cityMap[v] = (cityMap[v] || 0) + 1; });
-  const sorted = Object.entries(cityMap).sort((a, b) => b[1] - a[1]);
-  const cityLabels = sorted.map(c => c[0]);
-  const cityData = sorted.map(c => c[1]);
-  const barColors = cityLabels.map((_, i) => i === 0 ? '#ffbf00' : (isDark ? '#1a3599' : '#021e79'));
-
-  if (chartCity) chartCity.destroy();
-  chartCity = new Chart(document.getElementById('chartCity'), {
-    type: 'bar',
-    data: {
-      labels: cityLabels,
-      datasets: [{ data: cityData, backgroundColor: barColors, borderRadius: 4, barPercentage: 0.65 }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      indexAxis: 'y',
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { family: 'Lato', size: 11 } } },
-        y: { grid: { display: false }, ticks: { color: textColor, font: { family: 'Lato', size: 11 } } }
-      }
-    }
-  });
-}
-
-// ===== RENDER TABS =====
-function renderTabs() {
-  const tabs = document.getElementById('tabs');
-  tabs.innerHTML = SECTIONS.map(sec =>
-    '<button class="tab-btn ' + (sec.key === currentSection ? 'active' : '') + '" data-section="' + sec.key + '">' +
-      sec.short + ' <span class="tab-badge">' + RAW[sec.key].length + '</span>' +
-    '</button>'
-  ).join('');
-
-  tabs.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentSection = btn.dataset.section;
-      currentPage = 1;
-      renderTabs();
-      updateAlphaBar();
-      renderCards();
-    });
-  });
-}
-
-// ===== ALPHABET BAR =====
-function updateAlphaBar() {
-  const data = getFilteredData(true);
-  const letters = new Set(data.map(e => (e.nom || '').charAt(0).toUpperCase()).filter(l => /[A-Z]/.test(l)));
-  const bar = document.getElementById('alphaBar');
-  let btns = '<button class="alpha-btn ' + (alphaFilter === '' ? 'active' : '') + '" data-letter="">Tous</button>';
-  for (let i = 65; i <= 90; i++) {
-    const l = String.fromCharCode(i);
-    const has = letters.has(l);
-    btns += '<button class="alpha-btn ' + (alphaFilter === l ? 'active' : '') + ' ' + (has ? '' : 'disabled') + '" data-letter="' + l + '">' + l + '</button>';
+// ===== AUTHENTIFICATION =====
+function checkUserAuth() {
+  const token = localStorage.getItem('userToken');
+  const userName = localStorage.getItem('userName');
+  
+  const userMenu = document.getElementById('userMenu');
+  const authButtons = document.getElementById('authButtons');
+  const userNameSpan = document.getElementById('userName');
+  
+  if (token && userName && userMenu && authButtons) {
+    isUserLoggedIn = true;
+    currentUser = { name: userName, email: localStorage.getItem('userEmail'), token };
+    userMenu.style.display = 'flex';
+    authButtons.style.display = 'none';
+    if (userNameSpan) userNameSpan.textContent = userName.split(' ')[0];
+  } else {
+    isUserLoggedIn = false;
+    currentUser = null;
+    if (userMenu) userMenu.style.display = 'none';
+    if (authButtons) authButtons.style.display = 'flex';
   }
-  bar.innerHTML = btns;
-  bar.querySelectorAll('.alpha-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      alphaFilter = btn.dataset.letter;
-      currentPage = 1;
-      updateAlphaBar();
-      renderCards();
+}
+
+// Déconnexion
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userPhone');
+  window.location.reload();
+});
+
+// ===== VÉRIFICATION ACCÈS MEMBRE =====
+async function checkMemberAccess(memberId) {
+  if (!isUserLoggedIn) return false;
+  
+  if (accessCache.has(memberId)) {
+    return accessCache.get(memberId);
+  }
+  
+  try {
+    const res = await fetch(API + `/api/access/check/${memberId}`, {
+      headers: { 'Authorization': `Bearer ${currentUser.token}` }
     });
+    const data = await res.json();
+    const hasAccess = data.has_access === true;
+    accessCache.set(memberId, hasAccess);
+    return hasAccess;
+  } catch (err) {
+    console.error('Erreur vérification accès:', err);
+    return false;
+  }
+}
+
+// ===== DEMANDE DÉBLOQUAGE =====
+let currentUnlockMember = null;
+let selectedPrice = 5000;
+let selectedMethod = null;
+
+async function requestUnlock(memberId, memberName) {
+  if (!isUserLoggedIn) {
+    alert('Veuillez vous connecter pour débloquer les coordonnées');
+    window.location.href = '/auth.html';
+    return;
+  }
+  
+  currentUnlockMember = { id: memberId, name: memberName };
+  document.getElementById('accessMemberName').textContent = `Débloquer "${memberName}"`;
+  document.getElementById('accessModal').classList.add('open');
+}
+
+// Sélection prix
+document.querySelectorAll('.pricing-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedPrice = parseInt(card.dataset.price);
+    const phoneInput = document.getElementById('phoneNumber');
+    phoneInput.style.display = selectedPrice === 5000 ? 'block' : 'none';
   });
+});
+
+// Sélection méthode paiement
+document.querySelectorAll('.method-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedMethod = btn.dataset.method;
+  });
+});
+
+// Paiement
+document.getElementById('payBtn')?.addEventListener('click', async () => {
+  if (!selectedMethod) {
+    showPaymentStatus('Veuillez sélectionner un mode de paiement', 'error');
+    return;
+  }
+  
+  const payBtn = document.getElementById('payBtn');
+  payBtn.disabled = true;
+  payBtn.textContent = 'Traitement...';
+  
+  try {
+    // 1. Initier paiement
+    const paymentRes = await fetch(API + '/api/payment/initiate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
+      body: JSON.stringify({
+        amount: selectedPrice,
+        method: selectedMethod,
+        phone_number: document.getElementById('phoneNumber').value,
+        member_id: currentUnlockMember.id
+      })
+    });
+    const paymentData = await paymentRes.json();
+    
+    if (paymentData.success) {
+      // 2. Créer demande d'accès
+      await fetch(API + '/api/access/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
+        body: JSON.stringify({
+          member_id: currentUnlockMember.id,
+          member_name: currentUnlockMember.name
+        })
+      });
+      
+      showPaymentStatus('Demande envoyée ! Un administrateur va traiter votre demande.', 'success');
+      setTimeout(() => {
+        document.getElementById('accessModal').classList.remove('open');
+      }, 2000);
+    }
+  } catch (err) {
+    showPaymentStatus('Erreur lors de la demande', 'error');
+  } finally {
+    payBtn.disabled = false;
+    payBtn.textContent = 'Payer et débloquer';
+  }
+});
+
+function showPaymentStatus(msg, type) {
+  const statusDiv = document.getElementById('paymentStatus');
+  statusDiv.textContent = msg;
+  statusDiv.className = `payment-status ${type} show`;
+  setTimeout(() => statusDiv.classList.remove('show'), 4000);
+}
+
+document.getElementById('accessCancel')?.addEventListener('click', () => {
+  document.getElementById('accessModal').classList.remove('open');
+});
+
+// ===== LOAD MEMBERS =====
+async function loadMembers() {
+  if (isAdmin) {
+    const data = await apiGet('/api/admin/members', true);
+    RAW = data.members || data;
+    showContacts = true;
+  } else {
+    const data = await apiGet('/api/members', false);
+    RAW = data.members || data;
+    showContacts = isUserLoggedIn || data.show_contacts || false;
+  }
+}
+
+// ===== RENDER CARDS AVEC VÉRIFICATION ACCÈS =====
+async function renderCards() {
+  const data = getFilteredData(false);
+  const total = data.length;
+  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const page = data.slice(start, start + ITEMS_PER_PAGE);
+  
+  const secLabel = SECTIONS.find(s => s.key === currentSection).short;
+  document.getElementById('resultsCount').innerHTML = total === 0
+    ? 'Aucun résultat'
+    : `<strong>${total}</strong> membre${total > 1 ? 's' : ''} — ${secLabel}`;
+  
+  const grid = document.getElementById('cardGrid');
+  if (total === 0) {
+    grid.innerHTML = '<div class="empty-state"><h3>Aucun résultat trouvé</h3><p>Essayez de modifier vos critères de recherche</p></div>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+  
+  // Vérifier accès pour chaque membre
+  const accessPromises = page.map(m => checkMemberAccess(m.id));
+  const accessResults = await Promise.all(accessPromises);
+  
+  grid.innerHTML = page.map((e, idx) => {
+    const hasAccess = accessResults[idx];
+    let contactHtml = '';
+    
+    if (isAdmin || hasAccess) {
+      const phones = [];
+      if (e.tel1) phones.push(e.tel1);
+      if (e.tel2) phones.push(e.tel2);
+      const phoneLinks = phones.map(p => `<a href="tel:+237${p.replace(/\s/g, '')}">${escapeHtml(p.trim())}</a>`).join(' / ');
+      
+      if (phones.length) {
+        contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>${phoneLinks}</span></div>`;
+      }
+      if (e.email) {
+        contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><a href="mailto:${escapeHtml(e.email)}">${escapeHtml(e.email)}</a></div>`;
+      }
+    } else if (isUserLoggedIn) {
+      contactHtml = `<div class="card-locked">🔒 Coordonnées verrouillées <button class="unlock-btn" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🔓 Débloquer (5 000 FCFA)</button></div>`;
+    } else {
+      contactHtml = `<div class="card-locked">🔒 Connectez-vous pour voir les coordonnées <a href="/auth.html" class="login-link">Se connecter</a></div>`;
+    }
+    
+    let adminActions = '';
+    if (isAdmin && e.id) {
+      adminActions = `<div class="card-admin-actions"><button class="card-admin-btn edit" data-id="${e.id}">✏️ Modifier</button><button class="card-admin-btn delete" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🗑️ Supprimer</button></div>`;
+    }
+    
+    return `<div class="card"><div class="card-num">#${e.num || (start + idx + 1)}</div><div class="card-name">${escapeHtml(e.nom)}</div><div class="card-inscription"><span class="badge-insc">${escapeHtml(e.inscription_num || '')}</span>${e.inscription_date ? `<span>Inscrit le ${escapeHtml(e.inscription_date)}</span>` : ''}</div><div class="card-details">${e.adresse || e.bp ? `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${escapeHtml([e.bp, e.adresse].filter(Boolean).join(' — '))}</span></div>` : ''}${contactHtml}</div>${e.ville ? `<div class="city-tag">📍 ${escapeHtml(e.ville)}</div>` : ''}${adminActions}</div>`;
+  }).join('');
+  
+  // Attach event listeners
+  grid.querySelectorAll('.unlock-btn').forEach(btn => {
+    btn.addEventListener('click', () => requestUnlock(parseInt(btn.dataset.id), btn.dataset.name));
+  });
+  if (isAdmin) {
+    grid.querySelectorAll('.card-admin-btn.edit').forEach(btn => btn.addEventListener('click', () => openEditMember(btn.dataset.id)));
+    grid.querySelectorAll('.card-admin-btn.delete').forEach(btn => btn.addEventListener('click', () => deleteMember(btn.dataset.id, btn.dataset.name)));
+  }
+  
+  renderPagination(totalPages);
 }
 
 // ===== FILTER DATA =====
@@ -1853,13 +1547,7 @@ function getFilteredData(skipAlpha) {
   let data = RAW[currentSection] || [];
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
-    data = data.filter(e => {
-      let searchable = (e.nom || '') + ' ' + (e.adresse || '') + ' ' + (e.bp || '');
-      if (isAdmin || showContacts) {
-        searchable += ' ' + (e.email || '') + ' ' + (e.tel1 || '') + ' ' + (e.tel2 || '');
-      }
-      return searchable.toLowerCase().includes(q);
-    });
+    data = data.filter(e => (e.nom || '').toLowerCase().includes(q) || (e.adresse || '').toLowerCase().includes(q) || (e.bp || '').toLowerCase().includes(q));
   }
   if (cityFilter) {
     if (cityFilter === 'Autre') {
@@ -1875,577 +1563,137 @@ function getFilteredData(skipAlpha) {
   return data;
 }
 
-// ===== RENDER CARDS =====
-function renderCards() {
-  const data = getFilteredData(false);
-  const total = data.length;
-  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  const page = data.slice(start, start + ITEMS_PER_PAGE);
-
-  const secLabel = SECTIONS.find(s => s.key === currentSection).short;
-  document.getElementById('resultsCount').innerHTML = total === 0
-    ? 'Aucun r\u00e9sultat'
-    : '<strong>' + total + '</strong> membre' + (total > 1 ? 's' : '') + ' \u2014 ' + secLabel;
-
-  const grid = document.getElementById('cardGrid');
-  if (total === 0) {
-    grid.innerHTML =
-      '<div class="empty-state" style="grid-column:1/-1">' +
-        '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/><path d="M8 11h6"/></svg>' +
-        '<h3>Aucun r\u00e9sultat trouv\u00e9</h3>' +
-        '<p>Essayez de modifier vos crit\u00e8res de recherche</p>' +
-      '</div>';
-    document.getElementById('pagination').innerHTML = '';
-    return;
-  }
-
-  grid.innerHTML = page.map((e, i) => {
-    let contactHtml = '';
-    const canShowContacts = isAdmin || showContacts;
-
-    if (canShowContacts) {
-      const phones = [];
-      if (e.tel1) phones.push(e.tel1);
-      if (e.tel2) phones.push(e.tel2);
-      const phoneLinks = phones.map(p => {
-        const clean = p.replace(/\s/g, '');
-        return '<a href="tel:+237' + clean + '">' + escapeHtml(p.trim()) + '</a>';
-      }).join(' / ');
-
-      if (phones.length) {
-        contactHtml += '<div class="card-row">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
-          '<span>' + phoneLinks + '</span>' +
-        '</div>';
-      }
-
-      if (e.email) {
-        contactHtml += '<div class="card-row">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>' +
-          '<a href="mailto:' + escapeHtml(e.email) + '">' + escapeHtml(e.email) + '</a>' +
-        '</div>';
-      }
-    } else {
-      contactHtml = '<div class="card-locked">\ud83d\udd12 Coordonn\u00e9es r\u00e9serv\u00e9es aux membres</div>';
-    }
-
-    let adminActions = '';
-    if (isAdmin && e.id) {
-      adminActions = '<div class="card-admin-actions">' +
-        '<button class="card-admin-btn edit" data-id="' + e.id + '">\u270f\ufe0f Modifier</button>' +
-        '<button class="card-admin-btn delete" data-id="' + e.id + '" data-name="' + escapeHtml(e.nom) + '">\ud83d\uddd1\ufe0f Supprimer</button>' +
-      '</div>';
-    }
-
-    return '<div class="card" style="animation-delay:' + (i * 0.03) + 's">' +
-      '<div class="card-num">#' + (e.num || (start + i + 1)) + '</div>' +
-      '<div class="card-name">' + escapeHtml(e.nom) + '</div>' +
-      '<div class="card-inscription">' +
-        '<span class="badge-insc">' + escapeHtml(e.inscription_num || '') + '</span>' +
-        (e.inscription_date ? '<span>Inscrit le ' + escapeHtml(e.inscription_date) + '</span>' : '') +
-      '</div>' +
-      '<div class="card-details">' +
-        (e.adresse || e.bp ? '<div class="card-row">' +
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
-          '<span>' + escapeHtml([e.bp, e.adresse].filter(Boolean).join(' \u2014 ')) + '</span>' +
-        '</div>' : '') +
-        contactHtml +
-      '</div>' +
-      (e.ville ? '<div class="city-tag">' +
-        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
-        escapeHtml(e.ville) +
-      '</div>' : '') +
-      adminActions +
-    '</div>';
-  }).join('');
-
-  // Attach admin card event listeners
-  if (isAdmin) {
-    grid.querySelectorAll('.card-admin-btn.edit').forEach(btn => {
-      btn.addEventListener('click', () => openEditMember(btn.dataset.id));
-    });
-    grid.querySelectorAll('.card-admin-btn.delete').forEach(btn => {
-      btn.addEventListener('click', () => deleteMember(btn.dataset.id, btn.dataset.name));
-    });
-  }
-
-  renderPagination(totalPages);
-}
-
 // ===== PAGINATION =====
 function renderPagination(totalPages) {
   if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
-  const pag = document.getElementById('pagination');
-  let html = '<button class="page-btn" ' + (currentPage === 1 ? 'disabled' : '') + ' data-page="' + (currentPage - 1) + '">' +
-    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>' +
-  '</button>';
-
-  const pages = getPageNumbers(currentPage, totalPages);
-  pages.forEach(p => {
-    if (p === '...') {
-      html += '<span class="page-ellipsis">\u2026</span>';
-    } else {
-      html += '<button class="page-btn ' + (p === currentPage ? 'active' : '') + '" data-page="' + p + '">' + p + '</button>';
-    }
-  });
-
-  html += '<button class="page-btn" ' + (currentPage === totalPages ? 'disabled' : '') + ' data-page="' + (currentPage + 1) + '">' +
-    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>' +
-  '</button>';
-
-  pag.innerHTML = html;
-  pag.querySelectorAll('.page-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const p = parseInt(btn.dataset.page);
-      if (!isNaN(p)) {
-        currentPage = p;
-        renderCards();
-        document.querySelector('.results-bar').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+  let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">←</button>`;
+  for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  if (totalPages > 5) html += `<span class="page-ellipsis">...</span><button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
+  html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">→</button>`;
+  document.getElementById('pagination').innerHTML = html;
+  document.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', () => { if (!btn.disabled) { currentPage = parseInt(btn.dataset.page); renderCards(); } });
   });
 }
 
-function getPageNumbers(cur, total) {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-  const pages = [];
-  pages.push(1);
-  if (cur > 3) pages.push('...');
-  for (let i = Math.max(2, cur - 1); i <= Math.min(total - 1, cur + 1); i++) pages.push(i);
-  if (cur < total - 2) pages.push('...');
-  pages.push(total);
-  return pages;
+// ===== RENDER STATS & CHARTS =====
+function renderStats() {
+  const total = SECTIONS.reduce((s, sec) => s + RAW[sec.key].length, 0);
+  const statsGrid = document.getElementById('statsGrid');
+  statsGrid.innerHTML = `<div class="stat-card accent"><div class="stat-number">${total}</div><div class="stat-label">Total membres</div></div>` + SECTIONS.map(sec => `<div class="stat-card"><div class="stat-number">${RAW[sec.key].length}</div><div class="stat-label">${sec.short}</div></div>`).join('');
 }
 
-// ===== EVENT LISTENERS =====
-let searchTimeout;
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    searchQuery = e.target.value.trim();
-    currentPage = 1;
-    updateAlphaBar();
-    renderCards();
-  }, 200);
-});
-
-document.getElementById('cityFilter').addEventListener('change', (e) => {
-  cityFilter = e.target.value;
-  currentPage = 1;
-  updateAlphaBar();
-  renderCards();
-});
-
-// Back to top
-const backBtn = document.getElementById('backToTop');
-window.addEventListener('scroll', () => {
-  backBtn.classList.toggle('visible', window.scrollY > 400);
-});
-backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-// ===== CONTACT FORM =====
-const contactFab = document.getElementById('contactFab');
-const contactModal = document.getElementById('contactModal');
-const contactForm = document.getElementById('contactForm');
-const contactCancel = document.getElementById('contactCancel');
-const contactSuccess = document.getElementById('contactSuccess');
-const contactError = document.getElementById('contactError');
-const contactSubmitBtn = document.getElementById('contactSubmitBtn');
-
-contactFab.addEventListener('click', () => {
-  contactModal.classList.add('open');
-  contactSuccess.classList.remove('show');
-  contactError.classList.remove('show');
-  contactForm.style.display = '';
-  contactSubmitBtn.disabled = false;
-});
-
-contactCancel.addEventListener('click', () => contactModal.classList.remove('open'));
-contactModal.addEventListener('click', (e) => {
-  if (e.target === contactModal) contactModal.classList.remove('open');
-});
-
-contactForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  contactError.classList.remove('show');
-  contactSuccess.classList.remove('show');
-  contactSubmitBtn.disabled = true;
-  contactSubmitBtn.textContent = 'Envoi en cours…';
-
-  const fd = new FormData(contactForm);
-  const body = {
-    nom: fd.get('nom'),
-    entreprise: fd.get('entreprise') || '',
-    email: fd.get('email'),
-    telephone: fd.get('telephone') || '',
-    commentaire: fd.get('commentaire') || ''
-  };
-
-  try {
-    await apiPost('/api/contact', body, false);
-    contactSuccess.classList.add('show');
-    contactForm.style.display = 'none';
-  } catch (err) {
-    contactError.textContent = err.message || 'Une erreur est survenue';
-    contactError.classList.add('show');
-  } finally {
-    contactSubmitBtn.disabled = false;
-    contactSubmitBtn.textContent = 'Envoyer ma demande';
-  }
-});
-
-// ===== ADMIN FEATURES =====
-if (isAdmin) {
-  document.getElementById('adminToolbar').classList.add('visible');
-
-  // --- Toggle contacts ---
-  const contactsToggleEl = document.getElementById('contactsToggle');
-  const toggleTrack = document.getElementById('toggleTrack');
-  const toggleStatus = document.getElementById('toggleStatus');
-
-  function updateToggleUI(on) {
-    showContacts = on;
-    if (on) {
-      toggleTrack.classList.add('on');
-      toggleStatus.textContent = 'ACTIVÉ';
-    } else {
-      toggleTrack.classList.remove('on');
-      toggleStatus.textContent = 'DÉSACTIVÉ';
-    }
-  }
-
-  contactsToggleEl.addEventListener('click', async () => {
-    try {
-      const res = await apiPost('/api/admin/toggle_contacts', {}, true);
-      updateToggleUI(res.show_contacts);
-      // Re-fetch public data for non-admin view consistency
-      renderCards();
-    } catch (err) {
-      console.error('Toggle error:', err);
-    }
-  });
-
-  // --- Add Member ---
-  const memberModal = document.getElementById('memberModal');
-  const memberForm = document.getElementById('memberForm');
-  const memberCancel = document.getElementById('memberCancel');
-  const memberError = document.getElementById('memberError');
-  const memberModalTitle = document.getElementById('memberModalTitle');
-  const memberModalSubtitle = document.getElementById('memberModalSubtitle');
-  const memberFormId = document.getElementById('memberFormId');
-  const memberSubmitBtn = document.getElementById('memberSubmitBtn');
-
-  document.getElementById('btnAddMember').addEventListener('click', () => {
-    memberForm.reset();
-    memberFormId.value = '';
-    memberModalTitle.textContent = 'Ajouter un membre';
-    memberModalSubtitle.textContent = 'Remplissez les informations du nouveau membre.';
-    memberSubmitBtn.textContent = 'Enregistrer';
-    memberError.classList.remove('show');
-    memberModal.classList.add('open');
-  });
-
-  memberCancel.addEventListener('click', () => memberModal.classList.remove('open'));
-  memberModal.addEventListener('click', (e) => {
-    if (e.target === memberModal) memberModal.classList.remove('open');
-  });
-
-  memberForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    memberError.classList.remove('show');
-    memberSubmitBtn.disabled = true;
-
-    const fd = new FormData(memberForm);
-    const body = {
-      section: fd.get('section'),
-      nom: fd.get('nom'),
-      inscription_num: fd.get('inscription_num') || '',
-      inscription_date: fd.get('inscription_date') || '',
-      bp: fd.get('bp') || '',
-      tel1: fd.get('tel1') || '',
-      tel2: fd.get('tel2') || '',
-      email: fd.get('email') || '',
-      adresse: fd.get('adresse') || '',
-      ville: fd.get('ville') || ''
-    };
-
-    try {
-      const id = memberFormId.value;
-      if (id) {
-        await apiPut('/api/admin/members/' + id, body, true);
-      } else {
-        await apiPost('/api/admin/members', body, true);
-      }
-      memberModal.classList.remove('open');
-      await loadMembers();
-      renderAll();
-    } catch (err) {
-      memberError.textContent = err.message || 'Erreur lors de l\'enregistrement';
-      memberError.classList.add('show');
-    } finally {
-      memberSubmitBtn.disabled = false;
-    }
-  });
-
-  // --- Edit Member ---
-  window.openEditMember = function(id) {
-    // Find member across all sections
-    let member = null;
-    for (const sec of SECTIONS) {
-      member = RAW[sec.key].find(m => String(m.id) === String(id));
-      if (member) break;
-    }
-    if (!member) return;
-
-    memberForm.reset();
-    memberFormId.value = id;
-    memberModalTitle.textContent = 'Modifier le membre';
-    memberModalSubtitle.textContent = 'Modifiez les informations de ' + member.nom + '.';
-    memberSubmitBtn.textContent = 'Mettre à jour';
-    memberError.classList.remove('show');
-
-    // Pre-fill form
-    memberForm.querySelector('[name="section"]').value = member.section || currentSection;
-    memberForm.querySelector('[name="nom"]').value = member.nom || '';
-    memberForm.querySelector('[name="inscription_num"]').value = member.inscription_num || '';
-    memberForm.querySelector('[name="inscription_date"]').value = member.inscription_date || '';
-    memberForm.querySelector('[name="bp"]').value = member.bp || '';
-    memberForm.querySelector('[name="tel1"]').value = member.tel1 || '';
-    memberForm.querySelector('[name="tel2"]').value = member.tel2 || '';
-    memberForm.querySelector('[name="email"]').value = member.email || '';
-    memberForm.querySelector('[name="adresse"]').value = member.adresse || '';
-    memberForm.querySelector('[name="ville"]').value = member.ville || '';
-
-    memberModal.classList.add('open');
-  };
-
-  // --- Delete Member ---
-  window.deleteMember = async function(id, name) {
-    const ok = await showConfirm('Supprimer ce membre ?', 'Voulez-vous vraiment supprimer ' + name + ' ? Cette action est irréversible.');
-    if (!ok) return;
-    try {
-      await apiDelete('/api/admin/members/' + id, true);
-      await loadMembers();
-      renderAll();
-    } catch (err) {
-      alert('Erreur lors de la suppression');
-    }
-  };
-
-  // --- Contact Requests Panel ---
-  const contactsPanel = document.getElementById('contactsPanel');
-  const contactsPanelOverlay = document.getElementById('contactsPanelOverlay');
-  const contactsPanelBody = document.getElementById('contactsPanelBody');
-  const contactsBadge = document.getElementById('contactsBadge');
-
-  document.getElementById('btnContacts').addEventListener('click', () => {
-    loadContactRequests();
-    contactsPanel.classList.add('open');
-    contactsPanelOverlay.classList.add('open');
-  });
-
-  document.getElementById('contactsPanelClose').addEventListener('click', closeContactsPanel);
-  contactsPanelOverlay.addEventListener('click', closeContactsPanel);
-
-  function closeContactsPanel() {
-    contactsPanel.classList.remove('open');
-    contactsPanelOverlay.classList.remove('open');
-  }
-
-  async function loadContactRequests() {
-    try {
-      const data = await apiGet('/api/admin/contacts', true);
-      contactRequests = Array.isArray(data.contacts) ? data.contacts : (Array.isArray(data) ? data : []);
-      if (contactRequests.length >= 0) {
-        renderContactRequests();
-        updateContactBadge();
-      }
-    } catch (err) {
-      console.error('Error loading contacts:', err);
-      contactsPanelBody.innerHTML = '<div class="contacts-empty">Erreur de chargement</div>';
-    }
-  }
-
-  function updateContactBadge() {
-    const unread = contactRequests.filter(c => !c.lu && !c.is_read).length;
-    contactsBadge.textContent = unread;
-    contactsBadge.style.display = unread > 0 ? '' : 'none';
-  }
-
-  function renderContactRequests() {
-    if (!contactRequests.length) {
-      contactsPanelBody.innerHTML = '<div class="contacts-empty">Aucune demande de contact</div>';
-      return;
-    }
-
-    contactsPanelBody.innerHTML = contactRequests.map(c => {
-      const isUnread = !c.lu && !c.is_read;
-      const date = c.created_at ? new Date(c.created_at).toLocaleString('fr-FR') : '';
-      return '<div class="contact-request-card ' + (isUnread ? 'unread' : '') + '">' +
-        '<div class="cr-name">' + escapeHtml(c.nom) + '</div>' +
-        (c.entreprise ? '<div class="cr-company">' + escapeHtml(c.entreprise) + '</div>' : '') +
-        '<div class="cr-info">' +
-          (c.email ? '<span>\ud83d\udce7 ' + escapeHtml(c.email) + '</span>' : '') +
-          (c.telephone ? '<span>\ud83d\udcde ' + escapeHtml(c.telephone) + '</span>' : '') +
-        '</div>' +
-        (c.commentaire ? '<div class="cr-message">' + escapeHtml(c.commentaire) + '</div>' : '') +
-        (date ? '<div class="cr-date">' + date + '</div>' : '') +
-        '<div class="cr-actions">' +
-          (isUnread ? '<button class="cr-btn mark-read" data-id="' + c.id + '">Marquer comme lu</button>' : '') +
-          '<button class="cr-btn cr-delete" data-id="' + c.id + '">Supprimer</button>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    contactsPanelBody.querySelectorAll('.cr-btn.mark-read').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          await apiPut('/api/admin/contacts/' + btn.dataset.id + '/read', null, true);
-          await loadContactRequests();
-        } catch (err) { console.error(err); }
-      });
-    });
-
-    contactsPanelBody.querySelectorAll('.cr-btn.cr-delete').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const ok = await showConfirm('Supprimer cette demande ?', 'Cette action est irréversible.');
-        if (!ok) return;
-        try {
-          await apiDelete('/api/admin/contacts/' + btn.dataset.id, true);
-          await loadContactRequests();
-        } catch (err) { console.error(err); }
-      });
-    });
-  }
-
-  // --- Exit Admin ---
-  document.getElementById('btnExitAdmin').addEventListener('click', () => {
-    const url = new URL(window.location);
-    url.searchParams.delete('admin');
-    window.location.href = url.toString();
-  });
-
-  // Load contact requests on init to show badge count
-  loadContactRequests();
-
-  // Load show_contacts setting
-  async function loadShowContactsSetting() {
-    try {
-      const data = await apiGet('/api/settings/show_contacts', false);
-      updateToggleUI(data.show_contacts);
-    } catch (err) {
-      console.error('Error loading settings:', err);
-    }
-  }
-  loadShowContactsSetting();
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = SECTIONS.map(sec => `<button class="tab-btn ${sec.key === currentSection ? 'active' : ''}" data-section="${sec.key}">${sec.short} <span class="tab-badge">${RAW[sec.key].length}</span></button>`).join('');
+  tabs.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => { currentSection = btn.dataset.section; currentPage = 1; renderTabs(); updateAlphaBar(); renderCards(); }));
 }
 
-// ===== DATA LOADING =====
-async function loadMembers() {
-  if (isAdmin) {
-    const data = await apiGet('/api/admin/members', true);
-    RAW = data.members || data;
-    showContacts = true;
-  } else {
-    const data = await apiGet('/api/members', false);
-    RAW = data.members || data;
-    // Si utilisateur connecté, afficher les coordonnées
-    showContacts = isUserLoggedIn || data.show_contacts || false;
+function updateAlphaBar() {
+  const data = getFilteredData(true);
+  const letters = new Set(data.map(e => (e.nom || '').charAt(0).toUpperCase()).filter(l => /[A-Z]/.test(l)));
+  const bar = document.getElementById('alphaBar');
+  let btns = `<button class="alpha-btn ${alphaFilter === '' ? 'active' : ''}" data-letter="">Tous</button>`;
+  for (let i = 65; i <= 90; i++) {
+    const l = String.fromCharCode(i);
+    btns += `<button class="alpha-btn ${alphaFilter === l ? 'active' : ''} ${letters.has(l) ? '' : 'disabled'}" data-letter="${l}">${l}</button>`;
   }
+  bar.innerHTML = btns;
+  bar.querySelectorAll('.alpha-btn').forEach(btn => btn.addEventListener('click', () => { if (!btn.classList.contains('disabled')) { alphaFilter = btn.dataset.letter; currentPage = 1; updateAlphaBar(); renderCards(); } }));
 }
 
-function renderAll() {
-  renderStats();
-  renderCharts();
-  renderTabs();
-  updateAlphaBar();
-  renderCards();
+// ===== ADMIN FUNCTIONS =====
+function openEditMember(id) {
+  let member = null;
+  for (const sec of SECTIONS) { member = RAW[sec.key].find(m => String(m.id) === String(id)); if (member) break; }
+  if (!member) return;
+  const form = document.getElementById('memberForm');
+  form.querySelector('[name="section"]').value = member.section;
+  form.querySelector('[name="nom"]').value = member.nom;
+  form.querySelector('[name="inscription_num"]').value = member.inscription_num || '';
+  form.querySelector('[name="inscription_date"]').value = member.inscription_date || '';
+  form.querySelector('[name="bp"]').value = member.bp || '';
+  form.querySelector('[name="tel1"]').value = member.tel1 || '';
+  form.querySelector('[name="tel2"]').value = member.tel2 || '';
+  form.querySelector('[name="email"]').value = member.email || '';
+  form.querySelector('[name="adresse"]').value = member.adresse || '';
+  form.querySelector('[name="ville"]').value = member.ville || '';
+  document.getElementById('memberFormId').value = id;
+  document.getElementById('memberModalTitle').textContent = 'Modifier le membre';
+  document.getElementById('memberModal').classList.add('open');
+}
+
+async function deleteMember(id, name) {
+  if (confirm(`Supprimer "${name}" ? Cette action est irréversible.`)) {
+    await apiDelete(`/api/admin/members/${id}`, true);
+    await loadMembers();
+    renderAll();
+  }
 }
 
 // ===== INIT =====
+async function renderAll() {
+  renderStats();
+  renderTabs();
+  updateAlphaBar();
+  await renderCards();
+}
+
 async function init() {
+  checkUserAuth();
   try {
     await loadMembers();
     document.getElementById('loadingOverlay').style.display = 'none';
     renderAll();
   } catch (err) {
     console.error('Failed to load data:', err);
-    document.getElementById('loadingOverlay').innerHTML =
-      '<div style="text-align:center;color:var(--color-text-muted)">' +
-        '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;color:var(--color-text-faint)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>' +
-        '<h3 style="font-size:var(--text-lg);margin-bottom:6px;color:var(--color-text)">Erreur de chargement</h3>' +
-        '<p style="font-size:var(--text-sm)">Impossible de charger les données. Vérifiez votre connexion et rechargez la page.</p>' +
-        '<button onclick="location.reload()" style="margin-top:16px;padding:10px 24px;background:var(--accent);color:#212326;border:none;border-radius:var(--radius-md);font-weight:700;cursor:pointer;font-family:var(--font-body)">Réessayer</button>' +
-      '</div>';
+    document.getElementById('loadingOverlay').innerHTML = '<div style="text-align:center"><h3>Erreur de chargement</h3><button onclick="location.reload()">Réessayer</button></div>';
   }
 }
 
-init();
+// Event listeners
+document.getElementById('searchInput')?.addEventListener('input', (e) => { searchQuery = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); });
+document.getElementById('cityFilter')?.addEventListener('change', (e) => { cityFilter = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); });
+document.getElementById('statsToggle')?.addEventListener('click', () => { document.getElementById('statsToggle').classList.toggle('open'); document.getElementById('statsBody').classList.toggle('open'); });
+document.getElementById('backToTop')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+window.addEventListener('scroll', () => document.getElementById('backToTop')?.classList.toggle('visible', window.scrollY > 400));
 
+// Contact form
+const contactFab = document.getElementById('contactFab');
+const contactModal = document.getElementById('contactModal');
+contactFab?.addEventListener('click', () => contactModal.classList.add('open'));
+document.getElementById('contactCancel')?.addEventListener('click', () => contactModal.classList.remove('open'));
+document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  await apiPost('/api/contact', { nom: fd.get('nom'), entreprise: fd.get('entreprise'), email: fd.get('email'), telephone: fd.get('telephone'), commentaire: fd.get('commentaire') }, false);
+  document.getElementById('contactSuccess').classList.add('show');
+  setTimeout(() => contactModal.classList.remove('open'), 2000);
+});
+
+// Admin panel
+if (isAdmin) {
+  document.getElementById('adminToolbar').classList.add('visible');
+  document.getElementById('btnAddMember')?.addEventListener('click', () => { document.getElementById('memberForm').reset(); document.getElementById('memberFormId').value = ''; document.getElementById('memberModalTitle').textContent = 'Ajouter un membre'; document.getElementById('memberModal').classList.add('open'); });
+  document.getElementById('memberCancel')?.addEventListener('click', () => document.getElementById('memberModal').classList.remove('open'));
+  document.getElementById('memberForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = { section: fd.get('section'), nom: fd.get('nom'), inscription_num: fd.get('inscription_num'), inscription_date: fd.get('inscription_date'), bp: fd.get('bp'), tel1: fd.get('tel1'), tel2: fd.get('tel2'), email: fd.get('email'), adresse: fd.get('adresse'), ville: fd.get('ville') };
+    const id = document.getElementById('memberFormId').value;
+    if (id) await apiPut(`/api/admin/members/${id}`, body, true);
+    else await apiPost('/api/admin/members', body, true);
+    document.getElementById('memberModal').classList.remove('open');
+    await loadMembers();
+    renderAll();
+  });
+  document.getElementById('btnExitAdmin')?.addEventListener('click', () => { const url = new URL(window.location); url.searchParams.delete('admin'); window.location.href = url.toString(); });
+}
+
+init();
 })();
 </script>
-<script data-pplx-inline-edit>
-(function(){
-  if(window===window.top)return;
-  function inlineAll(orig,clone){
-    if(orig.nodeType!==1)return;
-    try{
-      var cs=getComputedStyle(orig);
-      var t='';
-      for(var i=0;i<cs.length;i++){t+=cs[i]+':'+cs.getPropertyValue(cs[i])+';';}
-      clone.style.cssText=t;
-    }catch(e){}
-    var oc=orig.children,cc=clone.children;
-    for(var j=0;j<oc.length&&j<cc.length;j++){inlineAll(oc[j],cc[j]);}
-  }
-  function stripExternal(clone){
-    var imgs=clone.querySelectorAll('img');
-    for(var i=0;i<imgs.length;i++){
-      var s=imgs[i].getAttribute('src');
-      if(s&&!s.startsWith('data:'))imgs[i].removeAttribute('src');
-    }
-    var all=clone.querySelectorAll('*');
-    for(var i=0;i<all.length;i++){
-      var st=all[i].style.cssText;
-      if(st&&st.indexOf('url(')>=0){
-        all[i].style.cssText=st.replace(/url\(["']?(?!data:)[^)"']*["']?\)/gi,'none');
-      }
-    }
-  }
-  window.addEventListener('message',function(e){
-    if(!e.data||e.data.type!=='INLINE_EDIT_CAPTURE_REQUEST')return;
-    var scrollX=window.scrollX||window.pageXOffset||0;
-    var scrollY=window.scrollY||window.pageYOffset||0;
-    var w=window.innerWidth,h=window.innerHeight;
-    try{
-      var clone=document.documentElement.cloneNode(true);
-      var rm=clone.querySelectorAll('script,link[rel="stylesheet"],style');
-      for(var i=0;i<rm.length;i++){rm[i].remove();}
-      inlineAll(document.documentElement,clone);
-      stripExternal(clone);
-      var html=new XMLSerializer().serializeToString(clone);
-      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'
-        +'<foreignObject width="100%" height="100%">'
-        +'<div xmlns="http://www.w3.org/1999/xhtml" style="width:'+w+'px;height:'+h+'px;overflow:hidden">'
-        +'<div style="transform:translate(-'+scrollX+'px,-'+scrollY+'px);transform-origin:top left">'
-        +html+'</div></div></foreignObject></svg>';
-      var svgUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
-      var img=new Image();
-      img.onload=function(){
-        var c=document.createElement('canvas');c.width=w;c.height=h;
-        c.getContext('2d').drawImage(img,0,0);
-        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:c.toDataURL('image/png'),scrollX:scrollX,scrollY:scrollY},'*');
-      };
-      img.onerror=function(){
-        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
-      };
-      img.src=svgUrl;
-    }catch(err){
-      window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
-    }
-  });
-})();
-</script></body>
+</body>
 </html>
