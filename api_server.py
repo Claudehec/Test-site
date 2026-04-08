@@ -562,7 +562,14 @@ async def initiate_payment(
 # ===== ADMIN ENDPOINTS =====
 
 @app.post("/api/admin/login")
-def admin_login(password: str = ""):
+async def admin_login(request: Request):
+    """Admin login endpoint - accepts JSON body"""
+    try:
+        body = await request.json()
+        password = body.get("password", "")
+    except:
+        password = ""
+    
     if password == ADMIN_PASSWORD:
         return {"success": True}
     raise HTTPException(status_code=401, detail="Mot de passe incorrect")
@@ -687,11 +694,7 @@ def approve_access_request(
     conn = get_db()
     cursor = conn.cursor()
     
-    # Get request to check if it's for a specific member or subscription
-    cursor.execute("SELECT member_id FROM contact_access_requests WHERE id = ?", (request_id,))
-    req = cursor.fetchone()
-    
-    # Set expiration (30 days for single, 30/365 for subscription)
+    # Set expiration (30 days)
     expires_at = "datetime('now', '+30 days')"
     
     cursor.execute(f"""
@@ -755,7 +758,6 @@ def admin_stats(x_admin_auth: str = Header(default="")):
         "approved_access_requests": approved_requests,
         "unread_contact_requests": unread_contacts
     }
-
 # ===== STATIC FILES =====
 
 @app.get("/", response_class=HTMLResponse)
