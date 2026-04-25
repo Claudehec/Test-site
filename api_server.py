@@ -462,58 +462,95 @@ def check_active_subscription(user_id: int) -> bool:
     conn.close()
     return result is not None
 
+def check_user_specific_access(user_id: int, member_id: int) -> bool:
+    """Vérifie si un utilisateur a un accès spécifique à un membre"""
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    if DATABASE_URL:
+        cursor.execute("""
+            SELECT * FROM contact_access_requests 
+            WHERE user_id = %s AND member_id = %s 
+            AND status = 'approved' 
+            AND (expires_at IS NULL OR expires_at > NOW())
+            LIMIT 1
+        """, (user_id, member_id))
+    else:
+        cursor.execute("""
+            SELECT * FROM contact_access_requests 
+            WHERE user_id = ? AND member_id = ? 
+            AND status = 'approved' 
+            AND (expires_at IS NULL OR expires_at > datetime('now'))
+            LIMIT 1
+        """, (user_id, member_id))
+    
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
+
 # ===== PUBLIC ENDPOINTS =====
 
 @app.get("/api/members")
-def get_members():
+def get_members(current_user: Optional[dict] = Depends(get_current_user)):
+    """Public: get all members. Contacts hidden based on settings and user access."""
     conn = get_db()
     
+    # Vérifier le paramètre global
     if DATABASE_URL:
         cursor = conn.cursor()
         cursor.execute("SELECT value FROM settings WHERE key = 'show_contacts'")
         show_row = cursor.fetchone()
-        show_contacts = show_row and show_row[0] == 'true'
+        show_global_contacts = show_row and show_row[0] == 'true'
+    else:
+        show_row = conn.execute("SELECT value FROM settings WHERE key='show_contacts'").fetchone()
+        show_global_contacts = show_row and show_row[0] == 'true'
+    
+    # Récupérer tous les membres
+    if DATABASE_URL:
         cursor.execute("SELECT * FROM members ORDER BY section, num")
         rows = cursor.fetchall()
-        
-        result = {}
-        for r in rows:
+    else:
+        rows = conn.execute("SELECT * FROM members ORDER BY section, num").fetchall()
+    
+    result = {}
+    for r in rows:
+        if DATABASE_URL:
             section = r[1]
             member = {
                 "id": r[0], "num": r[2], "nom": r[3],
                 "inscription_num": r[4], "inscription_date": r[5],
                 "bp": r[6], "adresse": r[9], "ville": r[10],
             }
-            if show_contacts:
-                member["tel1"] = r[7]
-                member["tel2"] = r[8]
-                member["email"] = r[9]  # À ajuster selon votre structure
-            if section not in result:
-                result[section] = []
-            result[section].append(member)
-    else:
-        show = conn.execute("SELECT value FROM settings WHERE key='show_contacts'").fetchone()
-        show_contacts = show and show[0] == 'true'
-        rows = conn.execute("SELECT * FROM members ORDER BY section, num").fetchall()
-        
-        result = {}
-        for r in rows:
+        else:
             section = r["section"]
             member = {
                 "id": r["id"], "num": r["num"], "nom": r["nom"],
                 "inscription_num": r["inscription_num"], "inscription_date": r["inscription_date"],
                 "bp": r["bp"], "adresse": r["adresse"], "ville": r["ville"],
             }
-            if show_contacts:
+        
+        # Vérifier si l'utilisateur a accès à CE membre spécifique
+        user_has_specific_access = False
+        if current_user:
+            user_has_specific_access = check_user_specific_access(current_user["id"], member["id"])
+        
+        # Afficher les coordonnées si : global activé OU utilisateur a accès spécifique
+        if show_global_contacts or user_has_specific_access:
+            if DATABASE_URL:
+                member["tel1"] = r[7]
+                member["tel2"] = r[8]
+                member["email"] = r[9]
+            else:
                 member["tel1"] = r["tel1"]
                 member["tel2"] = r["tel2"]
                 member["email"] = r["email"]
-            if section not in result:
-                result[section] = []
-            result[section].append(member)
+        
+        if section not in result:
+            result[section] = []
+        result[section].append(member)
     
     conn.close()
-    return {"members": result, "show_contacts": show_contacts}
+    return {"members": result, "show_contacts": show_global_contacts}
 
 @app.get("/api/settings/show_contacts")
 def get_show_contacts():
@@ -768,7 +805,7 @@ async def check_member_access(member_id: int, current_user: dict = Depends(get_c
         
         if access:
             conn.close()
-            return {"has_access": True, "expires_at": str(access[8]), "type": "single"}
+            return {"has_access": True, "expires_at": str(access[11]), "type": "single"}
     else:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
