@@ -7,6 +7,7 @@ import hashlib
 import os
 import secrets
 import jwt
+import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import Optional
@@ -23,7 +24,7 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRY_HOURS = 24 * 7  # 7 days
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "onecca.db")
-DATA_PATH = os.path.join(os.path.dirname(__file__), "onecca_data.json")  # Fixed path
+DATA_PATH = os.path.join(os.path.dirname(__file__), "onecca_data.json")
 
 ADMIN_PASSWORD = "ONECCA2026"
 
@@ -80,7 +81,6 @@ def init_db(db):
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
-        -- User sessions for JWT tokens
         CREATE TABLE IF NOT EXISTS user_sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -90,7 +90,6 @@ def init_db(db):
             FOREIGN KEY (user_id) REFERENCES users(id)
         );
 
-        -- Access requests for member contact details
         CREATE TABLE IF NOT EXISTS contact_access_requests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -109,7 +108,6 @@ def init_db(db):
             FOREIGN KEY (approved_by) REFERENCES users(id)
         );
 
-        -- Payment records
         CREATE TABLE IF NOT EXISTS payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -124,7 +122,6 @@ def init_db(db):
             FOREIGN KEY (user_id) REFERENCES users(id)
         );
 
-        -- Pricing configuration
         CREATE TABLE IF NOT EXISTS pricing (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             item_type TEXT NOT NULL,
@@ -143,6 +140,7 @@ def seed_data(db):
         return
     
     if not os.path.exists(DATA_PATH):
+        print(f"Fichier {DATA_PATH} non trouvé, pas d'import initial")
         return
     
     with open(DATA_PATH, "r", encoding="utf-8") as f:
@@ -291,7 +289,6 @@ def get_members():
             member["tel1"] = r["tel1"]
             member["tel2"] = r["tel2"]
             member["email"] = r["email"]
-        result[section] = result.get(section, [])
         result[section].append(member)
     
     return {"members": result, "show_contacts": show_contacts}
@@ -536,7 +533,6 @@ async def initiate_payment(
         raise HTTPException(status_code=401, detail="Non authentifié")
     
     # Generate unique reference
-    import uuid
     reference = f"PAY-{uuid.uuid4().hex[:8].upper()}"
     
     conn = get_db()
@@ -695,13 +691,11 @@ def approve_access_request(
     cursor = conn.cursor()
     
     # Set expiration (30 days)
-    expires_at = "datetime('now', '+30 days')"
-    
-    cursor.execute(f"""
+    cursor.execute("""
         UPDATE contact_access_requests 
         SET status = 'approved', 
             approved_at = datetime('now'),
-            expires_at = {expires_at}
+            expires_at = datetime('now', '+30 days')
         WHERE id = ?
     """, (request_id,))
     
@@ -758,37 +752,119 @@ def admin_stats(x_admin_auth: str = Header(default="")):
         "approved_access_requests": approved_requests,
         "unread_contact_requests": unread_contacts
     }
-# ===== STATIC FILES =====
 
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-    with open("index.html", "r", encoding="utf-8") as f:
-        return f.read()
+# ===== USER DASHBOARD ENDPOINTS =====
 
-@app.get("/index.html", response_class=HTMLResponse)
-async def read_index():
-    with open("index.html", "r", encoding="utf-8") as f:
-        return f.read()
+@app.get("/api/user/dashboard")
+async def get_user_dashboard(current_user: dict = Depends(get_current_user)):
+    """Get complete dashboard data for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    # Get all access requests with member details
+    cursor.execute("""
+        SELECT r.*, 
+               m.nom as member_nom,
+               m.ville as member_ville
+        FROM contact_access_requests r
+        LEFT JOIN members m ON r.member_id = m.id
+        WHERE r.user_id = ?
+        ORDER BY r.created_at DESC
+    """, (current_user["id"],))
+    
+    access_requests = [dict(row) for row in cursor.fetchall()]
+    
+    # Get all payments
+    cursor.execute("""
+        SELECT * FROM payments 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC
+    """, (current_user["id"],))
+    
+    payments = [dict(row) for row in cursor.fetchall()]
+    
+    # Get active subscriptions
+    cursor.execute("""
+        SELECT * FROM contact_access_requests 
+        WHERE user_id = ? 
+        AND status = 'approved'
+        AND expires_at > datetime('now')
+        AND member_id = 0
+        ORDER BY expires_at DESC
+        LIMIT 1
+    """, (current_user["id"],))
+    
+    active_subscription = cursor.fetchone()
+    
+    # Count statistics
+    stats = {
+        "total_requests": len(access_requests),
+        "pending_requests": len([r for r in access_requests if r["status"] == "pending"]),
+        "approved_requests": len([r for r in access_requests if r["status"] == "approved"]),
+        "rejected_requests": len([r for r in access_requests if r["status"] == "rejected"]),
+        "active_access_count": len([r for r in access_requests if r["status"] == "approved" and r["expires_at"] and r["expires_at"] > datetime.now().isoformat()]),
+        "total_paid": sum([p["amount"] for p in payments if p["status"] == "completed"]),
+        "has_active_subscription": active_subscription is not None,
+        "subscription_expires_at": active_subscription["expires_at"] if active_subscription else None
+    }
+    
+    conn.close()
+    
+    return {
+        "user": current_user,
+        "stats": stats,
+        "access_requests": access_requests,
+        "payments": payments,
+        "active_subscription": dict(active_subscription) if active_subscription else None
+    }
 
-@app.get("/auth.html", response_class=HTMLResponse)
-async def serve_auth():
-    try:
-        with open("auth.html", "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        return HTMLResponse(content="""
-        <!DOCTYPE html>
-        <html>
-        <head><title>Authentification ONECCA</title><meta charset="UTF-8"></head>
-        <body style="font-family:Arial;padding:20px">
-        <h2>🔐 ONECCA - Authentification</h2>
-        <p>Le fichier auth.html est en cours de préparation.</p>
-        <p>Veuillez rafraîchir la page ou contacter l'administrateur.</p>
-        <a href="/">← Retour à l'accueil</a>
-        </body>
-        </html>
-        """)
+@app.get("/api/user/access-requests")
+async def get_user_access_requests(current_user: dict = Depends(get_current_user)):
+    """Get all access requests for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT r.*, m.nom as member_nom
+        FROM contact_access_requests r
+        LEFT JOIN members m ON r.member_id = m.id
+        WHERE r.user_id = ?
+        ORDER BY r.created_at DESC
+    """, (current_user["id"],))
+    
+    requests = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"requests": requests}
 
+@app.get("/api/user/payments")
+async def get_user_payments(current_user: dict = Depends(get_current_user)):
+    """Get all payments for current user"""
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Non authentifié")
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT * FROM payments 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC
+    """, (current_user["id"],))
+    
+    payments = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"payments": payments}
 
 # ===== STATIC FILES =====
 
@@ -822,14 +898,12 @@ async def serve_auth():
         </html>
         """)
 
-# Route pour la page admin
 @app.get("/admin_login.html", response_class=HTMLResponse)
 async def serve_admin_login():
     try:
         with open("admin_login.html", "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
-        # Fallback intégré si le fichier n'existe pas
         return HTMLResponse(content="""
         <!DOCTYPE html>
         <html lang="fr">
@@ -958,185 +1032,6 @@ async def serve_admin_login():
         </body>
         </html>
         """)
-
-
-
-
-@app.get("/api/admin/access-requests")
-def get_access_requests(x_admin_auth: str = Header(default="")):
-    """Admin: get all pending access requests"""
-    check_admin(x_admin_auth)
-    
-    conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT r.*, u.name as user_name, u.email as user_email
-        FROM contact_access_requests r
-        JOIN users u ON r.user_id = u.id
-        WHERE r.status = 'pending'
-        ORDER BY r.created_at DESC
-    """)
-    
-    requests = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    
-    return {"requests": requests}
-
-@app.post("/api/admin/access-requests/{request_id}/approve")
-def approve_access_request(request_id: int, x_admin_auth: str = Header(default="")):
-    """Admin: approve an access request"""
-    check_admin(x_admin_auth)
-    
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    # Set expiration (30 days)
-    cursor.execute("""
-        UPDATE contact_access_requests 
-        SET status = 'approved', 
-            approved_at = datetime('now'),
-            expires_at = datetime('now', '+30 days')
-        WHERE id = ?
-    """, (request_id,))
-    
-    conn.commit()
-    conn.close()
-    
-    return {"success": True, "message": "Accès approuvé"}
-
-@app.post("/api/admin/access-requests/{request_id}/reject")
-def reject_access_request(request_id: int, x_admin_auth: str = Header(default="")):
-    """Admin: reject an access request"""
-    check_admin(x_admin_auth)
-    
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("""
-        UPDATE contact_access_requests 
-        SET status = 'rejected' 
-        WHERE id = ?
-    """, (request_id,))
-    conn.commit()
-    conn.close()
-    
-    return {"success": True, "message": "Demande rejetée"}
-
-
-# ===== USER DASHBOARD ENDPOINTS =====
-
-@app.get("/api/user/dashboard")
-async def get_user_dashboard(current_user: dict = Depends(get_current_user)):
-    """Get complete dashboard data for current user"""
-    if not current_user:
-        raise HTTPException(status_code=401, detail="Non authentifié")
-    
-    conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    # Get all access requests with member details
-    cursor.execute("""
-        SELECT r.*, 
-               m.nom as member_nom,
-               m.ville as member_ville
-        FROM contact_access_requests r
-        LEFT JOIN members m ON r.member_id = m.id
-        WHERE r.user_id = ?
-        ORDER BY r.created_at DESC
-    """, (current_user["id"],))
-    
-    access_requests = [dict(row) for row in cursor.fetchall()]
-    
-    # Get all payments
-    cursor.execute("""
-        SELECT * FROM payments 
-        WHERE user_id = ? 
-        ORDER BY created_at DESC
-    """, (current_user["id"],))
-    
-    payments = [dict(row) for row in cursor.fetchall()]
-    
-    # Get active subscriptions
-    cursor.execute("""
-        SELECT * FROM contact_access_requests 
-        WHERE user_id = ? 
-        AND status = 'approved'
-        AND expires_at > datetime('now')
-        AND member_id = 0
-        ORDER BY expires_at DESC
-        LIMIT 1
-    """, (current_user["id"],))
-    
-    active_subscription = cursor.fetchone()
-    
-    # Count statistics
-    stats = {
-        "total_requests": len(access_requests),
-        "pending_requests": len([r for r in access_requests if r["status"] == "pending"]),
-        "approved_requests": len([r for r in access_requests if r["status"] == "approved"]),
-        "rejected_requests": len([r for r in access_requests if r["status"] == "rejected"]),
-        "active_access_count": len([r for r in access_requests if r["status"] == "approved" and r["expires_at"] and r["expires_at"] > datetime.now().isoformat()]),
-        "total_paid": sum([p["amount"] for p in payments if p["status"] == "completed"]),
-        "has_active_subscription": active_subscription is not None,
-        "subscription_expires_at": active_subscription["expires_at"] if active_subscription else None
-    }
-    
-    conn.close()
-    
-    return {
-        "user": current_user,
-        "stats": stats,
-        "access_requests": access_requests,
-        "payments": payments,
-        "active_subscription": dict(active_subscription) if active_subscription else None
-    }
-
-@app.get("/api/user/access-requests")
-async def get_user_access_requests(current_user: dict = Depends(get_current_user)):
-    """Get all access requests for current user"""
-    if not current_user:
-        raise HTTPException(status_code=401, detail="Non authentifié")
-    
-    conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT r.*, m.nom as member_nom
-        FROM contact_access_requests r
-        LEFT JOIN members m ON r.member_id = m.id
-        WHERE r.user_id = ?
-        ORDER BY r.created_at DESC
-    """, (current_user["id"],))
-    
-    requests = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    
-    return {"requests": requests}
-
-@app.get("/api/user/payments")
-async def get_user_payments(current_user: dict = Depends(get_current_user)):
-    """Get all payments for current user"""
-    if not current_user:
-        raise HTTPException(status_code=401, detail="Non authentifié")
-    
-    conn = get_db()
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT * FROM payments 
-        WHERE user_id = ? 
-        ORDER BY created_at DESC
-    """, (current_user["id"],))
-    
-    payments = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    
-    return {"payments": payments}
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
