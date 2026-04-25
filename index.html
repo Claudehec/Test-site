@@ -1290,7 +1290,6 @@ a { color: inherit; text-decoration: none; }
       </div>
     </div>
     <div class="header-actions">
-      <!-- Menu utilisateur connecté -->
       <div id="userMenu" class="user-menu" style="display: none;">
         <div class="user-info">
           <div class="user-avatar">
@@ -1312,12 +1311,10 @@ a { color: inherit; text-decoration: none; }
           </button>
         </div>
       </div>
-      <!-- Boutons Connexion/Inscription -->
       <div class="auth-buttons" id="authButtons">
         <a href="/auth.html" class="btn-auth btn-login">🔐 Connexion</a>
         <a href="/auth.html" class="btn-auth btn-register">📝 Inscription</a>
       </div>
-      <!-- Bouton thème -->
       <button class="btn-icon" data-theme-toggle>🌙</button>
     </div>
   </div>
@@ -1405,145 +1402,20 @@ a { color: inherit; text-decoration: none; }
 <button class="back-to-top" id="backToTop">↑</button>
 <button class="contact-fab" id="contactFab">🔍 À la recherche d'un expert-comptable ? Contactez-nous</button>
 
-<!-- MODAL CONTACT -->
-<div class="modal-overlay" id="contactModal">
-  <div class="modal-box">
-    <div class="modal-logo">📧</div>
-    <h2>Demande de mise en relation</h2>
-    <p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p>
-    <div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div>
-    <div class="modal-error" id="contactError"></div>
-    <form id="contactForm">
-      <div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div>
-      <div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div>
-      <div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div>
-      <div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div>
-      <div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div>
-      <button type="submit" class="modal-btn-primary">Envoyer ma demande</button>
-    </form>
-    <div class="modal-cancel" id="contactCancel">Annuler</div>
-  </div>
-</div>
+<!-- MODALS (gardés identiques) -->
+<div class="modal-overlay" id="contactModal"><div class="modal-box"><div class="modal-logo">📧</div><h2>Demande de mise en relation</h2><p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p><div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div><div class="modal-error" id="contactError"></div><form id="contactForm"><div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div><div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div><div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div><div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div><button type="submit" class="modal-btn-primary">Envoyer ma demande</button></form><div class="modal-cancel" id="contactCancel">Annuler</div></div></div>
 
-<!-- MODAL PAIEMENT / DÉBLOQUAGE -->
-<div class="modal-overlay" id="accessModal">
-  <div class="modal-box">
-    <div class="modal-logo">🔓</div>
-    <h2>Débloquer les coordonnées</h2>
-    <p class="modal-subtitle" id="accessMemberName"></p>
-    <div class="pricing-options">
-      <div class="pricing-card" data-price="5000" data-type="single">
-        <div class="price">5 000 FCFA</div>
-        <div class="period">Accès unique</div>
-        <div class="feature">✓ Coordonnées d'un membre</div>
-        <div class="feature">✓ Valable 30 jours</div>
-      </div>
-      <div class="pricing-card" data-price="25000" data-type="subscription">
-        <div class="price">25 000 FCFA</div>
-        <div class="period">Abonnement mensuel</div>
-        <div class="feature">✓ Accès illimité</div>
-        <div class="feature">✓ Tous les membres</div>
-        <div class="feature">✓ Valable 30 jours</div>
-      </div>
-    </div>
-    <div class="payment-methods">
-      <h4>Mode de paiement</h4>
-      <div class="methods-grid">
-        <button class="method-btn" data-method="orange_money">📱 Orange Money</button>
-        <button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button>
-        <button class="method-btn" data-method="card">💳 Carte bancaire</button>
-      </div>
-      <input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);">
-    </div>
-    <div id="paymentStatus" class="payment-status"></div>
-    <button id="payBtn" class="modal-btn-primary">Payer et débloquer</button>
-    <div class="modal-cancel" id="accessCancel">Annuler</div>
-  </div>
-</div>
+<div class="modal-overlay" id="accessModal"><div class="modal-box"><div class="modal-logo">🔓</div><h2>Débloquer les coordonnées</h2><p class="modal-subtitle" id="accessMemberName"></p><div class="pricing-options"><div class="pricing-card" data-price="5000" data-type="single"><div class="price">5 000 FCFA</div><div class="period">Accès unique</div><div class="feature">✓ Coordonnées d'un membre</div><div class="feature">✓ Valable 30 jours</div></div><div class="pricing-card" data-price="25000" data-type="subscription"><div class="price">25 000 FCFA</div><div class="period">Abonnement mensuel</div><div class="feature">✓ Accès illimité</div><div class="feature">✓ Tous les membres</div><div class="feature">✓ Valable 30 jours</div></div></div><div class="payment-methods"><h4>Mode de paiement</h4><div class="methods-grid"><button class="method-btn" data-method="orange_money">📱 Orange Money</button><button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button><button class="method-btn" data-method="card">💳 Carte bancaire</button></div><input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);"></div><div id="paymentStatus" class="payment-status"></div><button id="payBtn" class="modal-btn-primary">Payer et débloquer</button><div class="modal-cancel" id="accessCancel">Annuler</div></div></div>
 
-<!-- MODAL MEMBER FORM (admin) -->
-<div class="modal-overlay" id="memberModal">
-  <div class="modal-box">
-    <div class="modal-logo">👤</div>
-    <h2 id="memberModalTitle">Ajouter un membre</h2>
-    <p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p>
-    <div class="modal-error" id="memberError"></div>
-    <form id="memberForm">
-      <input type="hidden" name="id" id="memberFormId">
-      <div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div>
-      <div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div>
-      <div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div>
-      <div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div>
-      <div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div>
-      <div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div>
-      <div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div>
-      <div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div>
-      <div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div>
-      <div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div>
-      <button type="submit" class="modal-btn-primary">Enregistrer</button>
-    </form>
-    <div class="modal-cancel" id="memberCancel">Annuler</div>
-  </div>
-</div>
+<div class="modal-overlay" id="memberModal"><div class="modal-box"><div class="modal-logo">👤</div><h2 id="memberModalTitle">Ajouter un membre</h2><p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p><div class="modal-error" id="memberError"></div><form id="memberForm"><input type="hidden" name="id" id="memberFormId"><div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div><div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div><div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div><div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div><div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div><div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div><div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div><div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div><button type="submit" class="modal-btn-primary">Enregistrer</button></form><div class="modal-cancel" id="memberCancel">Annuler</div></div></div>
 
-<!-- PANEL DEMANDES D'ACCÈS (ADMIN) -->
-<div class="modal-overlay" id="adminAccessRequestsPanel">
-  <div class="modal-box" style="max-width: 800px;">
-    <div class="modal-logo">📋</div>
-    <h2>Demandes de déblocage</h2>
-    <p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p>
-    <div id="adminAccessRequestsList"></div>
-    <div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div>
-  </div>
-</div>
+<div class="modal-overlay" id="adminAccessRequestsPanel"><div class="modal-box" style="max-width: 800px;"><div class="modal-logo">📋</div><h2>Demandes de déblocage</h2><p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p><div id="adminAccessRequestsList"></div><div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div></div></div>
 
-<!-- PANEL CONTACT REQUESTS (admin) -->
-<div class="modal-overlay" id="contactsPanel">
-  <div class="modal-box" style="max-width: 600px;">
-    <div class="modal-logo">📨</div>
-    <h2>Demandes de contact</h2>
-    <p class="modal-subtitle">Messages des visiteurs</p>
-    <div id="contactsPanelBody"></div>
-    <div class="modal-cancel" id="contactsPanelClose">Fermer</div>
-  </div>
-</div>
+<div class="modal-overlay" id="contactsPanel"><div class="modal-box" style="max-width: 600px;"><div class="modal-logo">📨</div><h2>Demandes de contact</h2><p class="modal-subtitle">Messages des visiteurs</p><div id="contactsPanelBody"></div><div class="modal-cancel" id="contactsPanelClose">Fermer</div></div></div>
 
-<!-- DASHBOARD UTILISATEUR -->
-<div class="modal-overlay" id="dashboardModal">
-  <div class="modal-box" style="max-width: 900px;">
-    <div class="modal-logo">📊</div>
-    <h2>Mon tableau de bord</h2>
-    <p class="modal-subtitle" id="dashboardUserName"></p>
-    <div class="dashboard-stats" id="dashboardStats"></div>
-    <div class="dashboard-tabs">
-      <button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button>
-      <button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button>
-      <button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button>
-    </div>
-    <div id="dashboardRequestsTab" class="dashboard-tab-content active">
-      <div id="dashboardRequestsList" class="dashboard-list"></div>
-    </div>
-    <div id="dashboardPaymentsTab" class="dashboard-tab-content">
-      <div id="dashboardPaymentsList" class="dashboard-list"></div>
-    </div>
-    <div id="dashboardSubscriptionTab" class="dashboard-tab-content">
-      <div id="subscriptionInfo" class="subscription-info"></div>
-    </div>
-    <div class="modal-cancel" id="dashboardClose">Fermer</div>
-  </div>
-</div>
+<div class="modal-overlay" id="dashboardModal"><div class="modal-box" style="max-width: 900px;"><div class="modal-logo">📊</div><h2>Mon tableau de bord</h2><p class="modal-subtitle" id="dashboardUserName"></p><div class="dashboard-stats" id="dashboardStats"></div><div class="dashboard-tabs"><button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button><button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button><button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button></div><div id="dashboardRequestsTab" class="dashboard-tab-content active"><div id="dashboardRequestsList" class="dashboard-list"></div></div><div id="dashboardPaymentsTab" class="dashboard-tab-content"><div id="dashboardPaymentsList" class="dashboard-list"></div></div><div id="dashboardSubscriptionTab" class="dashboard-tab-content"><div id="subscriptionInfo" class="subscription-info"></div></div><div class="modal-cancel" id="dashboardClose">Fermer</div></div></div>
 
-<!-- CONFIRM DIALOG -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
-    <h3 id="confirmTitle">Confirmer</h3>
-    <p id="confirmMessage">Êtes-vous sûr ?</p>
-    <div class="confirm-actions">
-      <button class="confirm-btn cancel" id="confirmCancel">Annuler</button>
-      <button class="confirm-btn danger" id="confirmOk">Supprimer</button>
-    </div>
-  </div>
-</div>
+<div class="confirm-overlay" id="confirmOverlay"><div class="confirm-box"><h3 id="confirmTitle">Confirmer</h3><p id="confirmMessage">Êtes-vous sûr ?</p><div class="confirm-actions"><button class="confirm-btn cancel" id="confirmCancel">Annuler</button><button class="confirm-btn danger" id="confirmOk">Supprimer</button></div></div></div>
 
 <script>
 (function() {
@@ -1750,7 +1622,7 @@ document.getElementById('accessCancel')?.addEventListener('click', () => {
   document.getElementById('accessModal').classList.remove('open');
 });
 
-// ===== LOAD MEMBERS =====
+// ===== LOAD MEMBERS (CORRIGÉE) =====
 async function loadMembers() {
   const token = localStorage.getItem('userToken');
   
@@ -1759,7 +1631,6 @@ async function loadMembers() {
     RAW = data.members || data;
     showContacts = true;
   } else {
-    // Envoyer le token si l'utilisateur est connecté
     const headers = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -1776,6 +1647,8 @@ async function loadMembers() {
       console.error('❌ Erreur chargement membres:', err);
       throw err;
     }
+  }
+}
 
 // ===== RENDER CARDS =====
 async function renderCards() {
@@ -2058,7 +1931,6 @@ async function loadDashboardData() {
     if (response.ok && data) {
       const stats = data.stats || {};
       
-      // Statistiques
       const statsContainer = document.getElementById('dashboardStats');
       if (statsContainer) {
         statsContainer.innerHTML = `
@@ -2070,7 +1942,6 @@ async function loadDashboardData() {
         `;
       }
       
-      // Demandes - utiliser dashboardRequestsList
       const requestsContainer = document.getElementById('dashboardRequestsList');
       if (requestsContainer) {
         const requests = data.access_requests || [];
@@ -2087,7 +1958,6 @@ async function loadDashboardData() {
         }
       }
       
-      // Paiements - utiliser dashboardPaymentsList
       const paymentsContainer = document.getElementById('dashboardPaymentsList');
       if (paymentsContainer) {
         const payments = data.payments || [];
@@ -2098,7 +1968,6 @@ async function loadDashboardData() {
         }
       }
       
-      // Abonnement
       const subscriptionContainer = document.getElementById('subscriptionInfo');
       if (subscriptionContainer) {
         if (stats.has_active_subscription && data.active_subscription) {
@@ -2117,11 +1986,9 @@ async function loadDashboardData() {
   }
 }
 
-// Boutons dashboard
 document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
 document.getElementById('dashboardClose')?.addEventListener('click', () => document.getElementById('dashboardModal').classList.remove('open'));
 
-// Onglets dashboard
 document.querySelectorAll('.dashboard-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     const tabId = tab.dataset.tab;
@@ -2173,7 +2040,6 @@ document.getElementById('cityFilter')?.addEventListener('change', (e) => {
   renderCards();
 });
 
-// Contact form
 document.getElementById('contactFab')?.addEventListener('click', () => document.getElementById('contactModal').classList.add('open'));
 document.getElementById('contactCancel')?.addEventListener('click', () => document.getElementById('contactModal').classList.remove('open'));
 document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
@@ -2190,7 +2056,6 @@ document.getElementById('contactForm')?.addEventListener('submit', async (e) => 
   setTimeout(() => document.getElementById('contactModal').classList.remove('open'), 2000);
 });
 
-// Admin panel
 if (isAdmin) {
   console.log('🔧 Mode admin activé');
   document.getElementById('adminToolbar').classList.add('visible');
@@ -2258,13 +2123,10 @@ if (isAdmin) {
     renderCards();
   });
   
-  // Chargement initial des demandes admin
   loadAdminAccessRequests();
-  // Rafraîchissement automatique toutes les 30 secondes
   setInterval(loadAdminAccessRequests, 30000);
 }
 
-// ===== RENDER ALL =====
 async function renderAll() {
   renderStats();
   renderCharts();
@@ -2273,7 +2135,6 @@ async function renderAll() {
   await renderCards();
 }
 
-// ===== INIT =====
 async function init() {
   checkUserAuth();
   try {
