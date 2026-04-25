@@ -1631,11 +1631,13 @@ function checkUserAuth() {
     userMenu.style.display = 'flex';
     authButtons.style.display = 'none';
     if (userNameSpan) userNameSpan.textContent = userName.split(' ')[0];
+    console.log('✅ Utilisateur connecté:', userName);
   } else {
     isUserLoggedIn = false;
     currentUser = null;
     if (userMenu) userMenu.style.display = 'none';
     if (authButtons) authButtons.style.display = 'flex';
+    console.log('❌ Aucun utilisateur connecté');
   }
 }
 
@@ -1729,6 +1731,7 @@ document.getElementById('payBtn')?.addEventListener('click', async () => {
     showPaymentStatus('Demande envoyée ! Un administrateur va traiter votre demande.', 'success');
     setTimeout(() => document.getElementById('accessModal').classList.remove('open'), 2000);
   } catch (err) {
+    console.error('Erreur paiement/demande:', err);
     showPaymentStatus('Erreur lors de la demande', 'error');
   } finally {
     payBtn.disabled = false;
@@ -1758,6 +1761,7 @@ async function loadMembers() {
     RAW = data.members || data;
     showContacts = isUserLoggedIn || data.show_contacts || false;
   }
+  console.log('Membres chargés:', RAW);
 }
 
 // ===== RENDER CARDS =====
@@ -1946,6 +1950,7 @@ async function loadAdminAccessRequests() {
       headers: { 'x-admin-auth': ADMIN_KEY }
     });
     const data = await response.json();
+    console.log('📋 Demandes admin reçues:', data);
     const container = document.getElementById('adminAccessRequestsList');
     if (data.requests && data.requests.length > 0) {
       container.innerHTML = data.requests.map(req => `
@@ -2024,50 +2029,95 @@ async function openDashboard() {
 
 async function loadDashboardData() {
   const token = localStorage.getItem('userToken');
+  if (!token) {
+    console.error('Pas de token utilisateur');
+    return;
+  }
+  
   try {
+    console.log('📊 Chargement dashboard...');
     const response = await fetch('/api/user/dashboard', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
-    if (response.ok) {
-      const stats = data.stats;
+    console.log('📊 Données dashboard reçues:', data);
+    
+    if (response.ok && data) {
+      const stats = data.stats || {};
+      
       // Statistiques
-      document.getElementById('dashboardStats').innerHTML = `
-        <div class="stat-dashboard-card"><div class="stat-dashboard-number">${stats.total_requests || 0}</div><div class="stat-dashboard-label">Total demandes</div></div>
-        <div class="stat-dashboard-card pending"><div class="stat-dashboard-number">${stats.pending_requests || 0}</div><div class="stat-dashboard-label">En attente</div></div>
-        <div class="stat-dashboard-card approved"><div class="stat-dashboard-number">${stats.approved_requests || 0}</div><div class="stat-dashboard-label">Approuvées</div></div>
-        <div class="stat-dashboard-card rejected"><div class="stat-dashboard-number">${stats.rejected_requests || 0}</div><div class="stat-dashboard-label">Rejetées</div></div>
-        <div class="stat-dashboard-card"><div class="stat-dashboard-number">${(stats.total_paid || 0).toLocaleString()} FCFA</div><div class="stat-dashboard-label">Total dépensé</div></div>
-      `;
-      // Demandes
-      document.getElementById('dashboardRequestsList').innerHTML = (data.access_requests || []).map(req => {
-        let statusClass = '', statusText = '';
-        if (req.status === 'pending') { statusClass = 'status-pending'; statusText = '⏳ En attente'; }
-        else if (req.status === 'approved') { statusClass = 'status-approved'; statusText = '✅ Approuvé'; }
-        else { statusClass = 'status-rejected'; statusText = '❌ Rejeté'; }
-        return `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title">${req.member_name || req.member_nom || `Membre #${req.member_id}`}</div><div class="request-status ${statusClass}">${statusText}</div></div><div class="dashboard-item-date">Demandé le ${new Date(req.created_at).toLocaleDateString('fr-FR')}</div></div>`;
-      }).join('') || '<div class="dashboard-item" style="text-align:center">Aucune demande effectuée</div>';
-      // Paiements
-      document.getElementById('dashboardPaymentsList').innerHTML = (data.payments || []).map(p => `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title"><span class="payment-amount">${p.amount.toLocaleString()} FCFA</span></div><div class="payment-status-completed">${p.status === 'completed' ? '✅ Complété' : '⏳ En attente'}</div></div><div class="dashboard-item-date">${new Date(p.created_at).toLocaleDateString('fr-FR')}</div><div class="dashboard-item-details"><span>📱 ${p.method || 'Non spécifié'}</span><span>🆔 ${p.reference || 'N/A'}</span></div></div>`).join('') || '<div class="dashboard-item" style="text-align:center">Aucun paiement effectué</div>';
+      const statsContainer = document.getElementById('dashboardStats');
+      if (statsContainer) {
+        statsContainer.innerHTML = `
+          <div class="stat-dashboard-card"><div class="stat-dashboard-number">${stats.total_requests || 0}</div><div class="stat-dashboard-label">Total demandes</div></div>
+          <div class="stat-dashboard-card pending"><div class="stat-dashboard-number">${stats.pending_requests || 0}</div><div class="stat-dashboard-label">En attente</div></div>
+          <div class="stat-dashboard-card approved"><div class="stat-dashboard-number">${stats.approved_requests || 0}</div><div class="stat-dashboard-label">Approuvées</div></div>
+          <div class="stat-dashboard-card rejected"><div class="stat-dashboard-number">${stats.rejected_requests || 0}</div><div class="stat-dashboard-label">Rejetées</div></div>
+          <div class="stat-dashboard-card"><div class="stat-dashboard-number">${(stats.total_paid || 0).toLocaleString()} FCFA</div><div class="stat-dashboard-label">Total dépensé</div></div>
+        `;
+      }
+      
+      // Demandes - utiliser dashboardRequestsList
+      const requestsContainer = document.getElementById('dashboardRequestsList');
+      if (requestsContainer) {
+        const requests = data.access_requests || [];
+        if (requests.length === 0) {
+          requestsContainer.innerHTML = '<div class="dashboard-item" style="text-align:center">Aucune demande effectuée</div>';
+        } else {
+          requestsContainer.innerHTML = requests.map(req => {
+            let statusClass = '', statusText = '';
+            if (req.status === 'pending') { statusClass = 'status-pending'; statusText = '⏳ En attente'; }
+            else if (req.status === 'approved') { statusClass = 'status-approved'; statusText = '✅ Approuvé'; }
+            else { statusClass = 'status-rejected'; statusText = '❌ Rejeté'; }
+            return `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title">${req.member_name || req.member_nom || `Membre #${req.member_id}`}</div><div class="request-status ${statusClass}">${statusText}</div></div><div class="dashboard-item-date">Demandé le ${new Date(req.created_at).toLocaleDateString('fr-FR')}</div></div>`;
+          }).join('');
+        }
+      }
+      
+      // Paiements - utiliser dashboardPaymentsList
+      const paymentsContainer = document.getElementById('dashboardPaymentsList');
+      if (paymentsContainer) {
+        const payments = data.payments || [];
+        if (payments.length === 0) {
+          paymentsContainer.innerHTML = '<div class="dashboard-item" style="text-align:center">Aucun paiement effectué</div>';
+        } else {
+          paymentsContainer.innerHTML = payments.map(p => `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title"><span class="payment-amount">${p.amount.toLocaleString()} FCFA</span></div><div class="payment-status-completed">${p.status === 'completed' ? '✅ Complété' : '⏳ En attente'}</div></div><div class="dashboard-item-date">${new Date(p.created_at).toLocaleDateString('fr-FR')}</div><div class="dashboard-item-details"><span>📱 ${p.method || 'Non spécifié'}</span><span>🆔 ${p.reference || 'N/A'}</span></div></div>`).join('');
+        }
+      }
+      
       // Abonnement
-      document.getElementById('subscriptionInfo').innerHTML = stats.has_active_subscription ? 
-        `<div class="subscription-active"><div style="font-size:48px">⭐</div><h3>Abonnement actif !</h3><p>Accès illimité à tous les membres</p><p>Expire le ${new Date(data.active_subscription.expires_at).toLocaleDateString('fr-FR')}</p></div><a href="/" class="dashboard-link">🔓 Accéder à tous les membres</a>` :
-        `<div class="subscription-inactive"><div style="font-size:48px">🔒</div><h3>Aucun abonnement actif</h3><p>Débloquez un accès illimité</p><a href="/" class="dashboard-link">💰 Débloquer l'accès illimité</a></div>`;
+      const subscriptionContainer = document.getElementById('subscriptionInfo');
+      if (subscriptionContainer) {
+        if (stats.has_active_subscription && data.active_subscription) {
+          subscriptionContainer.innerHTML = `
+            <div class="subscription-active"><div style="font-size:48px">⭐</div><h3>Abonnement actif !</h3><p>Accès illimité à tous les membres</p><p>Expire le ${new Date(data.active_subscription.expires_at).toLocaleDateString('fr-FR')}</p></div><a href="/" class="dashboard-link">🔓 Accéder à tous les membres</a>
+          `;
+        } else {
+          subscriptionContainer.innerHTML = `
+            <div class="subscription-inactive"><div style="font-size:48px">🔒</div><h3>Aucun abonnement actif</h3><p>Débloquez un accès illimité</p><a href="/" class="dashboard-link">💰 Débloquer l'accès illimité</a></div>
+          `;
+        }
+      }
     }
   } catch (err) {
-    console.error('Erreur:', err);
+    console.error('Erreur chargement dashboard:', err);
   }
 }
 
+// Boutons dashboard
 document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
 document.getElementById('dashboardClose')?.addEventListener('click', () => document.getElementById('dashboardModal').classList.remove('open'));
+
+// Onglets dashboard
 document.querySelectorAll('.dashboard-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     const tabId = tab.dataset.tab;
     document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.dashboard-tab-content').forEach(c => c.classList.remove('active'));
     tab.classList.add('active');
-    document.getElementById(`dashboard${tabId.charAt(0).toUpperCase() + tabId.slice(1)}Tab`).classList.add('active');
+    const targetId = `dashboard${tabId.charAt(0).toUpperCase() + tabId.slice(1)}Tab`;
+    const target = document.getElementById(targetId);
+    if (target) target.classList.add('active');
   });
 });
 
@@ -2129,14 +2179,18 @@ document.getElementById('contactForm')?.addEventListener('submit', async (e) => 
 
 // Admin panel
 if (isAdmin) {
+  console.log('🔧 Mode admin activé');
   document.getElementById('adminToolbar').classList.add('visible');
+  
   document.getElementById('btnAddMember')?.addEventListener('click', () => {
     document.getElementById('memberForm').reset();
     document.getElementById('memberFormId').value = '';
     document.getElementById('memberModalTitle').textContent = 'Ajouter un membre';
     document.getElementById('memberModal').classList.add('open');
   });
+  
   document.getElementById('memberCancel')?.addEventListener('click', () => document.getElementById('memberModal').classList.remove('open'));
+  
   document.getElementById('memberForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -2162,18 +2216,22 @@ if (isAdmin) {
     await loadMembers();
     renderAll();
   });
+  
   document.getElementById('btnExitAdmin')?.addEventListener('click', () => {
     const url = new URL(window.location);
     url.searchParams.delete('admin');
     window.location.href = url.toString();
   });
+  
   document.getElementById('btnAccessRequests')?.addEventListener('click', async () => {
     await loadAdminAccessRequests();
     document.getElementById('adminAccessRequestsPanel').classList.add('open');
   });
+  
   document.getElementById('adminAccessRequestsClose')?.addEventListener('click', () => {
     document.getElementById('adminAccessRequestsPanel').classList.remove('open');
   });
+  
   document.getElementById('contactsToggle')?.addEventListener('click', async () => {
     const res = await apiPost('/api/admin/toggle_contacts', {}, true);
     const track = document.getElementById('toggleTrack');
@@ -2186,7 +2244,10 @@ if (isAdmin) {
     await loadMembers();
     renderCards();
   });
+  
+  // Chargement initial des demandes admin
   loadAdminAccessRequests();
+  // Rafraîchissement automatique toutes les 30 secondes
   setInterval(loadAdminAccessRequests, 30000);
 }
 
@@ -2206,6 +2267,7 @@ async function init() {
     await loadMembers();
     document.getElementById('loadingOverlay').style.display = 'none';
     renderAll();
+    console.log('✅ Application initialisée avec succès');
   } catch (err) {
     console.error('Failed to load data:', err);
     document.getElementById('loadingOverlay').innerHTML = '<div style="text-align:center"><h3>Erreur de chargement</h3><button onclick="location.reload()">Réessayer</button></div>';
