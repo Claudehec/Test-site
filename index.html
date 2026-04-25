@@ -1759,7 +1759,7 @@ async function loadMembers() {
     RAW = data.members || data;
     showContacts = true;
   } else {
-    // Envoyer le token même pour la requête publique
+    // Envoyer le token si l'utilisateur est connecté
     const headers = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -1770,9 +1770,10 @@ async function loadMembers() {
       const data = await response.json();
       RAW = data.members || data;
       showContacts = isUserLoggedIn || data.show_contacts || false;
-      console.log('✅ Membres chargés avec succès, show_contacts:', showContacts);
+      console.log('✅ Membres chargés:', RAW);
+      console.log('📊 show_contacts:', showContacts);
     } catch (err) {
-      console.error('Erreur chargement membres:', err);
+      console.error('❌ Erreur chargement membres:', err);
       throw err;
     }
 
