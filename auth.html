@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONECCA - Connexion / Inscription</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #021e79 0%, #0a2d99 100%);
@@ -14,20 +21,76 @@
             margin: 0;
             padding: 20px;
         }
+
         .box {
             background: white;
             padding: 30px;
             border-radius: 20px;
             width: 100%;
-            max-width: 380px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            font-size: 48px;
+        }
+
         h2 {
             color: #021e79;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 28px;
+            font-weight: 700;
         }
+
+        .tab {
+            display: flex;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        .tab button {
+            flex: 1;
+            padding: 12px;
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab button.active {
+            background: #021e79;
+            color: white;
+        }
+
+        .tab button:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         input {
             width: 100%;
             padding: 12px 15px;
@@ -38,12 +101,14 @@
             font-size: 14px;
             transition: all 0.3s ease;
         }
+
         input:focus {
             outline: none;
             border-color: #ffbf00;
-            box-shadow: 0 0 0 3px rgba(255,191,0,0.1);
+            box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.1);
         }
-        button {
+
+        button[type="submit"], #doLogin, #doRegister {
             width: 100%;
             padding: 12px;
             background: #ffbf00;
@@ -51,48 +116,24 @@
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             font-size: 16px;
             transition: all 0.3s ease;
             color: #021e79;
         }
-        button:hover {
+
+        button[type="submit"]:hover, #doLogin:hover, #doRegister:hover {
             background: #e6ac00;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255,191,0,0.3);
+            box-shadow: 0 4px 12px rgba(255, 191, 0, 0.3);
         }
+
         button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
-        .tab {
-            display: flex;
-            margin-bottom: 25px;
-            gap: 10px;
-        }
-        .tab button {
-            flex: 1;
-            margin: 0;
-            background: #f1f5f9;
-            color: #64748b;
-            border-radius: 40px;
-        }
-        .tab button.active {
-            background: #021e79;
-            color: white;
-        }
-        .form {
-            display: none;
-        }
-        .form.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+
         .msg {
             padding: 12px;
             margin: 15px 0;
@@ -101,51 +142,61 @@
             font-size: 14px;
             font-weight: 500;
         }
+
         .msg.error {
             background: #fee2e2;
             color: #dc2626;
             display: block;
             border-left: 4px solid #dc2626;
         }
+
         .msg.success {
             background: #dcfce7;
             color: #16a34a;
             display: block;
             border-left: 4px solid #16a34a;
         }
+
         .msg.info {
             background: #dbeafe;
             color: #2563eb;
             display: block;
             border-left: 4px solid #2563eb;
         }
+
         .footer {
             text-align: center;
             margin-top: 20px;
-            font-size: 12px;
+            font-size: 13px;
         }
+
         .footer a {
             color: #ffbf00;
             cursor: pointer;
             text-decoration: none;
             font-weight: 600;
         }
+
         .footer a:hover {
             text-decoration: underline;
         }
+
         .back-home {
             margin-top: 15px;
             text-align: center;
         }
+
         .back-home a {
             color: #94a3b8;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 13px;
             transition: color 0.3s ease;
         }
+
         .back-home a:hover {
             color: #ffbf00;
         }
+
         .spinner {
             display: inline-block;
             width: 14px;
@@ -157,15 +208,29 @@
             margin-right: 8px;
             vertical-align: middle;
         }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        .logo {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .logo span {
-            font-size: 48px;
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .box {
+                padding: 20px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .tab button {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            input {
+                padding: 10px 12px;
+            }
         }
     </style>
 </head>
@@ -206,230 +271,244 @@
 </div>
 
 <script>
-const API = window.location.origin;
+(function() {
+    const API = window.location.origin;
 
-// Éléments DOM
-const btnLogin = document.getElementById('btnLogin');
-const btnRegister = document.getElementById('btnRegister');
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-const msgDiv = document.getElementById('msg');
-const doLoginBtn = document.getElementById('doLogin');
-const doRegisterBtn = document.getElementById('doRegister');
+    // Éléments DOM
+    const btnLogin = document.getElementById('btnLogin');
+    const btnRegister = document.getElementById('btnRegister');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const msgDiv = document.getElementById('msg');
+    const doLoginBtn = document.getElementById('doLogin');
+    const doRegisterBtn = document.getElementById('doRegister');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const regName = document.getElementById('regName');
+    const regEmail = document.getElementById('regEmail');
+    const regPassword = document.getElementById('regPassword');
 
-// Onglets
-btnLogin.onclick = () => {
-    btnLogin.classList.add('active');
-    btnRegister.classList.remove('active');
-    loginForm.classList.add('active');
-    registerForm.classList.remove('active');
-    clearMessage();
-};
+    // Onglets
+    btnLogin.onclick = () => {
+        btnLogin.classList.add('active');
+        btnRegister.classList.remove('active');
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+        clearMessage();
+    };
 
-btnRegister.onclick = () => {
-    btnRegister.classList.add('active');
-    btnLogin.classList.remove('active');
-    registerForm.classList.add('active');
-    loginForm.classList.remove('active');
-    clearMessage();
-};
+    btnRegister.onclick = () => {
+        btnRegister.classList.add('active');
+        btnLogin.classList.remove('active');
+        registerForm.classList.add('active');
+        loginForm.classList.remove('active');
+        clearMessage();
+    };
 
-function clearMessage() {
-    msgDiv.style.display = 'none';
-    msgDiv.textContent = '';
-    msgDiv.className = 'msg';
-}
-
-function showMessage(text, type = 'success') {
-    msgDiv.textContent = text;
-    msgDiv.className = `msg ${type}`;
-    msgDiv.style.display = 'block';
-    setTimeout(() => {
-        if (msgDiv.textContent === text) {
-            clearMessage();
-        }
-    }, 4000);
-}
-
-function setButtonLoading(button, isLoading, originalText) {
-    if (isLoading) {
-        button.disabled = true;
-        button.innerHTML = '<span class="spinner"></span> Chargement...';
-    } else {
-        button.disabled = false;
-        button.innerHTML = originalText;
+    function clearMessage() {
+        msgDiv.style.display = 'none';
+        msgDiv.textContent = '';
+        msgDiv.className = 'msg';
     }
-}
 
-// Vérifier si déjà connecté
-function checkAlreadyLoggedIn() {
-    const token = localStorage.getItem('userToken');
-    if (token) {
-        showMessage('Vous êtes déjà connecté ! Redirection...', 'info');
+    function showMessage(text, type = 'success') {
+        msgDiv.textContent = text;
+        msgDiv.className = `msg ${type}`;
+        msgDiv.style.display = 'block';
+        
+        // Auto-hide après 4 secondes
         setTimeout(() => {
-            window.location.href = '/';
-        }, 1500);
-        return true;
+            if (msgDiv.textContent === text) {
+                clearMessage();
+            }
+        }, 4000);
     }
-    return false;
-}
 
-// INSCRIPTION
-doRegisterBtn.onclick = async () => {
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const password = document.getElementById('regPassword').value;
-    
-    // Validation
-    if (!name) {
-        showMessage('Veuillez entrer votre nom complet', 'error');
-        return;
-    }
-    if (!email) {
-        showMessage('Veuillez entrer votre email', 'error');
-        return;
-    }
-    if (!email.includes('@') || !email.includes('.')) {
-        showMessage('Veuillez entrer un email valide', 'error');
-        return;
-    }
-    if (password.length < 6) {
-        showMessage('Le mot de passe doit contenir au moins 6 caractères', 'error');
-        return;
-    }
-    
-    setButtonLoading(doRegisterBtn, true, 'Créer mon compte');
-    
-    try {
-        console.log('📝 Tentative d\'inscription:', { name, email });
-        
-        const res = await fetch(API + '/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, phone: '', password })
-        });
-        
-        const data = await res.json();
-        console.log('📝 Réponse inscription:', data);
-        
-        if (res.ok && data.success === true) {
-            showMessage('✅ Compte créé avec succès ! Connectez-vous maintenant', 'success');
-            // Réinitialiser le formulaire
-            document.getElementById('regName').value = '';
-            document.getElementById('regEmail').value = '';
-            document.getElementById('regPassword').value = '';
-            // Basculer vers l'onglet connexion
-            btnLogin.click();
-            document.getElementById('loginEmail').value = email;
+    function setButtonLoading(button, isLoading, originalText) {
+        if (isLoading) {
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner"></span> Chargement...';
         } else {
-            const errorMsg = data.detail || 'Erreur lors de l\'inscription';
-            showMessage('❌ ' + errorMsg, 'error');
+            button.disabled = false;
+            button.innerHTML = originalText;
         }
-    } catch (err) {
-        console.error('❌ Erreur réseau inscription:', err);
-        showMessage('❌ Impossible de contacter le serveur. Vérifiez que le serveur est démarré.', 'error');
-    } finally {
-        setButtonLoading(doRegisterBtn, false, 'Créer mon compte');
     }
-};
 
-// CONNEXION
-doLoginBtn.onclick = async () => {
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    
-    if (!email) {
-        showMessage('Veuillez entrer votre email', 'error');
-        return;
-    }
-    if (!password) {
-        showMessage('Veuillez entrer votre mot de passe', 'error');
-        return;
-    }
-    
-    setButtonLoading(doLoginBtn, true, 'Se connecter');
-    
-    try {
-        console.log('🔐 Tentative de connexion:', { email });
-        
-        const res = await fetch(API + '/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
-        
-        const data = await res.json();
-        console.log('🔐 Réponse connexion:', data);
-        
-        if (res.ok && data.success === true) {
-            // Sauvegarde des données
-            localStorage.setItem('userToken', data.token);
-            localStorage.setItem('userEmail', data.user.email);
-            localStorage.setItem('userName', data.user.name);
-            localStorage.setItem('userPhone', data.user.phone || '');
-            localStorage.setItem('userId', data.user.id);
-            
-            console.log('✅ Connexion réussie, données sauvegardées');
-            
-            showMessage('✅ Connexion réussie ! Redirection...', 'success');
-            
+    // Vérifier si déjà connecté
+    function checkAlreadyLoggedIn() {
+        const token = localStorage.getItem('userToken');
+        if (token) {
+            showMessage('Vous êtes déjà connecté ! Redirection...', 'info');
             setTimeout(() => {
-                window.location.href = '/?login=success';
-            }, 1000);
-        } else {
-            const errorMsg = data.detail || 'Email ou mot de passe incorrect';
-            showMessage('❌ ' + errorMsg, 'error');
-            document.getElementById('loginPassword').value = '';
+                window.location.href = '/';
+            }, 1500);
+            return true;
         }
-    } catch (err) {
-        console.error('❌ Erreur réseau connexion:', err);
-        showMessage('❌ Impossible de contacter le serveur. Vérifiez que le serveur est démarré sur le port 8000.', 'error');
-    } finally {
-        setButtonLoading(doLoginBtn, false, 'Se connecter');
+        return false;
     }
-};
 
-// Mot de passe oublié
-document.getElementById('forgotLink').onclick = () => {
-    const email = document.getElementById('loginEmail').value;
-    if (email) {
-        showMessage(`📧 Un email de réinitialisation sera envoyé à ${email} (fonctionnalité à venir)`, 'info');
-    } else {
-        showMessage('📧 Veuillez entrer votre email ci-dessus pour réinitialiser votre mot de passe', 'info');
-    }
-};
-
-// Vérifier l'état de connexion au chargement
-checkAlreadyLoggedIn();
-
-// Permettre la validation avec la touche Entrée
-document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') doLoginBtn.click();
-});
-document.getElementById('regPassword').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') doRegisterBtn.click();
-});
-
-// Test de connexion au serveur au chargement
-async function testServerConnection() {
-    try {
-        const res = await fetch(API + '/api/members');
-        if (res.ok) {
-            console.log('✅ Serveur accessible');
-        } else {
-            console.warn('⚠️ Serveur répond mais avec erreur:', res.status);
+    // INSCRIPTION
+    doRegisterBtn.onclick = async () => {
+        const name = regName.value.trim();
+        const email = regEmail.value.trim();
+        const password = regPassword.value;
+        
+        // Validation
+        if (!name) {
+            showMessage('Veuillez entrer votre nom complet', 'error');
+            return;
         }
-    } catch (err) {
-        console.error('❌ Serveur inaccessible:', err);
-        showMessage('⚠️ Impossible de contacter le serveur. Vérifiez que le serveur est démarré (python server_api.py)', 'error');
-    }
-}
-testServerConnection();
+        if (!email) {
+            showMessage('Veuillez entrer votre email', 'error');
+            return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+            showMessage('Veuillez entrer un email valide', 'error');
+            return;
+        }
+        if (password.length < 6) {
+            showMessage('Le mot de passe doit contenir au moins 6 caractères', 'error');
+            return;
+        }
+        
+        setButtonLoading(doRegisterBtn, true, 'Créer mon compte');
+        
+        try {
+            console.log('📝 Tentative d\'inscription:', { name, email });
+            
+            const res = await fetch(API + '/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, phone: '', password })
+            });
+            
+            const data = await res.json();
+            console.log('📝 Réponse inscription:', data);
+            
+            if (res.ok && data.success === true) {
+                showMessage('✅ Compte créé avec succès ! Connectez-vous maintenant', 'success');
+                // Réinitialiser le formulaire
+                regName.value = '';
+                regEmail.value = '';
+                regPassword.value = '';
+                // Basculer vers l'onglet connexion
+                btnLogin.click();
+                loginEmail.value = email;
+            } else {
+                const errorMsg = data.detail || 'Erreur lors de l\'inscription';
+                showMessage('❌ ' + errorMsg, 'error');
+            }
+        } catch (err) {
+            console.error('❌ Erreur réseau inscription:', err);
+            showMessage('❌ Impossible de contacter le serveur. Vérifiez que le serveur est démarré.', 'error');
+        } finally {
+            setButtonLoading(doRegisterBtn, false, 'Créer mon compte');
+        }
+    };
 
-// Redirection si paramètre register=true
-if (window.location.search.includes('tab=register')) {
-    btnRegister.click();
-}
+    // CONNEXION
+    doLoginBtn.onclick = async () => {
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value;
+        
+        if (!email) {
+            showMessage('Veuillez entrer votre email', 'error');
+            return;
+        }
+        if (!password) {
+            showMessage('Veuillez entrer votre mot de passe', 'error');
+            return;
+        }
+        
+        setButtonLoading(doLoginBtn, true, 'Se connecter');
+        
+        try {
+            console.log('🔐 Tentative de connexion:', { email });
+            
+            const res = await fetch(API + '/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await res.json();
+            console.log('🔐 Réponse connexion:', data);
+            
+            if (res.ok && data.success === true) {
+                // Sauvegarde des données
+                localStorage.setItem('userToken', data.token);
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userName', data.user.name);
+                localStorage.setItem('userPhone', data.user.phone || '');
+                localStorage.setItem('userId', data.user.id);
+                
+                console.log('✅ Connexion réussie, données sauvegardées');
+                console.log('   - Nom:', data.user.name);
+                console.log('   - Email:', data.user.email);
+                
+                showMessage('✅ Connexion réussie ! Redirection...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = '/?login=success';
+                }, 1000);
+            } else {
+                const errorMsg = data.detail || 'Email ou mot de passe incorrect';
+                showMessage('❌ ' + errorMsg, 'error');
+                loginPassword.value = '';
+                loginPassword.focus();
+            }
+        } catch (err) {
+            console.error('❌ Erreur réseau connexion:', err);
+            showMessage('❌ Impossible de contacter le serveur. Vérifiez que le serveur est démarré sur le port 8000.', 'error');
+        } finally {
+            setButtonLoading(doLoginBtn, false, 'Se connecter');
+        }
+    };
+
+    // Mot de passe oublié
+    document.getElementById('forgotLink').onclick = () => {
+        const email = loginEmail.value;
+        if (email) {
+            showMessage(`📧 Un email de réinitialisation sera envoyé à ${email} (fonctionnalité à venir)`, 'info');
+        } else {
+            showMessage('📧 Veuillez entrer votre email ci-dessus pour réinitialiser votre mot de passe', 'info');
+        }
+    };
+
+    // Vérifier l'état de connexion au chargement
+    checkAlreadyLoggedIn();
+
+    // Permettre la validation avec la touche Entrée
+    loginPassword.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') doLoginBtn.click();
+    });
+    
+    regPassword.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') doRegisterBtn.click();
+    });
+
+    // Test de connexion au serveur au chargement
+    async function testServerConnection() {
+        try {
+            const res = await fetch(API + '/api/members');
+            if (res.ok) {
+                console.log('✅ Serveur accessible');
+            } else {
+                console.warn('⚠️ Serveur répond mais avec erreur:', res.status);
+            }
+        } catch (err) {
+            console.error('❌ Serveur inaccessible:', err);
+            // Ne pas afficher de message à l'utilisateur ici, juste en console
+            // car cela pourrait être alarmant au premier chargement
+        }
+    }
+    testServerConnection();
+
+    // Redirection si paramètre tab=register ou register=true
+    if (window.location.search.includes('tab=register') || window.location.search.includes('register=true')) {
+        btnRegister.click();
+    }
+})();
 </script>
 </body>
 </html>
