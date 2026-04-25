@@ -1752,17 +1752,29 @@ document.getElementById('accessCancel')?.addEventListener('click', () => {
 
 // ===== LOAD MEMBERS =====
 async function loadMembers() {
+  const token = localStorage.getItem('userToken');
+  
   if (isAdmin) {
     const data = await apiGet('/api/admin/members', true);
     RAW = data.members || data;
     showContacts = true;
   } else {
-    const data = await apiGet('/api/members', false);
-    RAW = data.members || data;
-    showContacts = isUserLoggedIn || data.show_contacts || false;
-  }
-  console.log('Membres chargés:', RAW);
-}
+    // Envoyer le token même pour la requête publique
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    try {
+      const response = await fetch(API + '/api/members', { headers });
+      const data = await response.json();
+      RAW = data.members || data;
+      showContacts = isUserLoggedIn || data.show_contacts || false;
+      console.log('✅ Membres chargés avec succès, show_contacts:', showContacts);
+    } catch (err) {
+      console.error('Erreur chargement membres:', err);
+      throw err;
+    }
 
 // ===== RENDER CARDS =====
 async function renderCards() {
