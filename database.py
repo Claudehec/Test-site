@@ -1,11 +1,13 @@
 # database.py
 import sqlite3
 import json
-import os
-from datetime import datetime
+import hashlib
+import secrets
+import uuid
+from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "onecca.db")
+DB_PATH = "onecca.db"
 
 def get_db():
     """Obtenir une connexion à la base de données"""
@@ -15,10 +17,10 @@ def get_db():
     return db
 
 def init_database():
-    """Initialiser toutes les tables de la base de données"""
+    """Initialiser toutes les tables"""
     db = get_db()
     
-    # 1. Table des membres (experts-comptables)
+    # Table des membres
     db.execute("""
         CREATE TABLE IF NOT EXISTS members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +40,7 @@ def init_database():
         )
     """)
     
-    # 2. Table des paramètres
+    # Table des paramètres
     db.execute("""
         CREATE TABLE IF NOT EXISTS settings (
             key TEXT PRIMARY KEY,
@@ -46,7 +48,7 @@ def init_database():
         )
     """)
     
-    # 3. Table des demandes de contact
+    # Table des demandes de contact
     db.execute("""
         CREATE TABLE IF NOT EXISTS contact_requests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,7 +62,7 @@ def init_database():
         )
     """)
     
-    # 4. Table des utilisateurs
+    # Table des utilisateurs
     db.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -74,7 +76,7 @@ def init_database():
         )
     """)
     
-    # 5. Table des sessions utilisateur (tokens JWT)
+    # Table des sessions
     db.execute("""
         CREATE TABLE IF NOT EXISTS user_sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,7 +88,7 @@ def init_database():
         )
     """)
     
-    # 6. Table des demandes d'accès aux coordonnées
+    # Table des demandes d'accès
     db.execute("""
         CREATE TABLE IF NOT EXISTS contact_access_requests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,7 +109,7 @@ def init_database():
         )
     """)
     
-    # 7. Table des paiements
+    # Table des paiements
     db.execute("""
         CREATE TABLE IF NOT EXISTS payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -124,7 +126,7 @@ def init_database():
         )
     """)
     
-    # 8. Table des tarifs
+    # Table des tarifs
     db.execute("""
         CREATE TABLE IF NOT EXISTS pricing (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -138,18 +140,15 @@ def init_database():
     
     db.commit()
     db.close()
-    print("✅ Base de données initialisée avec succès")
+    print("✅ Base de données initialisée")
 
 def seed_default_data():
     """Insérer les données par défaut"""
     db = get_db()
     
-    # Vérifier si les tarifs existent déjà
+    # Tarifs par défaut
     cursor = db.execute("SELECT COUNT(*) FROM pricing")
-    count = cursor.fetchone()[0]
-    
-    if count == 0:
-        # Insérer les tarifs par défaut
+    if cursor.fetchone()[0] == 0:
         db.executescript("""
             INSERT INTO pricing (item_type, price, description, is_active) VALUES 
                 ('single_contact', 5000, 'Accès aux coordonnées d''un membre pour 30 jours', 1),
@@ -158,22 +157,61 @@ def seed_default_data():
         """)
         print("✅ Tarifs par défaut insérés")
     
-    # Vérifier si les paramètres existent
+    # Paramètres par défaut
     cursor = db.execute("SELECT COUNT(*) FROM settings")
-    count = cursor.fetchone()[0]
-    
-    if count == 0:
-        # Insérer les paramètres par défaut
+    if cursor.fetchone()[0] == 0:
         db.execute("INSERT INTO settings (key, value) VALUES ('show_contacts', 'false')")
         print("✅ Paramètres par défaut insérés")
     
     db.commit()
     db.close()
 
-# ===== FONCTIONS MEMBRES =====
+def import_members_from_json(json_path: str):
+    """Importer les membres depuis un fichier JSON"""
+    import os
+    if not os.path.exists(json_path):
+        print(f"❌ Fichier {json_path} non trouvé")
+        return 0
+    
+    with open(json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    
+    db = get_db()
+    total = 0
+    
+    for section, entries in data.items():
+        for entry in entries:
+            # Calculer le prochain numéro
+            cursor = db.execute("SELECT MAX(num) FROM members WHERE section=?", (section,))
+            max_num = cursor.fetchone()[0]
+            new_num = (max_num or 0) + 1
+            
+            db.execute("""
+                INSERT INTO members (section, num, nom, inscription_num, inscription_date, bp, tel1, tel2, email, adresse, ville)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                section, new_num,
+                entry.get("nom", ""),
+                entry.get("inscription_num", ""),
+                entry.get("inscription_date", ""),
+                entry.get("bp", ""),
+                entry.get("tel1", ""),
+                entry.get("tel2", ""),
+                entry.get("email", ""),
+                entry.get("adresse", ""),
+                entry.get("ville", "Autre")
+            ))
+            total += 1
+    
+    db.commit()
+    db.close()
+    print(f"✅ {total} membres importés")
+    return total
+
+# ===== FONCTIONS POUR LES MEMBRES =====
 
 def get_all_members(show_contacts: bool = False) -> Dict[str, List[Dict]]:
-    """Récupérer tous les membres, avec ou sans coordonnées"""
+    """Récupérer tous les membres"""
     db = get_db()
     rows = db.execute("SELECT * FROM members ORDER BY section, num").fetchall()
     db.close()
@@ -185,16 +223,10 @@ def get_all_members(show_contacts: bool = False) -> Dict[str, List[Dict]]:
             result[section] = []
         
         member = {
-            "id": r["id"],
-            "num": r["num"],
-            "nom": r["nom"],
-            "inscription_num": r["inscription_num"],
-            "inscription_date": r["inscription_date"],
-            "bp": r["bp"],
-            "adresse": r["adresse"],
-            "ville": r["ville"],
+            "id": r["id"], "num": r["num"], "nom": r["nom"],
+            "inscription_num": r["inscription_num"], "inscription_date": r["inscription_date"],
+            "bp": r["bp"], "adresse": r["adresse"], "ville": r["ville"]
         }
-        
         if show_contacts:
             member["tel1"] = r["tel1"]
             member["tel2"] = r["tel2"]
@@ -205,10 +237,8 @@ def get_all_members(show_contacts: bool = False) -> Dict[str, List[Dict]]:
     return result
 
 def add_member(section: str, nom: str, **kwargs) -> int:
-    """Ajouter un nouveau membre"""
+    """Ajouter un membre"""
     db = get_db()
-    
-    # Calculer le prochain numéro dans la section
     cursor = db.execute("SELECT MAX(num) FROM members WHERE section=?", (section,))
     max_num = cursor.fetchone()[0]
     new_num = (max_num or 0) + 1
@@ -227,7 +257,6 @@ def add_member(section: str, nom: str, **kwargs) -> int:
         kwargs.get('adresse', ''),
         kwargs.get('ville', 'Autre')
     ))
-    
     member_id = cursor.lastrowid
     db.commit()
     db.close()
@@ -236,23 +265,16 @@ def add_member(section: str, nom: str, **kwargs) -> int:
 def update_member(member_id: int, **kwargs) -> bool:
     """Mettre à jour un membre"""
     db = get_db()
-    
-    fields = []
-    values = []
-    for key, value in kwargs.items():
-        if key in ['section', 'nom', 'inscription_num', 'inscription_date', 'bp', 'tel1', 'tel2', 'email', 'adresse', 'ville']:
-            fields.append(f"{key}=?")
-            values.append(value)
-    
+    fields = [f"{k}=?" for k in kwargs.keys() if k in ['section', 'nom', 'inscription_num', 'inscription_date', 'bp', 'tel1', 'tel2', 'email', 'adresse', 'ville']]
     if not fields:
         db.close()
         return False
     
+    values = [kwargs[k] for k in kwargs.keys() if k in ['section', 'nom', 'inscription_num', 'inscription_date', 'bp', 'tel1', 'tel2', 'email', 'adresse', 'ville']]
     values.append(datetime.now().isoformat())
     values.append(member_id)
     
-    query = f"UPDATE members SET {', '.join(fields)}, updated_at=? WHERE id=?"
-    db.execute(query, values)
+    db.execute(f"UPDATE members SET {', '.join(fields)}, updated_at=? WHERE id=?", values)
     db.commit()
     db.close()
     return True
@@ -265,66 +287,18 @@ def delete_member(member_id: int) -> bool:
     db.close()
     return True
 
-# ===== FONCTIONS UTILISATEURS =====
+# ===== FONCTIONS POUR LES SESSIONS =====
 
-import hashlib
-import secrets
-from datetime import datetime, timedelta
-
-def hash_password(password: str) -> str:
-    """Hacher un mot de passe"""
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def create_user(name: str, email: str, password: str, phone: str = "") -> Optional[int]:
-    """Créer un nouvel utilisateur"""
-    db = get_db()
-    
-    # Vérifier si l'email existe déjà
-    cursor = db.execute("SELECT id FROM users WHERE email = ?", (email,))
-    if cursor.fetchone():
-        db.close()
-        return None
-    
-    password_hash = hash_password(password)
-    cursor = db.execute("""
-        INSERT INTO users (name, email, phone, password_hash)
-        VALUES (?, ?, ?, ?)
-    """, (name, email, phone, password_hash))
-    
-    user_id = cursor.lastrowid
-    db.commit()
-    db.close()
-    return user_id
-
-def authenticate_user(email: str, password: str) -> Optional[Dict]:
-    """Authentifier un utilisateur"""
-    db = get_db()
-    db.row_factory = sqlite3.Row
-    cursor = db.cursor()
-    
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-    user = cursor.fetchone()
-    db.close()
-    
-    if user and user["password_hash"] == hash_password(password):
-        return dict(user)
-    return None
-
-def create_session(user_id: int, duration_hours: int = 168) -> str:
-    """Créer une session utilisateur (token JWT simplifié)"""
-    import jwt
-    
+def create_user_session(user_id: int, duration_hours: int = 168) -> str:
+    """Créer une session utilisateur"""
     token = secrets.token_urlsafe(32)
     expires_at = datetime.now() + timedelta(hours=duration_hours)
     
     db = get_db()
-    db.execute("""
-        INSERT INTO user_sessions (user_id, token, expires_at)
-        VALUES (?, ?, ?)
-    """, (user_id, token, expires_at.isoformat()))
+    db.execute("INSERT INTO user_sessions (user_id, token, expires_at) VALUES (?, ?, ?)",
+               (user_id, token, expires_at.isoformat()))
     db.commit()
     db.close()
-    
     return token
 
 def get_user_by_token(token: str) -> Optional[Dict]:
@@ -343,18 +317,18 @@ def get_user_by_token(token: str) -> Optional[Dict]:
     
     return dict(user) if user else None
 
-def delete_session(token: str) -> bool:
-    """Supprimer une session (déconnexion)"""
+def delete_user_session(token: str) -> bool:
+    """Supprimer une session"""
     db = get_db()
     db.execute("DELETE FROM user_sessions WHERE token = ?", (token,))
     db.commit()
     db.close()
     return True
 
-# ===== FONCTIONS DEMANDES D'ACCÈS =====
+# ===== FONCTIONS POUR LES DEMANDES D'ACCÈS =====
 
 def create_access_request(user_id: int, member_id: int, member_name: str) -> int:
-    """Créer une demande d'accès aux coordonnées"""
+    """Créer une demande d'accès"""
     db = get_db()
     cursor = db.execute("""
         INSERT INTO contact_access_requests (user_id, member_id, member_name, status)
@@ -366,7 +340,7 @@ def create_access_request(user_id: int, member_id: int, member_name: str) -> int
     return request_id
 
 def get_pending_access_requests() -> List[Dict]:
-    """Récupérer toutes les demandes d'accès en attente"""
+    """Récupérer les demandes en attente"""
     db = get_db()
     db.row_factory = sqlite3.Row
     cursor = db.cursor()
@@ -383,20 +357,15 @@ def get_pending_access_requests() -> List[Dict]:
     db.close()
     return requests
 
-def approve_access_request(request_id: int, admin_id: int = None) -> bool:
+def approve_access_request(request_id: int) -> bool:
     """Approuver une demande d'accès"""
     db = get_db()
-    expires_at = datetime.now() + timedelta(days=30)
-    
+    expires_at = (datetime.now() + timedelta(days=30)).isoformat()
     db.execute("""
         UPDATE contact_access_requests 
-        SET status = 'approved', 
-            approved_by = ?,
-            approved_at = datetime('now'),
-            expires_at = ?
+        SET status = 'approved', approved_at = datetime('now'), expires_at = ?
         WHERE id = ?
-    """, (admin_id, expires_at.isoformat(), request_id))
-    
+    """, (expires_at, request_id))
     db.commit()
     db.close()
     return True
@@ -410,13 +379,12 @@ def reject_access_request(request_id: int) -> bool:
     return True
 
 def check_user_access(user_id: int, member_id: int) -> bool:
-    """Vérifier si un utilisateur a accès aux coordonnées d'un membre"""
+    """Vérifier si l'utilisateur a accès à un membre"""
     db = get_db()
     cursor = db.execute("""
         SELECT id FROM contact_access_requests 
         WHERE user_id = ? AND member_id = ? 
-        AND status = 'approved' 
-        AND expires_at > datetime('now')
+        AND status = 'approved' AND expires_at > datetime('now')
         LIMIT 1
     """, (user_id, member_id))
     result = cursor.fetchone()
@@ -424,7 +392,7 @@ def check_user_access(user_id: int, member_id: int) -> bool:
     return result is not None
 
 def get_user_access_requests(user_id: int) -> List[Dict]:
-    """Récupérer toutes les demandes d'accès d'un utilisateur"""
+    """Récupérer toutes les demandes d'un utilisateur"""
     db = get_db()
     db.row_factory = sqlite3.Row
     cursor = db.cursor()
@@ -441,78 +409,20 @@ def get_user_access_requests(user_id: int) -> List[Dict]:
     db.close()
     return requests
 
-# ===== FONCTIONS PAIEMENTS =====
-
-def create_payment(user_id: int, amount: float, method: str, member_id: int = None) -> str:
-    """Créer un paiement et retourner la référence"""
-    import uuid
-    reference = f"PAY-{uuid.uuid4().hex[:8].upper()}"
+def get_user_dashboard_data(user_id: int) -> Dict:
+    """Récupérer les données du dashboard utilisateur"""
+    requests = get_user_access_requests(user_id)
     
-    db = get_db()
-    db.execute("""
-        INSERT INTO payments (user_id, amount, method, reference, status, member_id)
-        VALUES (?, ?, ?, ?, 'pending', ?)
-    """, (user_id, amount, method, reference, member_id))
-    db.commit()
-    db.close()
-    return reference
-
-def complete_payment(reference: str) -> bool:
-    """Marquer un paiement comme complété"""
-    db = get_db()
-    db.execute("""
-        UPDATE payments 
-        SET status = 'completed', completed_at = datetime('now')
-        WHERE reference = ?
-    """, (reference,))
-    db.commit()
-    db.close()
-    return True
-
-def get_user_payments(user_id: int) -> List[Dict]:
-    """Récupérer tous les paiements d'un utilisateur"""
     db = get_db()
     db.row_factory = sqlite3.Row
     cursor = db.cursor()
     
-    cursor.execute("""
-        SELECT * FROM payments 
-        WHERE user_id = ? 
-        ORDER BY created_at DESC
-    """, (user_id,))
-    
+    # Paiements
+    cursor.execute("SELECT * FROM payments WHERE user_id = ? ORDER BY created_at DESC", (user_id,))
     payments = [dict(row) for row in cursor.fetchall()]
-    db.close()
-    return payments
-
-# ===== FONCTIONS PARAMÈTRES =====
-
-def get_setting(key: str, default: str = None) -> str:
-    """Récupérer un paramètre"""
-    db = get_db()
-    cursor = db.execute("SELECT value FROM settings WHERE key = ?", (key,))
-    row = cursor.fetchone()
-    db.close()
-    return row[0] if row else default
-
-def set_setting(key: str, value: str) -> bool:
-    """Définir un paramètre"""
-    db = get_db()
-    db.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value))
-    db.commit()
-    db.close()
-    return True
-
-# ===== FONCTIONS STATISTIQUES =====
-
-def get_dashboard_stats(user_id: int) -> Dict:
-    """Récupérer les statistiques pour le dashboard utilisateur"""
-    requests = get_user_access_requests(user_id)
-    payments = get_user_payments(user_id)
     
-    # Vérifier l'abonnement actif
-    db = get_db()
-    cursor = db.execute("""
+    # Abonnement actif
+    cursor.execute("""
         SELECT * FROM contact_access_requests 
         WHERE user_id = ? AND status = 'approved' 
         AND expires_at > datetime('now') AND member_id = 0
@@ -531,42 +441,25 @@ def get_dashboard_stats(user_id: int) -> Dict:
         "subscription_expires_at": active_subscription["expires_at"] if active_subscription else None
     }
     
-    return stats
+    return {
+        "stats": stats,
+        "access_requests": requests,
+        "payments": payments,
+        "active_subscription": dict(active_subscription) if active_subscription else None
+    }
 
-# ===== FONCTIONS DE CONTACT =====
+# ===== FONCTIONS POUR LES PARAMÈTRES =====
 
-def add_contact_request(nom: str, email: str, entreprise: str = "", telephone: str = "", commentaire: str = "") -> int:
-    """Ajouter une demande de contact"""
+def get_setting(key: str, default: str = None) -> str:
     db = get_db()
-    cursor = db.execute("""
-        INSERT INTO contact_requests (nom, entreprise, email, telephone, commentaire)
-        VALUES (?, ?, ?, ?, ?)
-    """, (nom, entreprise, email, telephone, commentaire))
-    request_id = cursor.lastrowid
-    db.commit()
+    cursor = db.execute("SELECT value FROM settings WHERE key = ?", (key,))
+    row = cursor.fetchone()
     db.close()
-    return request_id
+    return row[0] if row else default
 
-def get_unread_contact_requests() -> List[Dict]:
-    """Récupérer les demandes de contact non lues"""
+def set_setting(key: str, value: str) -> bool:
     db = get_db()
-    db.row_factory = sqlite3.Row
-    cursor = db.cursor()
-    
-    cursor.execute("""
-        SELECT * FROM contact_requests 
-        WHERE lu = 0 
-        ORDER BY created_at DESC
-    """)
-    
-    requests = [dict(row) for row in cursor.fetchall()]
-    db.close()
-    return requests
-
-def mark_contact_read(contact_id: int) -> bool:
-    """Marquer une demande de contact comme lue"""
-    db = get_db()
-    db.execute("UPDATE contact_requests SET lu = 1 WHERE id = ?", (contact_id,))
+    db.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value))
     db.commit()
     db.close()
     return True
@@ -574,18 +467,13 @@ def mark_contact_read(contact_id: int) -> bool:
 # ===== INITIALISATION =====
 
 if __name__ == "__main__":
-    # Test de la base de données
+    import sys
+    
     init_database()
     seed_default_data()
     
-    print("\n📊 Test des fonctions:")
-    
-    # Tester l'ajout d'un utilisateur
-    user_id = create_user("Test User", "test@example.com", "123456")
-    print(f"✅ Utilisateur créé: {user_id}")
-    
-    # Tester l'authentification
-    user = authenticate_user("test@example.com", "123456")
-    print(f"✅ Authentification: {user['name'] if user else 'Échec'}")
+    if len(sys.argv) > 1 and sys.argv[1] == "--import":
+        json_path = sys.argv[2] if len(sys.argv) > 2 else "onecca_data.json"
+        import_members_from_json(json_path)
     
     print("\n✅ Base de données prête !")
