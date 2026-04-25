@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
-/* ===== DESIGN TOKENS (conservé identique à votre version) ===== */
+/* ===== DESIGN TOKENS ===== */
 :root, [data-theme="light"] {
   --font-body: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
   --primary: #021e79;
@@ -231,6 +231,28 @@ a { color: inherit; text-decoration: none; }
   color: white;
   font-size: 14px;
   font-weight: 500;
+}
+.user-menu-buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.dashboard-menu-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,191,0,0.2);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 18px;
+}
+.dashboard-menu-btn:hover {
+  background: rgba(255,191,0,0.4);
+  transform: scale(1.05);
 }
 .logout-button {
   width: 36px;
@@ -972,6 +994,263 @@ a { color: inherit; text-decoration: none; }
 }
 .contact-fab:hover { background: var(--accent-hover); transform: translateX(-50%) translateY(-2px); }
 
+/* ===== DASHBOARD STYLES ===== */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 25px;
+  padding: 10px 0;
+}
+.stat-dashboard-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.stat-dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.stat-dashboard-number {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1.2;
+}
+[data-theme="dark"] .stat-dashboard-number { color: var(--accent); }
+.stat-dashboard-label {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-dashboard-card.pending .stat-dashboard-number { color: #f59e0b; }
+.stat-dashboard-card.approved .stat-dashboard-number { color: #10b981; }
+.stat-dashboard-card.rejected .stat-dashboard-number { color: #ef4444; }
+
+.dashboard-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 10px;
+}
+.dashboard-tab {
+  padding: 8px 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+}
+.dashboard-tab:hover {
+  color: var(--accent);
+  background: var(--color-border-light);
+}
+.dashboard-tab.active {
+  color: var(--accent);
+  background: var(--accent-light);
+  border-bottom: 2px solid var(--accent);
+}
+.dashboard-tab-content {
+  display: none;
+  max-height: 500px;
+  overflow-y: auto;
+}
+.dashboard-tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+.dashboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dashboard-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+.dashboard-item:hover { background: var(--color-card-hover); }
+.request-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.status-pending { background: #fef3c7; color: #d97706; }
+.status-approved { background: #d1fae5; color: #059669; }
+.status-rejected { background: #fee2e2; color: #dc2626; }
+[data-theme="dark"] .status-pending { background: #451a03; color: #fbbf24; }
+[data-theme="dark"] .status-approved { background: #064e3b; color: #34d399; }
+[data-theme="dark"] .status-rejected { background: #7f1d1d; color: #f87171; }
+.dashboard-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.dashboard-item-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-text);
+}
+.dashboard-item-date {
+  font-size: 11px;
+  color: var(--color-text-faint);
+}
+.dashboard-item-details {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
+}
+.dashboard-item-details span { display: inline-block; margin-right: 15px; }
+.expiry-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #fef3c7;
+  color: #d97706;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.subscription-info { text-align: center; padding: 30px; }
+.subscription-active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.subscription-inactive {
+  background: var(--color-surface);
+  border: 2px dashed var(--color-border);
+  padding: 30px;
+  border-radius: 20px;
+}
+.payment-amount { font-size: 18px; font-weight: 900; color: var(--primary); }
+[data-theme="dark"] .payment-amount { color: var(--accent); }
+.payment-status-completed { color: #10b981; }
+.payment-status-pending { color: #f59e0b; }
+.payment-status-failed { color: #ef4444; }
+.dashboard-link {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: var(--primary-dark);
+  text-decoration: none;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+.dashboard-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,191,0,0.3);
+}
+
+/* Admin requests list styles */
+.admin-requests-list {
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.admin-request-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+.admin-request-card:hover {
+  background: var(--color-card-hover);
+  border-color: var(--accent);
+}
+.admin-request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.admin-request-user {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-text);
+}
+.admin-request-user-email {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+.admin-request-member {
+  background: var(--accent-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+.admin-request-details {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 10px 0;
+  padding: 10px 0;
+  border-top: 1px dashed var(--color-border);
+  border-bottom: 1px dashed var(--color-border);
+}
+.admin-request-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.btn-approve {
+  flex: 1;
+  padding: 10px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-approve:hover { background: #059669; transform: translateY(-1px); }
+.btn-reject {
+  flex: 1;
+  padding: 10px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-reject:hover { background: #dc2626; transform: translateY(-1px); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .header-top { padding: 8px 16px; }
@@ -986,8 +1265,13 @@ a { color: inherit; text-decoration: none; }
   .btn-auth { padding: 6px 12px; font-size: 12px; }
   .user-name { display: none; }
   .user-menu { padding: 4px; }
-  .logout-button { width: 32px; height: 32px; }
+  .logout-button, .dashboard-menu-btn { width: 32px; height: 32px; }
   .modal-box { padding: 28px 20px; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
@@ -1006,74 +1290,31 @@ a { color: inherit; text-decoration: none; }
       </div>
     </div>
     <div class="header-actions">
-      <!-- Menu utilisateur connecté -->
-<div id="userMenu" class="user-menu" style="display: none;">
-    <div class="user-info">
-        <div class="user-avatar">
+      <div id="userMenu" class="user-menu" style="display: none;">
+        <div class="user-info">
+          <div class="user-avatar">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
             </svg>
+          </div>
+          <span id="userName" class="user-name"></span>
         </div>
-        <span id="userName" class="user-name"></span>
-    </div>
-    <div class="user-menu-buttons">
-        <button id="dashboardBtn" class="dashboard-menu-btn" title="Mon tableau de bord">
-            📊
-        </button>
-        <button id="logoutBtn" class="logout-button" title="Se déconnecter">
+        <div class="user-menu-buttons">
+          <button id="dashboardBtn" class="dashboard-menu-btn" title="Mon tableau de bord">📊</button>
+          <button id="logoutBtn" class="logout-button" title="Se déconnecter">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
-        </button>
-    </div>
-</div>
-
-<style>
-.user-menu {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(8px);
-    padding: 4px 8px 4px 8px;
-    border-radius: 60px;
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.user-menu-buttons {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.dashboard-menu-btn {
-    width: 36px;
-    height: 36px;
-    background: rgba(255,191,0,0.2);
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 18px;
-}
-
-.dashboard-menu-btn:hover {
-    background: rgba(255,191,0,0.4);
-    transform: scale(1.05);
-}
-</style>
-      <!-- Boutons Connexion/Inscription -->
+          </button>
+        </div>
+      </div>
       <div class="auth-buttons" id="authButtons">
         <a href="/auth.html" class="btn-auth btn-login">🔐 Connexion</a>
         <a href="/auth.html" class="btn-auth btn-register">📝 Inscription</a>
       </div>
-      <!-- Bouton thème -->
       <button class="btn-icon" data-theme-toggle>🌙</button>
     </div>
   </div>
@@ -1086,18 +1327,12 @@ a { color: inherit; text-decoration: none; }
     <div class="admin-toolbar-actions">
       <div class="toggle-switch" id="contactsToggle">
         <span>Coordonnées :</span>
-        <div class="toggle-track" id="toggleTrack">
-          <div class="toggle-thumb"></div>
-        </div>
+        <div class="toggle-track" id="toggleTrack"><div class="toggle-thumb"></div></div>
         <span class="toggle-status" id="toggleStatus">—</span>
       </div>
       <button class="admin-btn admin-btn-primary" id="btnAddMember">➕ Ajouter un membre</button>
-      <button class="admin-btn admin-btn-secondary" id="btnAccessRequests">
-        📋 Demandes accès <span class="admin-badge" id="accessRequestsBadge">0</span>
-      </button>
-      <button class="admin-btn admin-btn-secondary" id="btnContacts">
-        📨 Demandes <span class="admin-badge" id="contactsBadge">0</span>
-      </button>
+      <button class="admin-btn admin-btn-secondary" id="btnAccessRequests">📋 Demandes accès <span class="admin-badge" id="accessRequestsBadge">0</span></button>
+      <button class="admin-btn admin-btn-secondary" id="btnContacts">📨 Demandes <span class="admin-badge" id="contactsBadge">0</span></button>
       <button class="admin-btn admin-btn-danger" id="btnExitAdmin">🚪 Quitter l'admin</button>
     </div>
   </div>
@@ -1131,15 +1366,9 @@ a { color: inherit; text-decoration: none; }
       </div>
       <select class="city-select" id="cityFilter">
         <option value="">Toutes les villes</option>
-        <option value="Douala">Douala</option>
-        <option value="Yaoundé">Yaoundé</option>
-        <option value="Buéa">Buéa</option>
-        <option value="Limbé">Limbé</option>
-        <option value="Bamenda">Bamenda</option>
-        <option value="Bafoussam">Bafoussam</option>
-        <option value="Maroua">Maroua</option>
-        <option value="Bangangté">Bangangté</option>
-        <option value="Autre">Autre</option>
+        <option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option>
+        <option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option>
+        <option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option><option value="Autre">Autre</option>
       </select>
       <button class="btn-export" onclick="window.print()">🖨️ Imprimer</button>
     </div>
@@ -1161,531 +1390,26 @@ a { color: inherit; text-decoration: none; }
 <footer class="footer">
   <strong>ONECCA</strong> — Ordre National des Experts-Comptables du Cameroun · Tableau 2026<br>
   © 2026 Tous droits réservés
-  <div class="footer-admin">
-    <a href="/admin_login.html" class="admin-secret" title="Accès administrateur">⚙️ admin</a>
-  </div>
+  <div class="footer-admin"><a href="/admin_login.html" class="admin-secret" title="Accès administrateur">⚙️ admin</a></div>
 </footer>
 
 <button class="back-to-top" id="backToTop">↑</button>
 <button class="contact-fab" id="contactFab">🔍 À la recherche d'un expert-comptable ? Contactez-nous</button>
 
-<!-- MODAL CONTACT -->
-<div class="modal-overlay" id="contactModal">
-  <div class="modal-box">
-    <div class="modal-logo">📧</div>
-    <h2>Demande de mise en relation</h2>
-    <p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p>
-    <div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div>
-    <div class="modal-error" id="contactError"></div>
-    <form id="contactForm">
-      <div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div>
-      <div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div>
-      <div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div>
-      <div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div>
-      <div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div>
-      <button type="submit" class="modal-btn-primary">Envoyer ma demande</button>
-    </form>
-    <div class="modal-cancel" id="contactCancel">Annuler</div>
-  </div>
-</div>
+<!-- MODALS -->
+<div class="modal-overlay" id="contactModal"><div class="modal-box"><div class="modal-logo">📧</div><h2>Demande de mise en relation</h2><p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p><div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div><div class="modal-error" id="contactError"></div><form id="contactForm"><div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div><div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div><div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div><div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div><button type="submit" class="modal-btn-primary">Envoyer ma demande</button></form><div class="modal-cancel" id="contactCancel">Annuler</div></div></div>
 
-<!-- MODAL PAIEMENT / DÉBLOQUAGE -->
-<div class="modal-overlay" id="accessModal">
-  <div class="modal-box">
-    <div class="modal-logo">🔓</div>
-    <h2>Débloquer les coordonnées</h2>
-    <p class="modal-subtitle" id="accessMemberName"></p>
-    <div class="pricing-options">
-      <div class="pricing-card" data-price="5000" data-type="single">
-        <div class="price">5 000 FCFA</div>
-        <div class="period">Accès unique</div>
-        <div class="feature">✓ Coordonnées d'un membre</div>
-        <div class="feature">✓ Valable 30 jours</div>
-      </div>
-      <div class="pricing-card" data-price="25000" data-type="subscription">
-        <div class="price">25 000 FCFA</div>
-        <div class="period">Abonnement mensuel</div>
-        <div class="feature">✓ Accès illimité</div>
-        <div class="feature">✓ Tous les membres</div>
-        <div class="feature">✓ Valable 30 jours</div>
-      </div>
-    </div>
-    <div class="payment-methods">
-      <h4>Mode de paiement</h4>
-      <div class="methods-grid">
-        <button class="method-btn" data-method="orange_money">📱 Orange Money</button>
-        <button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button>
-        <button class="method-btn" data-method="card">💳 Carte bancaire</button>
-      </div>
-      <input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);">
-    </div>
-    <div id="paymentStatus" class="payment-status"></div>
-    <button id="payBtn" class="modal-btn-primary">Payer et débloquer</button>
-    <div class="modal-cancel" id="accessCancel">Annuler</div>
-  </div>
-</div>
+<div class="modal-overlay" id="accessModal"><div class="modal-box"><div class="modal-logo">🔓</div><h2>Débloquer les coordonnées</h2><p class="modal-subtitle" id="accessMemberName"></p><div class="pricing-options"><div class="pricing-card" data-price="5000" data-type="single"><div class="price">5 000 FCFA</div><div class="period">Accès unique</div><div class="feature">✓ Coordonnées d'un membre</div><div class="feature">✓ Valable 30 jours</div></div><div class="pricing-card" data-price="25000" data-type="subscription"><div class="price">25 000 FCFA</div><div class="period">Abonnement mensuel</div><div class="feature">✓ Accès illimité</div><div class="feature">✓ Tous les membres</div><div class="feature">✓ Valable 30 jours</div></div></div><div class="payment-methods"><h4>Mode de paiement</h4><div class="methods-grid"><button class="method-btn" data-method="orange_money">📱 Orange Money</button><button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button><button class="method-btn" data-method="card">💳 Carte bancaire</button></div><input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);"></div><div id="paymentStatus" class="payment-status"></div><button id="payBtn" class="modal-btn-primary">Payer et débloquer</button><div class="modal-cancel" id="accessCancel">Annuler</div></div></div>
 
-<!-- MODAL MEMBER FORM (admin) -->
-<div class="modal-overlay" id="memberModal">
-  <div class="modal-box">
-    <div class="modal-logo">👤</div>
-    <h2 id="memberModalTitle">Ajouter un membre</h2>
-    <p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p>
-    <div class="modal-error" id="memberError"></div>
-    <form id="memberForm">
-      <input type="hidden" name="id" id="memberFormId">
-      <div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div>
-      <div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div>
-      <div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div>
-      <div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div>
-      <div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div>
-      <div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div>
-      <div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div>
-      <div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div>
-      <div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div>
-      <div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div>
-      <button type="submit" class="modal-btn-primary">Enregistrer</button>
-    </form>
-    <div class="modal-cancel" id="memberCancel">Annuler</div>
-  </div>
-</div>
+<div class="modal-overlay" id="memberModal"><div class="modal-box"><div class="modal-logo">👤</div><h2 id="memberModalTitle">Ajouter un membre</h2><p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p><div class="modal-error" id="memberError"></div><form id="memberForm"><input type="hidden" name="id" id="memberFormId"><div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div><div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div><div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div><div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div><div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div><div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div><div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div><div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div><button type="submit" class="modal-btn-primary">Enregistrer</button></form><div class="modal-cancel" id="memberCancel">Annuler</div></div></div>
 
-<!-- PANEL DEMANDES D'ACCÈS (admin) -->
-<div class="modal-overlay" id="accessRequestsPanel">
-  <div class="modal-box" style="max-width: 700px;">
-    <div class="modal-logo">📋</div>
-    <h2>Demandes de déblocage</h2>
-    <p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p>
-    <div id="accessRequestsList"></div>
-    <div class="modal-cancel" id="accessRequestsClose">Fermer</div>
-  </div>
-</div>
+<div class="modal-overlay" id="adminAccessRequestsPanel"><div class="modal-box" style="max-width: 800px;"><div class="modal-logo">📋</div><h2>Demandes de déblocage</h2><p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p><div id="adminAccessRequestsList"></div><div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div></div></div>
 
-<!-- PANEL CONTACT REQUESTS (admin) -->
-<div class="modal-overlay" id="contactsPanel">
-  <div class="modal-box" style="max-width: 600px;">
-    <div class="modal-logo">📨</div>
-    <h2>Demandes de contact</h2>
-    <p class="modal-subtitle">Messages des visiteurs</p>
-    <div id="contactsPanelBody"></div>
-    <div class="modal-cancel" id="contactsPanelClose">Fermer</div>
-  </div>
-</div>
+<div class="modal-overlay" id="contactsPanel"><div class="modal-box" style="max-width: 600px;"><div class="modal-logo">📨</div><h2>Demandes de contact</h2><p class="modal-subtitle">Messages des visiteurs</p><div id="contactsPanelBody"></div><div class="modal-cancel" id="contactsPanelClose">Fermer</div></div></div>
 
-<!-- CONFIRM DIALOG -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="confirm-box">
-    <h3 id="confirmTitle">Confirmer</h3>
-    <p id="confirmMessage">Êtes-vous sûr ?</p>
-    <div class="confirm-actions">
-      <button class="confirm-btn cancel" id="confirmCancel">Annuler</button>
-      <button class="confirm-btn danger" id="confirmOk">Supprimer</button>
-    </div>
-  </div>
-</div>
+<div class="modal-overlay" id="dashboardModal"><div class="modal-box" style="max-width: 900px;"><div class="modal-logo">📊</div><h2>Mon tableau de bord</h2><p class="modal-subtitle" id="dashboardUserName"></p><div class="dashboard-stats" id="dashboardStats"></div><div class="dashboard-tabs"><button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button><button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button><button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button></div><div id="dashboardRequestsTab" class="dashboard-tab-content active"><div id="dashboardRequestsList"></div></div><div id="dashboardPaymentsTab" class="dashboard-tab-content"><div id="dashboardPaymentsList"></div></div><div id="dashboardSubscriptionTab" class="dashboard-tab-content"><div id="subscriptionInfo"></div></div><div class="modal-cancel" id="dashboardClose">Fermer</div></div></div>
 
-
-
-<!-- DASHBOARD UTILISATEUR -->
-<div class="modal-overlay" id="dashboardModal">
-    <div class="modal-box" style="max-width: 900px;">
-        <div class="modal-logo">📊</div>
-        <h2>Mon tableau de bord</h2>
-        <p class="modal-subtitle" id="dashboardUserName"></p>
-        
-        <!-- Statistiques -->
-        <div class="dashboard-stats" id="dashboardStats"></div>
-        
-        <!-- Onglets du dashboard -->
-        <div class="dashboard-tabs">
-            <button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button>
-            <button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button>
-            <button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button>
-        </div>
-        
-        <!-- Contenu des onglets -->
-        <div id="dashboardRequestsTab" class="dashboard-tab-content active">
-            <div id="accessRequestsList" class="dashboard-list"></div>
-        </div>
-        
-        <div id="dashboardPaymentsTab" class="dashboard-tab-content">
-            <div id="paymentsList" class="dashboard-list"></div>
-        </div>
-        
-        <div id="dashboardSubscriptionTab" class="dashboard-tab-content">
-            <div id="subscriptionInfo" class="subscription-info"></div>
-        </div>
-        
-        <div class="modal-cancel" id="dashboardClose">Fermer</div>
-    </div>
-</div>
-
-<style>
-/* Styles pour le dashboard */
-.dashboard-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-    margin-bottom: 25px;
-    padding: 10px 0;
-}
-
-.stat-dashboard-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 15px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.stat-dashboard-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-
-.stat-dashboard-number {
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--primary);
-    line-height: 1.2;
-}
-
-[data-theme="dark"] .stat-dashboard-number {
-    color: var(--accent);
-}
-
-.stat-dashboard-label {
-    font-size: 11px;
-    color: var(--color-text-muted);
-    margin-top: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stat-dashboard-card.pending .stat-dashboard-number { color: #f59e0b; }
-.stat-dashboard-card.approved .stat-dashboard-number { color: #10b981; }
-.stat-dashboard-card.rejected .stat-dashboard-number { color: #ef4444; }
-
-.dashboard-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--color-border);
-    padding-bottom: 10px;
-}
-
-.dashboard-tab {
-    padding: 8px 20px;
-    background: none;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 20px;
-}
-
-.dashboard-tab:hover {
-    color: var(--accent);
-    background: var(--color-border-light);
-}
-
-.dashboard-tab.active {
-    color: var(--accent);
-    background: var(--accent-light);
-    border-bottom: 2px solid var(--accent);
-}
-
-.dashboard-tab-content {
-    display: none;
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-.dashboard-tab-content.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
-}
-
-.dashboard-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.dashboard-item {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    transition: all 0.3s ease;
-}
-
-.dashboard-item:hover {
-    background: var(--color-card-hover);
-}
-
-.request-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.status-pending {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.status-approved {
-    background: #d1fae5;
-    color: #059669;
-}
-
-.status-rejected {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-[data-theme="dark"] .status-pending { background: #451a03; color: #fbbf24; }
-[data-theme="dark"] .status-approved { background: #064e3b; color: #34d399; }
-[data-theme="dark"] .status-rejected { background: #7f1d1d; color: #f87171; }
-
-.dashboard-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.dashboard-item-title {
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--color-text);
-}
-
-.dashboard-item-date {
-    font-size: 11px;
-    color: var(--color-text-faint);
-}
-
-.dashboard-item-details {
-    font-size: 13px;
-    color: var(--color-text-muted);
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--color-border);
-}
-
-.dashboard-item-details span {
-    display: inline-block;
-    margin-right: 15px;
-}
-
-.expiry-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    background: #fef3c7;
-    color: #d97706;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 600;
-    margin-left: 8px;
-}
-
-.subscription-info {
-    text-align: center;
-    padding: 30px;
-}
-
-.subscription-active {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
-    padding: 30px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-}
-
-.subscription-inactive {
-    background: var(--color-surface);
-    border: 2px dashed var(--color-border);
-    padding: 30px;
-    border-radius: 20px;
-}
-
-.payment-amount {
-    font-size: 18px;
-    font-weight: 900;
-    color: var(--primary);
-}
-
-[data-theme="dark"] .payment-amount {
-    color: var(--accent);
-}
-
-.payment-status-completed {
-    color: #10b981;
-}
-
-.payment-status-pending {
-    color: #f59e0b;
-}
-
-.payment-status-failed {
-    color: #ef4444;
-}
-
-.dashboard-link {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 20px;
-    background: var(--accent);
-    color: var(--primary-dark);
-    text-decoration: none;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.dashboard-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255,191,0,0.3);
-}
-</style>
-
-
-  <!-- PANEL DEMANDES D'ACCÈS (ADMIN) -->
-<div class="modal-overlay" id="adminAccessRequestsPanel">
-    <div class="modal-box" style="max-width: 800px;">
-        <div class="modal-logo">📋</div>
-        <h2>Demandes de déblocage</h2>
-        <p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p>
-        <div id="adminAccessRequestsList" class="admin-requests-list"></div>
-        <div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div>
-    </div>
-</div>
-
-<style>
-.admin-requests-list {
-    max-height: 500px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.admin-request-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    transition: all 0.3s ease;
-}
-
-.admin-request-card:hover {
-    background: var(--color-card-hover);
-    border-color: var(--accent);
-}
-
-.admin-request-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.admin-request-user {
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--color-text);
-}
-
-.admin-request-user-email {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    margin-top: 2px;
-}
-
-.admin-request-member {
-    background: var(--accent-light);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--primary-dark);
-}
-
-.admin-request-details {
-    font-size: 13px;
-    color: var(--color-text-muted);
-    margin: 10px 0;
-    padding: 10px 0;
-    border-top: 1px dashed var(--color-border);
-    border-bottom: 1px dashed var(--color-border);
-}
-
-.admin-request-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-}
-
-.btn-approve {
-    flex: 1;
-    padding: 10px;
-    background: #10b981;
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-approve:hover {
-    background: #059669;
-    transform: translateY(-1px);
-}
-
-.btn-reject {
-    flex: 1;
-    padding: 10px;
-    background: #ef4444;
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-reject:hover {
-    background: #dc2626;
-    transform: translateY(-1px);
-}
-
-.request-badge-pending {
-    display: inline-block;
-    padding: 4px 12px;
-    background: #fef3c7;
-    color: #d97706;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-}
-</style>
-  
+<div class="confirm-overlay" id="confirmOverlay"><div class="confirm-box"><h3 id="confirmTitle">Confirmer</h3><p id="confirmMessage">Êtes-vous sûr ?</p><div class="confirm-actions"><button class="confirm-btn cancel" id="confirmCancel">Annuler</button><button class="confirm-btn danger" id="confirmOk">Supprimer</button></div></div></div>
 
 <script>
 (function() {
@@ -1714,7 +1438,8 @@ let RAW = { liberaux: [], societes: [], salaries: [], stagiaires: [] };
 let showContacts = false;
 let currentUser = null;
 let isUserLoggedIn = false;
-let accessCache = new Map(); // Cache des accès par member_id
+let accessCache = new Map();
+let chartSection = null, chartCity = null;
 
 // ===== HELPER FUNCTIONS =====
 function escapeHtml(str) {
@@ -1735,10 +1460,7 @@ async function apiPost(url, body, admin) {
   const headers = { 'Content-Type': 'application/json' };
   if (admin) Object.assign(headers, ADMIN_HEADER);
   const res = await fetch(API + url, { method: 'POST', headers, body: JSON.stringify(body) });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Erreur serveur');
-  }
+  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.detail || 'Erreur serveur'); }
   return res.json();
 }
 
@@ -1761,7 +1483,6 @@ async function apiDelete(url, admin) {
 function checkUserAuth() {
   const token = localStorage.getItem('userToken');
   const userName = localStorage.getItem('userName');
-  
   const userMenu = document.getElementById('userMenu');
   const authButtons = document.getElementById('authButtons');
   const userNameSpan = document.getElementById('userName');
@@ -1780,35 +1501,23 @@ function checkUserAuth() {
   }
 }
 
-// Déconnexion
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('userToken');
-  localStorage.removeItem('userEmail');
-  localStorage.removeItem('userName');
-  localStorage.removeItem('userPhone');
+  localStorage.removeItem('userToken'); localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName'); localStorage.removeItem('userPhone');
   window.location.reload();
 });
 
 // ===== VÉRIFICATION ACCÈS MEMBRE =====
 async function checkMemberAccess(memberId) {
   if (!isUserLoggedIn) return false;
-  
-  if (accessCache.has(memberId)) {
-    return accessCache.get(memberId);
-  }
-  
+  if (accessCache.has(memberId)) return accessCache.get(memberId);
   try {
-    const res = await fetch(API + `/api/access/check/${memberId}`, {
-      headers: { 'Authorization': `Bearer ${currentUser.token}` }
-    });
+    const res = await fetch(API + `/api/access/check/${memberId}`, { headers: { 'Authorization': `Bearer ${currentUser.token}` } });
     const data = await res.json();
     const hasAccess = data.has_access === true;
     accessCache.set(memberId, hasAccess);
     return hasAccess;
-  } catch (err) {
-    console.error('Erreur vérification accès:', err);
-    return false;
-  }
+  } catch (err) { console.error('Erreur vérification accès:', err); return false; }
 }
 
 // ===== DEMANDE DÉBLOQUAGE =====
@@ -1817,29 +1526,21 @@ let selectedPrice = 5000;
 let selectedMethod = null;
 
 async function requestUnlock(memberId, memberName) {
-  if (!isUserLoggedIn) {
-    alert('Veuillez vous connecter pour débloquer les coordonnées');
-    window.location.href = '/auth.html';
-    return;
-  }
-  
+  if (!isUserLoggedIn) { alert('Veuillez vous connecter'); window.location.href = '/auth.html'; return; }
   currentUnlockMember = { id: memberId, name: memberName };
   document.getElementById('accessMemberName').textContent = `Débloquer "${memberName}"`;
   document.getElementById('accessModal').classList.add('open');
 }
 
-// Sélection prix
 document.querySelectorAll('.pricing-card').forEach(card => {
   card.addEventListener('click', () => {
     document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     selectedPrice = parseInt(card.dataset.price);
-    const phoneInput = document.getElementById('phoneNumber');
-    phoneInput.style.display = selectedPrice === 5000 ? 'block' : 'none';
+    document.getElementById('phoneNumber').style.display = selectedPrice === 5000 ? 'block' : 'none';
   });
 });
 
-// Sélection méthode paiement
 document.querySelectorAll('.method-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
@@ -1848,80 +1549,40 @@ document.querySelectorAll('.method-btn').forEach(btn => {
   });
 });
 
-// Paiement
 document.getElementById('payBtn')?.addEventListener('click', async () => {
-  if (!selectedMethod) {
-    showPaymentStatus('Veuillez sélectionner un mode de paiement', 'error');
-    return;
-  }
-  
+  if (!selectedMethod) { showPaymentStatus('Veuillez sélectionner un mode de paiement', 'error'); return; }
   const payBtn = document.getElementById('payBtn');
-  payBtn.disabled = true;
-  payBtn.textContent = 'Traitement...';
-  
+  payBtn.disabled = true; payBtn.textContent = 'Traitement...';
   try {
-    // 1. Initier paiement
-    const paymentRes = await fetch(API + '/api/payment/initiate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
-      body: JSON.stringify({
-        amount: selectedPrice,
-        method: selectedMethod,
-        phone_number: document.getElementById('phoneNumber').value,
-        member_id: currentUnlockMember.id
-      })
+    await fetch(API + '/api/payment/initiate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
+      body: JSON.stringify({ amount: selectedPrice, method: selectedMethod, phone_number: document.getElementById('phoneNumber').value, member_id: currentUnlockMember.id })
     });
-    const paymentData = await paymentRes.json();
-    
-    if (paymentData.success) {
-      // 2. Créer demande d'accès
-      await fetch(API + '/api/access/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
-        body: JSON.stringify({
-          member_id: currentUnlockMember.id,
-          member_name: currentUnlockMember.name
-        })
-      });
-      
-      showPaymentStatus('Demande envoyée ! Un administrateur va traiter votre demande.', 'success');
-      setTimeout(() => {
-        document.getElementById('accessModal').classList.remove('open');
-      }, 2000);
-    }
-  } catch (err) {
-    showPaymentStatus('Erreur lors de la demande', 'error');
-  } finally {
-    payBtn.disabled = false;
-    payBtn.textContent = 'Payer et débloquer';
-  }
+    await fetch(API + '/api/access/request', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
+      body: JSON.stringify({ member_id: currentUnlockMember.id, member_name: currentUnlockMember.name })
+    });
+    showPaymentStatus('Demande envoyée ! Un administrateur va traiter votre demande.', 'success');
+    setTimeout(() => document.getElementById('accessModal').classList.remove('open'), 2000);
+  } catch (err) { showPaymentStatus('Erreur lors de la demande', 'error'); }
+  finally { payBtn.disabled = false; payBtn.textContent = 'Payer et débloquer'; }
 });
 
 function showPaymentStatus(msg, type) {
   const statusDiv = document.getElementById('paymentStatus');
-  statusDiv.textContent = msg;
-  statusDiv.className = `payment-status ${type} show`;
+  statusDiv.textContent = msg; statusDiv.className = `payment-status ${type} show`;
   setTimeout(() => statusDiv.classList.remove('show'), 4000);
 }
 
-document.getElementById('accessCancel')?.addEventListener('click', () => {
-  document.getElementById('accessModal').classList.remove('open');
-});
+document.getElementById('accessCancel')?.addEventListener('click', () => document.getElementById('accessModal').classList.remove('open'));
 
 // ===== LOAD MEMBERS =====
 async function loadMembers() {
-  if (isAdmin) {
-    const data = await apiGet('/api/admin/members', true);
-    RAW = data.members || data;
-    showContacts = true;
-  } else {
-    const data = await apiGet('/api/members', false);
-    RAW = data.members || data;
-    showContacts = isUserLoggedIn || data.show_contacts || false;
-  }
+  if (isAdmin) { const data = await apiGet('/api/admin/members', true); RAW = data.members || data; showContacts = true; }
+  else { const data = await apiGet('/api/members', false); RAW = data.members || data; showContacts = isUserLoggedIn || data.show_contacts || false; }
 }
 
-// ===== RENDER CARDS AVEC VÉRIFICATION ACCÈS =====
+// ===== RENDER CARDS =====
 async function renderCards() {
   const data = getFilteredData(false);
   const total = data.length;
@@ -1930,105 +1591,63 @@ async function renderCards() {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const page = data.slice(start, start + ITEMS_PER_PAGE);
   
-  const secLabel = SECTIONS.find(s => s.key === currentSection).short;
-  document.getElementById('resultsCount').innerHTML = total === 0
-    ? 'Aucun résultat'
-    : `<strong>${total}</strong> membre${total > 1 ? 's' : ''} — ${secLabel}`;
+  document.getElementById('resultsCount').innerHTML = total === 0 ? 'Aucun résultat' : `<strong>${total}</strong> membre${total > 1 ? 's' : ''} — ${SECTIONS.find(s => s.key === currentSection).short}`;
   
   const grid = document.getElementById('cardGrid');
-  if (total === 0) {
-    grid.innerHTML = '<div class="empty-state"><h3>Aucun résultat trouvé</h3><p>Essayez de modifier vos critères de recherche</p></div>';
-    document.getElementById('pagination').innerHTML = '';
-    return;
-  }
+  if (total === 0) { grid.innerHTML = '<div class="empty-state"><h3>Aucun résultat trouvé</h3><p>Essayez de modifier vos critères de recherche</p></div>'; document.getElementById('pagination').innerHTML = ''; return; }
   
-  // Vérifier accès pour chaque membre
   const accessPromises = page.map(m => checkMemberAccess(m.id));
   const accessResults = await Promise.all(accessPromises);
   
   grid.innerHTML = page.map((e, idx) => {
     const hasAccess = accessResults[idx];
     let contactHtml = '';
-    
     if (isAdmin || hasAccess) {
-      const phones = [];
-      if (e.tel1) phones.push(e.tel1);
-      if (e.tel2) phones.push(e.tel2);
+      const phones = []; if (e.tel1) phones.push(e.tel1); if (e.tel2) phones.push(e.tel2);
       const phoneLinks = phones.map(p => `<a href="tel:+237${p.replace(/\s/g, '')}">${escapeHtml(p.trim())}</a>`).join(' / ');
-      
-      if (phones.length) {
-        contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>${phoneLinks}</span></div>`;
-      }
-      if (e.email) {
-        contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><a href="mailto:${escapeHtml(e.email)}">${escapeHtml(e.email)}</a></div>`;
-      }
-    } else if (isUserLoggedIn) {
-      contactHtml = `<div class="card-locked">🔒 Coordonnées verrouillées <button class="unlock-btn" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🔓 Débloquer (5 000 FCFA)</button></div>`;
-    } else {
-      contactHtml = `<div class="card-locked">🔒 Connectez-vous pour voir les coordonnées <a href="/auth.html" class="login-link">Se connecter</a></div>`;
-    }
+      if (phones.length) contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>${phoneLinks}</span></div>`;
+      if (e.email) contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><a href="mailto:${escapeHtml(e.email)}">${escapeHtml(e.email)}</a></div>`;
+    } else if (isUserLoggedIn) contactHtml = `<div class="card-locked">🔒 Coordonnées verrouillées <button class="unlock-btn" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🔓 Débloquer (5 000 FCFA)</button></div>`;
+    else contactHtml = `<div class="card-locked">🔒 Connectez-vous pour voir les coordonnées <a href="/auth.html" class="login-link">Se connecter</a></div>`;
     
     let adminActions = '';
-    if (isAdmin && e.id) {
-      adminActions = `<div class="card-admin-actions"><button class="card-admin-btn edit" data-id="${e.id}">✏️ Modifier</button><button class="card-admin-btn delete" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🗑️ Supprimer</button></div>`;
-    }
+    if (isAdmin && e.id) adminActions = `<div class="card-admin-actions"><button class="card-admin-btn edit" data-id="${e.id}">✏️ Modifier</button><button class="card-admin-btn delete" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🗑️ Supprimer</button></div>`;
     
     return `<div class="card"><div class="card-num">#${e.num || (start + idx + 1)}</div><div class="card-name">${escapeHtml(e.nom)}</div><div class="card-inscription"><span class="badge-insc">${escapeHtml(e.inscription_num || '')}</span>${e.inscription_date ? `<span>Inscrit le ${escapeHtml(e.inscription_date)}</span>` : ''}</div><div class="card-details">${e.adresse || e.bp ? `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${escapeHtml([e.bp, e.adresse].filter(Boolean).join(' — '))}</span></div>` : ''}${contactHtml}</div>${e.ville ? `<div class="city-tag">📍 ${escapeHtml(e.ville)}</div>` : ''}${adminActions}</div>`;
   }).join('');
   
-  // Attach event listeners
-  grid.querySelectorAll('.unlock-btn').forEach(btn => {
-    btn.addEventListener('click', () => requestUnlock(parseInt(btn.dataset.id), btn.dataset.name));
-  });
+  grid.querySelectorAll('.unlock-btn').forEach(btn => btn.addEventListener('click', () => requestUnlock(parseInt(btn.dataset.id), btn.dataset.name)));
   if (isAdmin) {
     grid.querySelectorAll('.card-admin-btn.edit').forEach(btn => btn.addEventListener('click', () => openEditMember(btn.dataset.id)));
     grid.querySelectorAll('.card-admin-btn.delete').forEach(btn => btn.addEventListener('click', () => deleteMember(btn.dataset.id, btn.dataset.name)));
   }
-  
   renderPagination(totalPages);
 }
 
-// ===== FILTER DATA =====
 function getFilteredData(skipAlpha) {
   let data = RAW[currentSection] || [];
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    data = data.filter(e => (e.nom || '').toLowerCase().includes(q) || (e.adresse || '').toLowerCase().includes(q) || (e.bp || '').toLowerCase().includes(q));
-  }
+  if (searchQuery) { const q = searchQuery.toLowerCase(); data = data.filter(e => (e.nom || '').toLowerCase().includes(q) || (e.adresse || '').toLowerCase().includes(q) || (e.bp || '').toLowerCase().includes(q)); }
   if (cityFilter) {
-    if (cityFilter === 'Autre') {
-      const known = ['Douala', 'Yaoundé', 'Buéa', 'Limbé', 'Bamenda', 'Bafoussam', 'Maroua', 'Bangangté'];
-      data = data.filter(e => !known.includes(e.ville));
-    } else {
-      data = data.filter(e => e.ville === cityFilter);
-    }
+    if (cityFilter === 'Autre') { const known = ['Douala', 'Yaoundé', 'Buéa', 'Limbé', 'Bamenda', 'Bafoussam', 'Maroua', 'Bangangté']; data = data.filter(e => !known.includes(e.ville)); }
+    else data = data.filter(e => e.ville === cityFilter);
   }
-  if (!skipAlpha && alphaFilter) {
-    data = data.filter(e => (e.nom || '').charAt(0).toUpperCase() === alphaFilter);
-  }
+  if (!skipAlpha && alphaFilter) data = data.filter(e => (e.nom || '').charAt(0).toUpperCase() === alphaFilter);
   return data;
 }
 
-// ===== PAGINATION =====
 function renderPagination(totalPages) {
   if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
   let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">←</button>`;
-  for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-  }
+  for (let i = 1; i <= Math.min(totalPages, 5); i++) html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
   if (totalPages > 5) html += `<span class="page-ellipsis">...</span><button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
   html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">→</button>`;
   document.getElementById('pagination').innerHTML = html;
-  document.querySelectorAll('.page-btn').forEach(btn => {
-    btn.addEventListener('click', () => { if (!btn.disabled) { currentPage = parseInt(btn.dataset.page); renderCards(); } });
-  });
+  document.querySelectorAll('.page-btn').forEach(btn => { btn.addEventListener('click', () => { if (!btn.disabled) { currentPage = parseInt(btn.dataset.page); renderCards(); } }); });
 }
 
-// ===== RENDER STATS & CHARTS =====
 function renderStats() {
   const total = SECTIONS.reduce((s, sec) => s + RAW[sec.key].length, 0);
-  const statsGrid = document.getElementById('statsGrid');
-  statsGrid.innerHTML = `<div class="stat-card accent"><div class="stat-number">${total}</div><div class="stat-label">Total membres</div></div>` + SECTIONS.map(sec => `<div class="stat-card"><div class="stat-number">${RAW[sec.key].length}</div><div class="stat-label">${sec.short}</div></div>`).join('');
+  document.getElementById('statsGrid').innerHTML = `<div class="stat-card accent"><div class="stat-number">${total}</div><div class="stat-label">Total membres</div></div>` + SECTIONS.map(sec => `<div class="stat-card"><div class="stat-number">${RAW[sec.key].length}</div><div class="stat-label">${sec.short}</div></div>`).join('');
 }
 
 function renderTabs() {
@@ -2042,12 +1661,22 @@ function updateAlphaBar() {
   const letters = new Set(data.map(e => (e.nom || '').charAt(0).toUpperCase()).filter(l => /[A-Z]/.test(l)));
   const bar = document.getElementById('alphaBar');
   let btns = `<button class="alpha-btn ${alphaFilter === '' ? 'active' : ''}" data-letter="">Tous</button>`;
-  for (let i = 65; i <= 90; i++) {
-    const l = String.fromCharCode(i);
-    btns += `<button class="alpha-btn ${alphaFilter === l ? 'active' : ''} ${letters.has(l) ? '' : 'disabled'}" data-letter="${l}">${l}</button>`;
-  }
+  for (let i = 65; i <= 90; i++) { const l = String.fromCharCode(i); btns += `<button class="alpha-btn ${alphaFilter === l ? 'active' : ''} ${letters.has(l) ? '' : 'disabled'}" data-letter="${l}">${l}</button>`; }
   bar.innerHTML = btns;
   bar.querySelectorAll('.alpha-btn').forEach(btn => btn.addEventListener('click', () => { if (!btn.classList.contains('disabled')) { alphaFilter = btn.dataset.letter; currentPage = 1; updateAlphaBar(); renderCards(); } }));
+}
+
+function renderCharts() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const textColor = isDark ? '#9a9ea6' : '#707070';
+  const sectionData = SECTIONS.map(s => RAW[s.key].length);
+  if (chartSection) chartSection.destroy();
+  chartSection = new Chart(document.getElementById('chartSection'), { type: 'doughnut', data: { labels: SECTIONS.map(s => s.short), datasets: [{ data: sectionData, backgroundColor: ['#021e79', '#1a3599', '#ffbf00', '#e6ac00'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 11 } } } } } });
+  const allEntries = SECTIONS.flatMap(sec => RAW[sec.key]);
+  const cityMap = {}; allEntries.forEach(e => { const v = e.ville || 'Autre'; cityMap[v] = (cityMap[v] || 0) + 1; });
+  const sorted = Object.entries(cityMap).sort((a, b) => b[1] - a[1]);
+  if (chartCity) chartCity.destroy();
+  chartCity = new Chart(document.getElementById('chartCity'), { type: 'bar', data: { labels: sorted.map(c => c[0]), datasets: [{ data: sorted.map(c => c[1]), backgroundColor: isDark ? '#1a3599' : '#021e79', borderRadius: 4 }] }, options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor } }, y: { ticks: { color: textColor } } } } });
 }
 
 // ===== ADMIN FUNCTIONS =====
@@ -2079,44 +1708,128 @@ async function deleteMember(id, name) {
   }
 }
 
-// ===== INIT =====
-async function renderAll() {
-  renderStats();
-  renderTabs();
-  updateAlphaBar();
-  await renderCards();
-}
-
-async function init() {
-  checkUserAuth();
+// ===== ADMIN ACCESS REQUESTS =====
+async function loadAdminAccessRequests() {
   try {
-    await loadMembers();
-    document.getElementById('loadingOverlay').style.display = 'none';
-    renderAll();
-  } catch (err) {
-    console.error('Failed to load data:', err);
-    document.getElementById('loadingOverlay').innerHTML = '<div style="text-align:center"><h3>Erreur de chargement</h3><button onclick="location.reload()">Réessayer</button></div>';
-  }
+    const response = await fetch('/api/admin/access-requests', { headers: { 'x-admin-auth': ADMIN_KEY } });
+    const data = await response.json();
+    const container = document.getElementById('adminAccessRequestsList');
+    if (data.requests && data.requests.length > 0) {
+      container.innerHTML = data.requests.map(req => `
+        <div class="admin-request-card">
+          <div class="admin-request-header"><div><div class="admin-request-user">${escapeHtml(req.user_name)}</div><div class="admin-request-user-email">${escapeHtml(req.user_email)}</div></div><div class="admin-request-member">📌 ${escapeHtml(req.member_name)}</div></div>
+          <div class="admin-request-details"><div>📅 Demandé le ${new Date(req.created_at).toLocaleString('fr-FR')}</div><div>💰 Tarif: ${req.payment_amount ? req.payment_amount.toLocaleString() : '5 000'} FCFA</div></div>
+          <div class="admin-request-actions"><button class="btn-approve" onclick="window.approveAccessRequest(${req.id})">✅ Approuver</button><button class="btn-reject" onclick="window.rejectAccessRequest(${req.id})">❌ Rejeter</button></div>
+        </div>`).join('');
+      document.getElementById('accessRequestsBadge').textContent = data.requests.length;
+    } else { container.innerHTML = '<div style="text-align:center;padding:40px;">Aucune demande en attente</div>'; document.getElementById('accessRequestsBadge').textContent = '0'; }
+  } catch (err) { console.error('Erreur chargement demandes:', err); document.getElementById('adminAccessRequestsList').innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Erreur de chargement</div>'; }
 }
 
-// Event listeners
-document.getElementById('searchInput')?.addEventListener('input', (e) => { searchQuery = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); });
-document.getElementById('cityFilter')?.addEventListener('change', (e) => { cityFilter = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); });
+window.approveAccessRequest = async function(requestId) {
+  if (!confirm('Êtes-vous sûr de vouloir approuver cette demande ?')) return;
+  try {
+    await fetch(`/api/admin/access-requests/${requestId}/approve`, { method: 'POST', headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' } });
+    alert('✅ Demande approuvée !');
+    await loadAdminAccessRequests();
+    await loadMembers();
+    renderAll();
+  } catch (err) { alert('Erreur lors de l\'approbation'); }
+}
+
+window.rejectAccessRequest = async function(requestId) {
+  if (!confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')) return;
+  try {
+    await fetch(`/api/admin/access-requests/${requestId}/reject`, { method: 'POST', headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' } });
+    alert('❌ Demande rejetée.');
+    await loadAdminAccessRequests();
+  } catch (err) { alert('Erreur lors du rejet'); }
+}
+
+// ===== DASHBOARD FUNCTIONS =====
+async function openDashboard() {
+  const token = localStorage.getItem('userToken');
+  if (!token) { alert('Veuillez vous connecter'); window.location.href = '/auth.html'; return; }
+  document.getElementById('dashboardModal').classList.add('open');
+  document.getElementById('dashboardUserName').textContent = `Bonjour ${localStorage.getItem('userName') || ''}`;
+  await loadDashboardData();
+}
+
+async function loadDashboardData() {
+  const token = localStorage.getItem('userToken');
+  try {
+    const response = await fetch('/api/user/dashboard', { headers: { 'Authorization': `Bearer ${token}` } });
+    const data = await response.json();
+    if (response.ok) {
+      const stats = data.stats;
+      document.getElementById('dashboardStats').innerHTML = `
+        <div class="stat-dashboard-card"><div class="stat-dashboard-number">${stats.total_requests || 0}</div><div class="stat-dashboard-label">Total demandes</div></div>
+        <div class="stat-dashboard-card pending"><div class="stat-dashboard-number">${stats.pending_requests || 0}</div><div class="stat-dashboard-label">En attente</div></div>
+        <div class="stat-dashboard-card approved"><div class="stat-dashboard-number">${stats.approved_requests || 0}</div><div class="stat-dashboard-label">Approuvées</div></div>
+        <div class="stat-dashboard-card rejected"><div class="stat-dashboard-number">${stats.rejected_requests || 0}</div><div class="stat-dashboard-label">Rejetées</div></div>
+        <div class="stat-dashboard-card"><div class="stat-dashboard-number">${(stats.total_paid || 0).toLocaleString()} FCFA</div><div class="stat-dashboard-label">Total dépensé</div></div>`;
+      
+      document.getElementById('dashboardRequestsList').innerHTML = (data.access_requests || []).map(req => {
+        let statusClass = '', statusText = '';
+        if (req.status === 'pending') { statusClass = 'status-pending'; statusText = '⏳ En attente'; }
+        else if (req.status === 'approved') { statusClass = 'status-approved'; statusText = '✅ Approuvé'; }
+        else { statusClass = 'status-rejected'; statusText = '❌ Rejeté'; }
+        return `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title">${req.member_name || req.member_nom || `Membre #${req.member_id}`}</div><div class="request-status ${statusClass}">${statusText}</div></div><div class="dashboard-item-date">Demandé le ${new Date(req.created_at).toLocaleDateString('fr-FR')}</div></div>`;
+      }).join('') || '<div class="dashboard-item" style="text-align:center">Aucune demande effectuée</div>';
+      
+      document.getElementById('dashboardPaymentsList').innerHTML = (data.payments || []).map(p => `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title"><span class="payment-amount">${p.amount.toLocaleString()} FCFA</span></div><div class="payment-status-completed">${p.status === 'completed' ? '✅ Complété' : '⏳ En attente'}</div></div><div class="dashboard-item-date">${new Date(p.created_at).toLocaleDateString('fr-FR')}</div><div class="dashboard-item-details"><span>📱 ${p.method || 'Non spécifié'}</span><span>🆔 ${p.reference || 'N/A'}</span></div></div>`).join('') || '<div class="dashboard-item" style="text-align:center">Aucun paiement effectué</div>';
+      
+      document.getElementById('subscriptionInfo').innerHTML = stats.has_active_subscription ? 
+        `<div class="subscription-active"><div style="font-size:48px">⭐</div><h3>Abonnement actif !</h3><p>Accès illimité à tous les membres</p><p>Expire le ${new Date(data.active_subscription.expires_at).toLocaleDateString('fr-FR')}</p></div><a href="/" class="dashboard-link">🔓 Accéder à tous les membres</a>` :
+        `<div class="subscription-inactive"><div style="font-size:48px">🔒</div><h3>Aucun abonnement actif</h3><p>Débloquez un accès illimité</p><a href="/" class="dashboard-link">💰 Débloquer l'accès illimité</a></div>`;
+    }
+  } catch (err) { console.error('Erreur:', err); }
+}
+
+document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
+document.getElementById('dashboardClose')?.addEventListener('click', () => document.getElementById('dashboardModal').classList.remove('close'));
+document.querySelectorAll('.dashboard-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const tabId = tab.dataset.tab;
+    document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.dashboard-tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`dashboard${tabId.charAt(0).toUpperCase() + tabId.slice(1)}Tab`).classList.add('active');
+  });
+});
+
+// ===== THEME TOGGLE =====
+const themeToggle = document.querySelector('[data-theme-toggle]');
+const htmlEl = document.documentElement;
+let theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+htmlEl.setAttribute('data-theme', theme);
+themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+themeToggle.addEventListener('click', () => {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  htmlEl.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+  renderCharts();
+});
+
+// ===== EVENT LISTENERS =====
 document.getElementById('statsToggle')?.addEventListener('click', () => { document.getElementById('statsToggle').classList.toggle('open'); document.getElementById('statsBody').classList.toggle('open'); });
 document.getElementById('backToTop')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 window.addEventListener('scroll', () => document.getElementById('backToTop')?.classList.toggle('visible', window.scrollY > 400));
 
+let searchTimeout;
+document.getElementById('searchInput')?.addEventListener('input', (e) => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { searchQuery = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); }, 200); });
+document.getElementById('cityFilter')?.addEventListener('change', (e) => { cityFilter = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); });
+
 // Contact form
-const contactFab = document.getElementById('contactFab');
-const contactModal = document.getElementById('contactModal');
-contactFab?.addEventListener('click', () => contactModal.classList.add('open'));
-document.getElementById('contactCancel')?.addEventListener('click', () => contactModal.classList.remove('open'));
+document.getElementById('contactFab')?.addEventListener('click', () => document.getElementById('contactModal').classList.add('open'));
+document.getElementById('contactCancel')?.addEventListener('click', () => document.getElementById('contactModal').classList.remove('open'));
 document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const fd = new FormData(e.target);
   await apiPost('/api/contact', { nom: fd.get('nom'), entreprise: fd.get('entreprise'), email: fd.get('email'), telephone: fd.get('telephone'), commentaire: fd.get('commentaire') }, false);
   document.getElementById('contactSuccess').classList.add('show');
-  setTimeout(() => contactModal.classList.remove('open'), 2000);
+  setTimeout(() => document.getElementById('contactModal').classList.remove('open'), 2000);
 });
 
 // Admin panel
@@ -2136,360 +1849,38 @@ if (isAdmin) {
     renderAll();
   });
   document.getElementById('btnExitAdmin')?.addEventListener('click', () => { const url = new URL(window.location); url.searchParams.delete('admin'); window.location.href = url.toString(); });
+  document.getElementById('btnAccessRequests')?.addEventListener('click', async () => { await loadAdminAccessRequests(); document.getElementById('adminAccessRequestsPanel').classList.add('open'); });
+  document.getElementById('adminAccessRequestsClose')?.addEventListener('click', () => document.getElementById('adminAccessRequestsPanel').classList.remove('open'));
+  document.getElementById('contactsToggle')?.addEventListener('click', async () => {
+    const res = await apiPost('/api/admin/toggle_contacts', {}, true);
+    const track = document.getElementById('toggleTrack');
+    if (res.show_contacts) track.classList.add('on');
+    else track.classList.remove('on');
+    document.getElementById('toggleStatus').textContent = res.show_contacts ? 'ACTIVÉ' : 'DÉSACTIVÉ';
+    await loadMembers();
+    renderCards();
+  });
+  loadAdminAccessRequests();
+  setInterval(loadAdminAccessRequests, 30000);
 }
 
-
-
-
-// ===== DASHBOARD FUNCTIONS =====
-
-async function openDashboard() {
-    const token = localStorage.getItem('userToken');
-    if (!token) {
-        alert('Veuillez vous connecter');
-        window.location.href = '/auth.html';
-        return;
-    }
-    
-    const modal = document.getElementById('dashboardModal');
-    modal.classList.add('open');
-    
-    // Afficher le nom de l'utilisateur
-    const userName = localStorage.getItem('userName');
-    document.getElementById('dashboardUserName').textContent = `Bonjour ${userName || ''}`;
-
-
-// === GESTION DES DEMANDES D'ACCÈS (ADMIN) ===
-const adminAccessRequestsPanel = document.getElementById('adminAccessRequestsPanel');
-const adminAccessRequestsClose = document.getElementById('adminAccessRequestsClose');
-const adminAccessRequestsList = document.getElementById('adminAccessRequestsList');
-
-// Bouton pour ouvrir le panneau des demandes d'accès
-document.getElementById('btnAccessRequests')?.addEventListener('click', async () => {
-    await loadAdminAccessRequests();
-    adminAccessRequestsPanel.classList.add('open');
-});
-
-adminAccessRequestsClose?.addEventListener('click', () => {
-    adminAccessRequestsPanel.classList.remove('open');
-});
-
-// Fermer en cliquant sur l'overlay
-adminAccessRequestsPanel?.addEventListener('click', (e) => {
-    if (e.target === adminAccessRequestsPanel) {
-        adminAccessRequestsPanel.classList.remove('open');
-    }
-});
-
-async function loadAdminAccessRequests() {
-    try {
-        const response = await fetch('/api/admin/access-requests', {
-            headers: { 'x-admin-auth': ADMIN_KEY }
-        });
-        const data = await response.json();
-        
-        if (data.requests && data.requests.length > 0) {
-            renderAdminAccessRequests(data.requests);
-            // Mettre à jour le badge
-            document.getElementById('accessRequestsBadge').textContent = data.requests.length;
-        } else {
-            adminAccessRequestsList.innerHTML = '<div style="text-align:center;padding:40px;">Aucune demande en attente</div>';
-            document.getElementById('accessRequestsBadge').textContent = '0';
-        }
-    } catch (err) {
-        console.error('Erreur chargement demandes:', err);
-        adminAccessRequestsList.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Erreur de chargement</div>';
-    }
+// ===== RENDER ALL =====
+async function renderAll() {
+  renderStats(); renderCharts(); renderTabs(); updateAlphaBar(); await renderCards();
 }
 
-function renderAdminAccessRequests(requests) {
-    adminAccessRequestsList.innerHTML = requests.map(req => `
-        <div class="admin-request-card" data-request-id="${req.id}">
-            <div class="admin-request-header">
-                <div>
-                    <div class="admin-request-user">${escapeHtml(req.user_name)}</div>
-                    <div class="admin-request-user-email">${escapeHtml(req.user_email)}</div>
-                </div>
-                <div class="admin-request-member">📌 ${escapeHtml(req.member_name)}</div>
-            </div>
-            <div class="admin-request-details">
-                <div>📅 Demandé le ${new Date(req.created_at).toLocaleString('fr-FR')}</div>
-                <div>💰 Tarif: ${req.payment_amount ? req.payment_amount.toLocaleString() : '5 000'} FCFA</div>
-                <div>🆔 Référence: ${req.payment_reference || 'N/A'}</div>
-            </div>
-            <div class="admin-request-actions">
-                <button class="btn-approve" onclick="approveAccessRequest(${req.id})">✅ Approuver</button>
-                <button class="btn-reject" onclick="rejectAccessRequest(${req.id})">❌ Rejeter</button>
-            </div>
-        </div>
-    `).join('');
+// ===== INIT =====
+async function init() {
+  checkUserAuth();
+  try {
+    await loadMembers();
+    document.getElementById('loadingOverlay').style.display = 'none';
+    renderAll();
+  } catch (err) {
+    console.error('Failed to load data:', err);
+    document.getElementById('loadingOverlay').innerHTML = '<div style="text-align:center"><h3>Erreur de chargement</h3><button onclick="location.reload()">Réessayer</button></div>';
+  }
 }
-
-async function approveAccessRequest(requestId) {
-    if (!confirm('Êtes-vous sûr de vouloir approuver cette demande ? L\'utilisateur aura accès aux coordonnées.')) return;
-    
-    try {
-        const response = await fetch(`/api/admin/access-requests/${requestId}/approve`, {
-            method: 'POST',
-            headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' }
-        });
-        const data = await response.json();
-        
-        if (response.ok) {
-            alert('✅ Demande approuvée ! L\'utilisateur a maintenant accès.');
-            await loadAdminAccessRequests();
-            // Recharger les données pour mettre à jour l'affichage
-            await loadMembers();
-            renderAll();
-        } else {
-            alert('Erreur: ' + (data.detail || 'Impossible d\'approuver'));
-        }
-    } catch (err) {
-        console.error('Erreur:', err);
-        alert('Erreur lors de l\'approbation');
-    }
-}
-
-async function rejectAccessRequest(requestId) {
-    if (!confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')) return;
-    
-    try {
-        const response = await fetch(`/api/admin/access-requests/${requestId}/reject`, {
-            method: 'POST',
-            headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' }
-        });
-        const data = await response.json();
-        
-        if (response.ok) {
-            alert('❌ Demande rejetée.');
-            await loadAdminAccessRequests();
-        } else {
-            alert('Erreur: ' + (data.detail || 'Impossible de rejeter'));
-        }
-    } catch (err) {
-        console.error('Erreur:', err);
-        alert('Erreur lors du rejet');
-    }
-}
-
-// Rafraîchir les demandes toutes les 30 secondes (optionnel)
-if (isAdmin) {
-    setInterval(() => {
-        loadAdminAccessRequests();
-    }, 30000);
-}
-
-  
-    
-    // Charger les données
-    await loadDashboardData();
-}
-
-async function loadDashboardData() {
-    const token = localStorage.getItem('userToken');
-    
-    try {
-        const response = await fetch('/api/user/dashboard', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await response.json();
-        
-        if (response.ok) {
-            renderDashboardStats(data.stats);
-            renderAccessRequests(data.access_requests);
-            renderPayments(data.payments);
-            renderSubscriptionInfo(data.active_subscription, data.stats);
-        } else {
-            console.error('Erreur chargement dashboard:', data);
-        }
-    } catch (err) {
-        console.error('Erreur:', err);
-    }
-}
-
-function renderDashboardStats(stats) {
-    const container = document.getElementById('dashboardStats');
-    container.innerHTML = `
-        <div class="stat-dashboard-card">
-            <div class="stat-dashboard-number">${stats.total_requests || 0}</div>
-            <div class="stat-dashboard-label">Total demandes</div>
-        </div>
-        <div class="stat-dashboard-card pending">
-            <div class="stat-dashboard-number">${stats.pending_requests || 0}</div>
-            <div class="stat-dashboard-label">En attente</div>
-        </div>
-        <div class="stat-dashboard-card approved">
-            <div class="stat-dashboard-number">${stats.approved_requests || 0}</div>
-            <div class="stat-dashboard-label">Approuvées</div>
-        </div>
-        <div class="stat-dashboard-card rejected">
-            <div class="stat-dashboard-number">${stats.rejected_requests || 0}</div>
-            <div class="stat-dashboard-label">Rejetées</div>
-        </div>
-        <div class="stat-dashboard-card">
-            <div class="stat-dashboard-number">${stats.total_paid?.toLocaleString() || 0} FCFA</div>
-            <div class="stat-dashboard-label">Total dépensé</div>
-        </div>
-    `;
-}
-
-function renderAccessRequests(requests) {
-    const container = document.getElementById('accessRequestsList');
-    
-    if (!requests || requests.length === 0) {
-        container.innerHTML = '<div class="dashboard-item" style="text-align:center">Aucune demande effectuée</div>';
-        return;
-    }
-    
-    container.innerHTML = requests.map(req => {
-        let statusClass = '';
-        let statusText = '';
-        
-        switch(req.status) {
-            case 'pending':
-                statusClass = 'status-pending';
-                statusText = '⏳ En attente';
-                break;
-            case 'approved':
-                statusClass = 'status-approved';
-                statusText = '✅ Approuvé';
-                break;
-            case 'rejected':
-                statusClass = 'status-rejected';
-                statusText = '❌ Rejeté';
-                break;
-            default:
-                statusClass = 'status-pending';
-                statusText = req.status;
-        }
-        
-        const expiryInfo = req.expires_at && req.status === 'approved' 
-            ? `<span class="expiry-badge">Expire le ${new Date(req.expires_at).toLocaleDateString('fr-FR')}</span>` 
-            : '';
-        
-        return `
-            <div class="dashboard-item">
-                <div class="dashboard-item-header">
-                    <div class="dashboard-item-title">
-                        ${req.member_name || req.member_nom || `Membre #${req.member_id}`}
-                        ${expiryInfo}
-                    </div>
-                    <div class="request-status ${statusClass}">${statusText}</div>
-                </div>
-                <div class="dashboard-item-date">
-                    Demandé le ${new Date(req.created_at).toLocaleDateString('fr-FR')} à ${new Date(req.created_at).toLocaleTimeString('fr-FR')}
-                </div>
-                ${req.approved_at ? `<div class="dashboard-item-details">✅ Approuvé le ${new Date(req.approved_at).toLocaleDateString('fr-FR')}</div>` : ''}
-                ${req.payment_amount ? `<div class="dashboard-item-details">💰 Montant: ${req.payment_amount.toLocaleString()} FCFA</div>` : ''}
-            </div>
-        `;
-    }).join('');
-}
-
-function renderPayments(payments) {
-    const container = document.getElementById('paymentsList');
-    
-    if (!payments || payments.length === 0) {
-        container.innerHTML = '<div class="dashboard-item" style="text-align:center">Aucun paiement effectué</div>';
-        return;
-    }
-    
-    container.innerHTML = payments.map(payment => {
-        let statusClass = '';
-        let statusText = '';
-        
-        switch(payment.status) {
-            case 'completed':
-                statusClass = 'payment-status-completed';
-                statusText = '✅ Complété';
-                break;
-            case 'pending':
-                statusClass = 'payment-status-pending';
-                statusText = '⏳ En attente';
-                break;
-            case 'failed':
-                statusClass = 'payment-status-failed';
-                statusText = '❌ Échoué';
-                break;
-            default:
-                statusClass = '';
-                statusText = payment.status;
-        }
-        
-        return `
-            <div class="dashboard-item">
-                <div class="dashboard-item-header">
-                    <div class="dashboard-item-title">
-                        <span class="payment-amount">${payment.amount.toLocaleString()} FCFA</span>
-                    </div>
-                    <div class="${statusClass}">${statusText}</div>
-                </div>
-                <div class="dashboard-item-date">
-                    ${new Date(payment.created_at).toLocaleDateString('fr-FR')} à ${new Date(payment.created_at).toLocaleTimeString('fr-FR')}
-                </div>
-                <div class="dashboard-item-details">
-                    <span>📱 Méthode: ${payment.method || 'Non spécifié'}</span>
-                    <span>🆔 Référence: ${payment.reference || 'N/A'}</span>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-function renderSubscriptionInfo(subscription, stats) {
-    const container = document.getElementById('subscriptionInfo');
-    
-    if (stats.has_active_subscription && subscription) {
-        container.innerHTML = `
-            <div class="subscription-active">
-                <div style="font-size: 48px; margin-bottom: 15px;">⭐</div>
-                <h3 style="margin-bottom: 10px;">Abonnement actif !</h3>
-                <p>Vous avez un accès illimité à tous les membres</p>
-                <p style="margin-top: 15px; font-size: 14px; opacity: 0.9">
-                    Expire le ${new Date(subscription.expires_at).toLocaleDateString('fr-FR')}
-                </p>
-            </div>
-            <a href="/" class="dashboard-link">🔓 Accéder à tous les membres</a>
-        `;
-    } else {
-        container.innerHTML = `
-            <div class="subscription-inactive">
-                <div style="font-size: 48px; margin-bottom: 15px;">🔒</div>
-                <h3 style="margin-bottom: 10px;">Aucun abonnement actif</h3>
-                <p>Débloquez un accès illimité à tous les membres</p>
-                <p style="margin-top: 10px; font-size: 14px; color: var(--color-text-muted)">
-                    Abonnement mensuel: 25 000 FCFA<br>
-                    Accès illimité pendant 30 jours
-                </p>
-                <a href="/" class="dashboard-link">💰 Débloquer l'accès illimité</a>
-            </div>
-        `;
-    }
-}
-
-// Onglets du dashboard
-document.querySelectorAll('.dashboard-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        const tabId = tab.dataset.tab;
-        
-        document.querySelectorAll('.dashboard-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.dashboard-tab-content').forEach(c => c.classList.remove('active'));
-        
-        tab.classList.add('active');
-        document.getElementById(`dashboard${tabId.charAt(0).toUpperCase() + tabId.slice(1)}Tab`).classList.add('active');
-    });
-});
-
-// Bouton dashboard
-document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
-
-// Fermeture du dashboard
-document.getElementById('dashboardClose')?.addEventListener('click', () => {
-    document.getElementById('dashboardModal').classList.remove('open');
-});
-
-
-  
 
 init();
 })();
