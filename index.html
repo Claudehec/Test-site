@@ -1561,6 +1561,130 @@ a { color: inherit; text-decoration: none; }
     box-shadow: 0 4px 12px rgba(255,191,0,0.3);
 }
 </style>
+
+
+  <!-- PANEL DEMANDES D'ACCÈS (ADMIN) -->
+<div class="modal-overlay" id="adminAccessRequestsPanel">
+    <div class="modal-box" style="max-width: 800px;">
+        <div class="modal-logo">📋</div>
+        <h2>Demandes de déblocage</h2>
+        <p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p>
+        <div id="adminAccessRequestsList" class="admin-requests-list"></div>
+        <div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div>
+    </div>
+</div>
+
+<style>
+.admin-requests-list {
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.admin-request-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    transition: all 0.3s ease;
+}
+
+.admin-request-card:hover {
+    background: var(--color-card-hover);
+    border-color: var(--accent);
+}
+
+.admin-request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.admin-request-user {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-text);
+}
+
+.admin-request-user-email {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+.admin-request-member {
+    background: var(--accent-light);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+.admin-request-details {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin: 10px 0;
+    padding: 10px 0;
+    border-top: 1px dashed var(--color-border);
+    border-bottom: 1px dashed var(--color-border);
+}
+
+.admin-request-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.btn-approve {
+    flex: 1;
+    padding: 10px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-approve:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-reject {
+    flex: 1;
+    padding: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-reject:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.request-badge-pending {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #fef3c7;
+    color: #d97706;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+</style>
   
 
 <script>
@@ -2033,6 +2157,129 @@ async function openDashboard() {
     // Afficher le nom de l'utilisateur
     const userName = localStorage.getItem('userName');
     document.getElementById('dashboardUserName').textContent = `Bonjour ${userName || ''}`;
+
+
+// === GESTION DES DEMANDES D'ACCÈS (ADMIN) ===
+const adminAccessRequestsPanel = document.getElementById('adminAccessRequestsPanel');
+const adminAccessRequestsClose = document.getElementById('adminAccessRequestsClose');
+const adminAccessRequestsList = document.getElementById('adminAccessRequestsList');
+
+// Bouton pour ouvrir le panneau des demandes d'accès
+document.getElementById('btnAccessRequests')?.addEventListener('click', async () => {
+    await loadAdminAccessRequests();
+    adminAccessRequestsPanel.classList.add('open');
+});
+
+adminAccessRequestsClose?.addEventListener('click', () => {
+    adminAccessRequestsPanel.classList.remove('open');
+});
+
+// Fermer en cliquant sur l'overlay
+adminAccessRequestsPanel?.addEventListener('click', (e) => {
+    if (e.target === adminAccessRequestsPanel) {
+        adminAccessRequestsPanel.classList.remove('open');
+    }
+});
+
+async function loadAdminAccessRequests() {
+    try {
+        const response = await fetch('/api/admin/access-requests', {
+            headers: { 'x-admin-auth': ADMIN_KEY }
+        });
+        const data = await response.json();
+        
+        if (data.requests && data.requests.length > 0) {
+            renderAdminAccessRequests(data.requests);
+            // Mettre à jour le badge
+            document.getElementById('accessRequestsBadge').textContent = data.requests.length;
+        } else {
+            adminAccessRequestsList.innerHTML = '<div style="text-align:center;padding:40px;">Aucune demande en attente</div>';
+            document.getElementById('accessRequestsBadge').textContent = '0';
+        }
+    } catch (err) {
+        console.error('Erreur chargement demandes:', err);
+        adminAccessRequestsList.innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Erreur de chargement</div>';
+    }
+}
+
+function renderAdminAccessRequests(requests) {
+    adminAccessRequestsList.innerHTML = requests.map(req => `
+        <div class="admin-request-card" data-request-id="${req.id}">
+            <div class="admin-request-header">
+                <div>
+                    <div class="admin-request-user">${escapeHtml(req.user_name)}</div>
+                    <div class="admin-request-user-email">${escapeHtml(req.user_email)}</div>
+                </div>
+                <div class="admin-request-member">📌 ${escapeHtml(req.member_name)}</div>
+            </div>
+            <div class="admin-request-details">
+                <div>📅 Demandé le ${new Date(req.created_at).toLocaleString('fr-FR')}</div>
+                <div>💰 Tarif: ${req.payment_amount ? req.payment_amount.toLocaleString() : '5 000'} FCFA</div>
+                <div>🆔 Référence: ${req.payment_reference || 'N/A'}</div>
+            </div>
+            <div class="admin-request-actions">
+                <button class="btn-approve" onclick="approveAccessRequest(${req.id})">✅ Approuver</button>
+                <button class="btn-reject" onclick="rejectAccessRequest(${req.id})">❌ Rejeter</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function approveAccessRequest(requestId) {
+    if (!confirm('Êtes-vous sûr de vouloir approuver cette demande ? L\'utilisateur aura accès aux coordonnées.')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/access-requests/${requestId}/approve`, {
+            method: 'POST',
+            headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('✅ Demande approuvée ! L\'utilisateur a maintenant accès.');
+            await loadAdminAccessRequests();
+            // Recharger les données pour mettre à jour l'affichage
+            await loadMembers();
+            renderAll();
+        } else {
+            alert('Erreur: ' + (data.detail || 'Impossible d\'approuver'));
+        }
+    } catch (err) {
+        console.error('Erreur:', err);
+        alert('Erreur lors de l\'approbation');
+    }
+}
+
+async function rejectAccessRequest(requestId) {
+    if (!confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/access-requests/${requestId}/reject`, {
+            method: 'POST',
+            headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('❌ Demande rejetée.');
+            await loadAdminAccessRequests();
+        } else {
+            alert('Erreur: ' + (data.detail || 'Impossible de rejeter'));
+        }
+    } catch (err) {
+        console.error('Erreur:', err);
+        alert('Erreur lors du rejet');
+    }
+}
+
+// Rafraîchir les demandes toutes les 30 secondes (optionnel)
+if (isAdmin) {
+    setInterval(() => {
+        loadAdminAccessRequests();
+    }, 30000);
+}
+
+  
     
     // Charger les données
     await loadDashboardData();
