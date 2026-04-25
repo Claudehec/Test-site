@@ -960,6 +960,70 @@ async def serve_admin_login():
         """)
 
 
+
+
+@app.get("/api/admin/access-requests")
+def get_access_requests(x_admin_auth: str = Header(default="")):
+    """Admin: get all pending access requests"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT r.*, u.name as user_name, u.email as user_email
+        FROM contact_access_requests r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.status = 'pending'
+        ORDER BY r.created_at DESC
+    """)
+    
+    requests = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    
+    return {"requests": requests}
+
+@app.post("/api/admin/access-requests/{request_id}/approve")
+def approve_access_request(request_id: int, x_admin_auth: str = Header(default="")):
+    """Admin: approve an access request"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    # Set expiration (30 days)
+    cursor.execute("""
+        UPDATE contact_access_requests 
+        SET status = 'approved', 
+            approved_at = datetime('now'),
+            expires_at = datetime('now', '+30 days')
+        WHERE id = ?
+    """, (request_id,))
+    
+    conn.commit()
+    conn.close()
+    
+    return {"success": True, "message": "Accès approuvé"}
+
+@app.post("/api/admin/access-requests/{request_id}/reject")
+def reject_access_request(request_id: int, x_admin_auth: str = Header(default="")):
+    """Admin: reject an access request"""
+    check_admin(x_admin_auth)
+    
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE contact_access_requests 
+        SET status = 'rejected' 
+        WHERE id = ?
+    """, (request_id,))
+    conn.commit()
+    conn.close()
+    
+    return {"success": True, "message": "Demande rejetée"}
+
+
 # ===== USER DASHBOARD ENDPOINTS =====
 
 @app.get("/api/user/dashboard")
