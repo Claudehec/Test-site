@@ -205,10 +205,10 @@ a { color: inherit; text-decoration: none; }
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   background: rgba(255,255,255,0.1);
   backdrop-filter: blur(8px);
-  padding: 4px 16px 4px 8px;
+  padding: 4px 8px 4px 8px;
   border-radius: 60px;
   border: 1px solid rgba(255,255,255,0.2);
 }
@@ -898,102 +898,6 @@ a { color: inherit; text-decoration: none; }
 .card-admin-btn.delete { background: rgba(220,38,38,0.08); color: #dc2626; }
 .card-admin-btn.delete:hover { background: rgba(220,38,38,0.15); }
 
-/* ===== PAGINATION ===== */
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-.page-btn {
-  min-width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  transition: all var(--transition);
-  color: var(--color-text-muted);
-}
-.page-btn:hover { background: var(--color-border-light); color: var(--color-text); }
-.page-btn.active { background: var(--primary); color: #fff; }
-.page-btn:disabled { opacity: 0.4; pointer-events: none; }
-
-/* ===== FOOTER ===== */
-.footer {
-  background: var(--primary);
-  color: rgba(255,255,255,0.7);
-  text-align: center;
-  padding: 24px;
-  font-size: var(--text-xs);
-  margin-top: auto;
-  position: relative;
-}
-.footer strong { color: var(--accent); }
-.footer-admin {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  opacity: 0.2;
-  transition: opacity 0.3s ease;
-}
-.footer-admin:hover { opacity: 0.7; }
-.admin-secret {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  color: rgba(255,255,255,0.5);
-  font-size: 10px;
-  font-family: monospace;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.admin-secret:hover { color: var(--accent); background: rgba(255,255,255,0.1); }
-
-.back-to-top {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 44px;
-  height: 44px;
-  background: var(--primary);
-  color: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: all var(--transition);
-  z-index: 49;
-}
-.back-to-top.visible { opacity: 1; pointer-events: auto; }
-
-.contact-fab {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent);
-  color: var(--primary-dark);
-  padding: 12px 28px;
-  border-radius: 99px;
-  font-size: var(--text-sm);
-  font-weight: 900;
-  z-index: 50;
-  transition: all var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-.contact-fab:hover { background: var(--accent-hover); transform: translateX(-50%) translateY(-2px); }
-
 /* ===== DASHBOARD STYLES ===== */
 .dashboard-stats {
   display: grid;
@@ -1251,6 +1155,102 @@ a { color: inherit; text-decoration: none; }
 }
 .btn-reject:hover { background: #dc2626; transform: translateY(-1px); }
 
+/* ===== PAGINATION ===== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  transition: all var(--transition);
+  color: var(--color-text-muted);
+}
+.page-btn:hover { background: var(--color-border-light); color: var(--color-text); }
+.page-btn.active { background: var(--primary); color: #fff; }
+.page-btn:disabled { opacity: 0.4; pointer-events: none; }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--primary);
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  padding: 24px;
+  font-size: var(--text-xs);
+  margin-top: auto;
+  position: relative;
+}
+.footer strong { color: var(--accent); }
+.footer-admin {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+.footer-admin:hover { opacity: 0.7; }
+.admin-secret {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 10px;
+  font-family: monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.admin-secret:hover { color: var(--accent); background: rgba(255,255,255,0.1); }
+
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition);
+  z-index: 49;
+}
+.back-to-top.visible { opacity: 1; pointer-events: auto; }
+
+.contact-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: var(--primary-dark);
+  padding: 12px 28px;
+  border-radius: 99px;
+  font-size: var(--text-sm);
+  font-weight: 900;
+  z-index: 50;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.contact-fab:hover { background: var(--accent-hover); transform: translateX(-50%) translateY(-2px); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .header-top { padding: 8px 16px; }
@@ -1290,6 +1290,7 @@ a { color: inherit; text-decoration: none; }
       </div>
     </div>
     <div class="header-actions">
+      <!-- Menu utilisateur connecté -->
       <div id="userMenu" class="user-menu" style="display: none;">
         <div class="user-info">
           <div class="user-avatar">
@@ -1311,10 +1312,12 @@ a { color: inherit; text-decoration: none; }
           </button>
         </div>
       </div>
+      <!-- Boutons Connexion/Inscription -->
       <div class="auth-buttons" id="authButtons">
         <a href="/auth.html" class="btn-auth btn-login">🔐 Connexion</a>
         <a href="/auth.html" class="btn-auth btn-register">📝 Inscription</a>
       </div>
+      <!-- Bouton thème -->
       <button class="btn-icon" data-theme-toggle>🌙</button>
     </div>
   </div>
@@ -1366,9 +1369,15 @@ a { color: inherit; text-decoration: none; }
       </div>
       <select class="city-select" id="cityFilter">
         <option value="">Toutes les villes</option>
-        <option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option>
-        <option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option>
-        <option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option><option value="Autre">Autre</option>
+        <option value="Douala">Douala</option>
+        <option value="Yaoundé">Yaoundé</option>
+        <option value="Buéa">Buéa</option>
+        <option value="Limbé">Limbé</option>
+        <option value="Bamenda">Bamenda</option>
+        <option value="Bafoussam">Bafoussam</option>
+        <option value="Maroua">Maroua</option>
+        <option value="Bangangté">Bangangté</option>
+        <option value="Autre">Autre</option>
       </select>
       <button class="btn-export" onclick="window.print()">🖨️ Imprimer</button>
     </div>
@@ -1396,25 +1405,151 @@ a { color: inherit; text-decoration: none; }
 <button class="back-to-top" id="backToTop">↑</button>
 <button class="contact-fab" id="contactFab">🔍 À la recherche d'un expert-comptable ? Contactez-nous</button>
 
-<!-- MODALS -->
-<div class="modal-overlay" id="contactModal"><div class="modal-box"><div class="modal-logo">📧</div><h2>Demande de mise en relation</h2><p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p><div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div><div class="modal-error" id="contactError"></div><form id="contactForm"><div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div><div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div><div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div><div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div><button type="submit" class="modal-btn-primary">Envoyer ma demande</button></form><div class="modal-cancel" id="contactCancel">Annuler</div></div></div>
+<!-- MODAL CONTACT -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-box">
+    <div class="modal-logo">📧</div>
+    <h2>Demande de mise en relation</h2>
+    <p class="modal-subtitle">Renseignez vos coordonnées, nous vous mettrons en relation avec un expert-comptable adapté à vos besoins.</p>
+    <div class="modal-success" id="contactSuccess">✓ Votre demande a bien été envoyée.</div>
+    <div class="modal-error" id="contactError"></div>
+    <form id="contactForm">
+      <div class="modal-input-group"><label>Nom complet <span class="required">*</span></label><input type="text" name="nom" required placeholder="Votre nom complet"></div>
+      <div class="modal-input-group"><label>Entreprise</label><input type="text" name="entreprise" placeholder="Nom de votre entreprise"></div>
+      <div class="modal-input-group"><label>Email <span class="required">*</span></label><input type="email" name="email" required placeholder="votre@email.com"></div>
+      <div class="modal-input-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder="6XX XX XX XX"></div>
+      <div class="modal-input-group"><label>Commentaire</label><textarea name="commentaire" placeholder="Décrivez votre besoin…"></textarea></div>
+      <button type="submit" class="modal-btn-primary">Envoyer ma demande</button>
+    </form>
+    <div class="modal-cancel" id="contactCancel">Annuler</div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="accessModal"><div class="modal-box"><div class="modal-logo">🔓</div><h2>Débloquer les coordonnées</h2><p class="modal-subtitle" id="accessMemberName"></p><div class="pricing-options"><div class="pricing-card" data-price="5000" data-type="single"><div class="price">5 000 FCFA</div><div class="period">Accès unique</div><div class="feature">✓ Coordonnées d'un membre</div><div class="feature">✓ Valable 30 jours</div></div><div class="pricing-card" data-price="25000" data-type="subscription"><div class="price">25 000 FCFA</div><div class="period">Abonnement mensuel</div><div class="feature">✓ Accès illimité</div><div class="feature">✓ Tous les membres</div><div class="feature">✓ Valable 30 jours</div></div></div><div class="payment-methods"><h4>Mode de paiement</h4><div class="methods-grid"><button class="method-btn" data-method="orange_money">📱 Orange Money</button><button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button><button class="method-btn" data-method="card">💳 Carte bancaire</button></div><input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);"></div><div id="paymentStatus" class="payment-status"></div><button id="payBtn" class="modal-btn-primary">Payer et débloquer</button><div class="modal-cancel" id="accessCancel">Annuler</div></div></div>
+<!-- MODAL PAIEMENT / DÉBLOQUAGE -->
+<div class="modal-overlay" id="accessModal">
+  <div class="modal-box">
+    <div class="modal-logo">🔓</div>
+    <h2>Débloquer les coordonnées</h2>
+    <p class="modal-subtitle" id="accessMemberName"></p>
+    <div class="pricing-options">
+      <div class="pricing-card" data-price="5000" data-type="single">
+        <div class="price">5 000 FCFA</div>
+        <div class="period">Accès unique</div>
+        <div class="feature">✓ Coordonnées d'un membre</div>
+        <div class="feature">✓ Valable 30 jours</div>
+      </div>
+      <div class="pricing-card" data-price="25000" data-type="subscription">
+        <div class="price">25 000 FCFA</div>
+        <div class="period">Abonnement mensuel</div>
+        <div class="feature">✓ Accès illimité</div>
+        <div class="feature">✓ Tous les membres</div>
+        <div class="feature">✓ Valable 30 jours</div>
+      </div>
+    </div>
+    <div class="payment-methods">
+      <h4>Mode de paiement</h4>
+      <div class="methods-grid">
+        <button class="method-btn" data-method="orange_money">📱 Orange Money</button>
+        <button class="method-btn" data-method="mtn_money">📱 MTN Mobile Money</button>
+        <button class="method-btn" data-method="card">💳 Carte bancaire</button>
+      </div>
+      <input type="tel" id="phoneNumber" placeholder="Numéro de téléphone (237 6XX XX XX XX)" style="display: none; margin-top: 10px; width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--color-border);">
+    </div>
+    <div id="paymentStatus" class="payment-status"></div>
+    <button id="payBtn" class="modal-btn-primary">Payer et débloquer</button>
+    <div class="modal-cancel" id="accessCancel">Annuler</div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="memberModal"><div class="modal-box"><div class="modal-logo">👤</div><h2 id="memberModalTitle">Ajouter un membre</h2><p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p><div class="modal-error" id="memberError"></div><form id="memberForm"><input type="hidden" name="id" id="memberFormId"><div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div><div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div><div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div><div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div><div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div><div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div><div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div><div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div><div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div><button type="submit" class="modal-btn-primary">Enregistrer</button></form><div class="modal-cancel" id="memberCancel">Annuler</div></div></div>
+<!-- MODAL MEMBER FORM (admin) -->
+<div class="modal-overlay" id="memberModal">
+  <div class="modal-box">
+    <div class="modal-logo">👤</div>
+    <h2 id="memberModalTitle">Ajouter un membre</h2>
+    <p class="modal-subtitle" id="memberModalSubtitle">Remplissez les informations du nouveau membre.</p>
+    <div class="modal-error" id="memberError"></div>
+    <form id="memberForm">
+      <input type="hidden" name="id" id="memberFormId">
+      <div class="modal-input-group"><label>Section <span class="required">*</span></label><select name="section" required><option value="">— Choisir —</option><option value="liberaux">Experts-Comptables Libéraux</option><option value="societes">Sociétés d'Expertise Comptable</option><option value="salaries">Experts-Comptables Salariés</option><option value="stagiaires">Experts-Comptables Stagiaires</option></select></div>
+      <div class="modal-input-group"><label>Nom <span class="required">*</span></label><input type="text" name="nom" required placeholder="Nom complet"></div>
+      <div class="modal-input-group"><label>N° inscription</label><input type="text" name="inscription_num" placeholder="Ex: 182 ECP"></div>
+      <div class="modal-input-group"><label>Date d'inscription</label><input type="text" name="inscription_date" placeholder="JJ/MM/AAAA"></div>
+      <div class="modal-input-group"><label>BP</label><input type="text" name="bp" placeholder="BP: ..."></div>
+      <div class="modal-input-group"><label>Tél 1</label><input type="text" name="tel1" placeholder="6XX XX XX XX"></div>
+      <div class="modal-input-group"><label>Tél 2</label><input type="text" name="tel2" placeholder="6XX XX XX XX"></div>
+      <div class="modal-input-group"><label>Email</label><input type="email" name="email" placeholder="email@exemple.com"></div>
+      <div class="modal-input-group"><label>Adresse</label><input type="text" name="adresse" placeholder="Adresse complète"></div>
+      <div class="modal-input-group"><label>Ville</label><select name="ville"><option value="">— Choisir —</option><option value="Douala">Douala</option><option value="Yaoundé">Yaoundé</option><option value="Buéa">Buéa</option><option value="Limbé">Limbé</option><option value="Bamenda">Bamenda</option><option value="Bafoussam">Bafoussam</option><option value="Maroua">Maroua</option><option value="Bangangté">Bangangté</option></select></div>
+      <button type="submit" class="modal-btn-primary">Enregistrer</button>
+    </form>
+    <div class="modal-cancel" id="memberCancel">Annuler</div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="adminAccessRequestsPanel"><div class="modal-box" style="max-width: 800px;"><div class="modal-logo">📋</div><h2>Demandes de déblocage</h2><p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p><div id="adminAccessRequestsList"></div><div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div></div></div>
+<!-- PANEL DEMANDES D'ACCÈS (ADMIN) -->
+<div class="modal-overlay" id="adminAccessRequestsPanel">
+  <div class="modal-box" style="max-width: 800px;">
+    <div class="modal-logo">📋</div>
+    <h2>Demandes de déblocage</h2>
+    <p class="modal-subtitle">Approuvez ou rejetez les demandes d'accès aux coordonnées</p>
+    <div id="adminAccessRequestsList"></div>
+    <div class="modal-cancel" id="adminAccessRequestsClose">Fermer</div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="contactsPanel"><div class="modal-box" style="max-width: 600px;"><div class="modal-logo">📨</div><h2>Demandes de contact</h2><p class="modal-subtitle">Messages des visiteurs</p><div id="contactsPanelBody"></div><div class="modal-cancel" id="contactsPanelClose">Fermer</div></div></div>
+<!-- PANEL CONTACT REQUESTS (admin) -->
+<div class="modal-overlay" id="contactsPanel">
+  <div class="modal-box" style="max-width: 600px;">
+    <div class="modal-logo">📨</div>
+    <h2>Demandes de contact</h2>
+    <p class="modal-subtitle">Messages des visiteurs</p>
+    <div id="contactsPanelBody"></div>
+    <div class="modal-cancel" id="contactsPanelClose">Fermer</div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="dashboardModal"><div class="modal-box" style="max-width: 900px;"><div class="modal-logo">📊</div><h2>Mon tableau de bord</h2><p class="modal-subtitle" id="dashboardUserName"></p><div class="dashboard-stats" id="dashboardStats"></div><div class="dashboard-tabs"><button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button><button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button><button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button></div><div id="dashboardRequestsTab" class="dashboard-tab-content active"><div id="dashboardRequestsList"></div></div><div id="dashboardPaymentsTab" class="dashboard-tab-content"><div id="dashboardPaymentsList"></div></div><div id="dashboardSubscriptionTab" class="dashboard-tab-content"><div id="subscriptionInfo"></div></div><div class="modal-cancel" id="dashboardClose">Fermer</div></div></div>
+<!-- DASHBOARD UTILISATEUR -->
+<div class="modal-overlay" id="dashboardModal">
+  <div class="modal-box" style="max-width: 900px;">
+    <div class="modal-logo">📊</div>
+    <h2>Mon tableau de bord</h2>
+    <p class="modal-subtitle" id="dashboardUserName"></p>
+    <div class="dashboard-stats" id="dashboardStats"></div>
+    <div class="dashboard-tabs">
+      <button class="dashboard-tab active" data-tab="requests">📋 Mes demandes</button>
+      <button class="dashboard-tab" data-tab="payments">💰 Historique des paiements</button>
+      <button class="dashboard-tab" data-tab="subscription">⭐ Abonnement actif</button>
+    </div>
+    <div id="dashboardRequestsTab" class="dashboard-tab-content active">
+      <div id="dashboardRequestsList" class="dashboard-list"></div>
+    </div>
+    <div id="dashboardPaymentsTab" class="dashboard-tab-content">
+      <div id="dashboardPaymentsList" class="dashboard-list"></div>
+    </div>
+    <div id="dashboardSubscriptionTab" class="dashboard-tab-content">
+      <div id="subscriptionInfo" class="subscription-info"></div>
+    </div>
+    <div class="modal-cancel" id="dashboardClose">Fermer</div>
+  </div>
+</div>
 
-<div class="confirm-overlay" id="confirmOverlay"><div class="confirm-box"><h3 id="confirmTitle">Confirmer</h3><p id="confirmMessage">Êtes-vous sûr ?</p><div class="confirm-actions"><button class="confirm-btn cancel" id="confirmCancel">Annuler</button><button class="confirm-btn danger" id="confirmOk">Supprimer</button></div></div></div>
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">Confirmer</h3>
+    <p id="confirmMessage">Êtes-vous sûr ?</p>
+    <div class="confirm-actions">
+      <button class="confirm-btn cancel" id="confirmCancel">Annuler</button>
+      <button class="confirm-btn danger" id="confirmOk">Supprimer</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function() {
 'use strict';
 
+// ===== CONFIGURATION =====
 const API = window.location.origin;
 const ADMIN_KEY = 'ONECCA2026';
 const urlParams = new URLSearchParams(window.location.search);
@@ -1460,7 +1595,10 @@ async function apiPost(url, body, admin) {
   const headers = { 'Content-Type': 'application/json' };
   if (admin) Object.assign(headers, ADMIN_HEADER);
   const res = await fetch(API + url, { method: 'POST', headers, body: JSON.stringify(body) });
-  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.detail || 'Erreur serveur'); }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Erreur serveur');
+  }
   return res.json();
 }
 
@@ -1502,8 +1640,10 @@ function checkUserAuth() {
 }
 
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('userToken'); localStorage.removeItem('userEmail');
-  localStorage.removeItem('userName'); localStorage.removeItem('userPhone');
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userPhone');
   window.location.reload();
 });
 
@@ -1512,12 +1652,17 @@ async function checkMemberAccess(memberId) {
   if (!isUserLoggedIn) return false;
   if (accessCache.has(memberId)) return accessCache.get(memberId);
   try {
-    const res = await fetch(API + `/api/access/check/${memberId}`, { headers: { 'Authorization': `Bearer ${currentUser.token}` } });
+    const res = await fetch(API + `/api/access/check/${memberId}`, {
+      headers: { 'Authorization': `Bearer ${currentUser.token}` }
+    });
     const data = await res.json();
     const hasAccess = data.has_access === true;
     accessCache.set(memberId, hasAccess);
     return hasAccess;
-  } catch (err) { console.error('Erreur vérification accès:', err); return false; }
+  } catch (err) {
+    console.error('Erreur vérification accès:', err);
+    return false;
+  }
 }
 
 // ===== DEMANDE DÉBLOQUAGE =====
@@ -1526,7 +1671,11 @@ let selectedPrice = 5000;
 let selectedMethod = null;
 
 async function requestUnlock(memberId, memberName) {
-  if (!isUserLoggedIn) { alert('Veuillez vous connecter'); window.location.href = '/auth.html'; return; }
+  if (!isUserLoggedIn) {
+    alert('Veuillez vous connecter pour débloquer les coordonnées');
+    window.location.href = '/auth.html';
+    return;
+  }
   currentUnlockMember = { id: memberId, name: memberName };
   document.getElementById('accessMemberName').textContent = `Débloquer "${memberName}"`;
   document.getElementById('accessModal').classList.add('open');
@@ -1537,7 +1686,8 @@ document.querySelectorAll('.pricing-card').forEach(card => {
     document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     selectedPrice = parseInt(card.dataset.price);
-    document.getElementById('phoneNumber').style.display = selectedPrice === 5000 ? 'block' : 'none';
+    const phoneInput = document.getElementById('phoneNumber');
+    phoneInput.style.display = selectedPrice === 5000 ? 'block' : 'none';
   });
 });
 
@@ -1550,36 +1700,64 @@ document.querySelectorAll('.method-btn').forEach(btn => {
 });
 
 document.getElementById('payBtn')?.addEventListener('click', async () => {
-  if (!selectedMethod) { showPaymentStatus('Veuillez sélectionner un mode de paiement', 'error'); return; }
+  if (!selectedMethod) {
+    showPaymentStatus('Veuillez sélectionner un mode de paiement', 'error');
+    return;
+  }
   const payBtn = document.getElementById('payBtn');
-  payBtn.disabled = true; payBtn.textContent = 'Traitement...';
+  payBtn.disabled = true;
+  payBtn.textContent = 'Traitement...';
   try {
     await fetch(API + '/api/payment/initiate', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
-      body: JSON.stringify({ amount: selectedPrice, method: selectedMethod, phone_number: document.getElementById('phoneNumber').value, member_id: currentUnlockMember.id })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
+      body: JSON.stringify({
+        amount: selectedPrice,
+        method: selectedMethod,
+        phone_number: document.getElementById('phoneNumber').value,
+        member_id: currentUnlockMember.id
+      })
     });
     await fetch(API + '/api/access/request', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
-      body: JSON.stringify({ member_id: currentUnlockMember.id, member_name: currentUnlockMember.name })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentUser.token}` },
+      body: JSON.stringify({
+        member_id: currentUnlockMember.id,
+        member_name: currentUnlockMember.name
+      })
     });
     showPaymentStatus('Demande envoyée ! Un administrateur va traiter votre demande.', 'success');
     setTimeout(() => document.getElementById('accessModal').classList.remove('open'), 2000);
-  } catch (err) { showPaymentStatus('Erreur lors de la demande', 'error'); }
-  finally { payBtn.disabled = false; payBtn.textContent = 'Payer et débloquer'; }
+  } catch (err) {
+    showPaymentStatus('Erreur lors de la demande', 'error');
+  } finally {
+    payBtn.disabled = false;
+    payBtn.textContent = 'Payer et débloquer';
+  }
 });
 
 function showPaymentStatus(msg, type) {
   const statusDiv = document.getElementById('paymentStatus');
-  statusDiv.textContent = msg; statusDiv.className = `payment-status ${type} show`;
+  statusDiv.textContent = msg;
+  statusDiv.className = `payment-status ${type} show`;
   setTimeout(() => statusDiv.classList.remove('show'), 4000);
 }
 
-document.getElementById('accessCancel')?.addEventListener('click', () => document.getElementById('accessModal').classList.remove('open'));
+document.getElementById('accessCancel')?.addEventListener('click', () => {
+  document.getElementById('accessModal').classList.remove('open');
+});
 
 // ===== LOAD MEMBERS =====
 async function loadMembers() {
-  if (isAdmin) { const data = await apiGet('/api/admin/members', true); RAW = data.members || data; showContacts = true; }
-  else { const data = await apiGet('/api/members', false); RAW = data.members || data; showContacts = isUserLoggedIn || data.show_contacts || false; }
+  if (isAdmin) {
+    const data = await apiGet('/api/admin/members', true);
+    RAW = data.members || data;
+    showContacts = true;
+  } else {
+    const data = await apiGet('/api/members', false);
+    RAW = data.members || data;
+    showContacts = isUserLoggedIn || data.show_contacts || false;
+  }
 }
 
 // ===== RENDER CARDS =====
@@ -1591,10 +1769,17 @@ async function renderCards() {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const page = data.slice(start, start + ITEMS_PER_PAGE);
   
-  document.getElementById('resultsCount').innerHTML = total === 0 ? 'Aucun résultat' : `<strong>${total}</strong> membre${total > 1 ? 's' : ''} — ${SECTIONS.find(s => s.key === currentSection).short}`;
+  const secLabel = SECTIONS.find(s => s.key === currentSection).short;
+  document.getElementById('resultsCount').innerHTML = total === 0
+    ? 'Aucun résultat'
+    : `<strong>${total}</strong> membre${total > 1 ? 's' : ''} — ${secLabel}`;
   
   const grid = document.getElementById('cardGrid');
-  if (total === 0) { grid.innerHTML = '<div class="empty-state"><h3>Aucun résultat trouvé</h3><p>Essayez de modifier vos critères de recherche</p></div>'; document.getElementById('pagination').innerHTML = ''; return; }
+  if (total === 0) {
+    grid.innerHTML = '<div class="empty-state"><h3>Aucun résultat trouvé</h3><p>Essayez de modifier vos critères de recherche</p></div>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
   
   const accessPromises = page.map(m => checkMemberAccess(m.id));
   const accessResults = await Promise.all(accessPromises);
@@ -1602,21 +1787,35 @@ async function renderCards() {
   grid.innerHTML = page.map((e, idx) => {
     const hasAccess = accessResults[idx];
     let contactHtml = '';
+    
     if (isAdmin || hasAccess) {
-      const phones = []; if (e.tel1) phones.push(e.tel1); if (e.tel2) phones.push(e.tel2);
+      const phones = [];
+      if (e.tel1) phones.push(e.tel1);
+      if (e.tel2) phones.push(e.tel2);
       const phoneLinks = phones.map(p => `<a href="tel:+237${p.replace(/\s/g, '')}">${escapeHtml(p.trim())}</a>`).join(' / ');
-      if (phones.length) contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>${phoneLinks}</span></div>`;
-      if (e.email) contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><a href="mailto:${escapeHtml(e.email)}">${escapeHtml(e.email)}</a></div>`;
-    } else if (isUserLoggedIn) contactHtml = `<div class="card-locked">🔒 Coordonnées verrouillées <button class="unlock-btn" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🔓 Débloquer (5 000 FCFA)</button></div>`;
-    else contactHtml = `<div class="card-locked">🔒 Connectez-vous pour voir les coordonnées <a href="/auth.html" class="login-link">Se connecter</a></div>`;
+      if (phones.length) {
+        contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>${phoneLinks}</span></div>`;
+      }
+      if (e.email) {
+        contactHtml += `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><a href="mailto:${escapeHtml(e.email)}">${escapeHtml(e.email)}</a></div>`;
+      }
+    } else if (isUserLoggedIn) {
+      contactHtml = `<div class="card-locked">🔒 Coordonnées verrouillées <button class="unlock-btn" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🔓 Débloquer (5 000 FCFA)</button></div>`;
+    } else {
+      contactHtml = `<div class="card-locked">🔒 Connectez-vous pour voir les coordonnées <a href="/auth.html" class="login-link">Se connecter</a></div>`;
+    }
     
     let adminActions = '';
-    if (isAdmin && e.id) adminActions = `<div class="card-admin-actions"><button class="card-admin-btn edit" data-id="${e.id}">✏️ Modifier</button><button class="card-admin-btn delete" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🗑️ Supprimer</button></div>`;
+    if (isAdmin && e.id) {
+      adminActions = `<div class="card-admin-actions"><button class="card-admin-btn edit" data-id="${e.id}">✏️ Modifier</button><button class="card-admin-btn delete" data-id="${e.id}" data-name="${escapeHtml(e.nom)}">🗑️ Supprimer</button></div>`;
+    }
     
     return `<div class="card"><div class="card-num">#${e.num || (start + idx + 1)}</div><div class="card-name">${escapeHtml(e.nom)}</div><div class="card-inscription"><span class="badge-insc">${escapeHtml(e.inscription_num || '')}</span>${e.inscription_date ? `<span>Inscrit le ${escapeHtml(e.inscription_date)}</span>` : ''}</div><div class="card-details">${e.adresse || e.bp ? `<div class="card-row"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${escapeHtml([e.bp, e.adresse].filter(Boolean).join(' — '))}</span></div>` : ''}${contactHtml}</div>${e.ville ? `<div class="city-tag">📍 ${escapeHtml(e.ville)}</div>` : ''}${adminActions}</div>`;
   }).join('');
   
-  grid.querySelectorAll('.unlock-btn').forEach(btn => btn.addEventListener('click', () => requestUnlock(parseInt(btn.dataset.id), btn.dataset.name)));
+  grid.querySelectorAll('.unlock-btn').forEach(btn => {
+    btn.addEventListener('click', () => requestUnlock(parseInt(btn.dataset.id), btn.dataset.name));
+  });
   if (isAdmin) {
     grid.querySelectorAll('.card-admin-btn.edit').forEach(btn => btn.addEventListener('click', () => openEditMember(btn.dataset.id)));
     grid.querySelectorAll('.card-admin-btn.delete').forEach(btn => btn.addEventListener('click', () => deleteMember(btn.dataset.id, btn.dataset.name)));
@@ -1626,28 +1825,42 @@ async function renderCards() {
 
 function getFilteredData(skipAlpha) {
   let data = RAW[currentSection] || [];
-  if (searchQuery) { const q = searchQuery.toLowerCase(); data = data.filter(e => (e.nom || '').toLowerCase().includes(q) || (e.adresse || '').toLowerCase().includes(q) || (e.bp || '').toLowerCase().includes(q)); }
-  if (cityFilter) {
-    if (cityFilter === 'Autre') { const known = ['Douala', 'Yaoundé', 'Buéa', 'Limbé', 'Bamenda', 'Bafoussam', 'Maroua', 'Bangangté']; data = data.filter(e => !known.includes(e.ville)); }
-    else data = data.filter(e => e.ville === cityFilter);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    data = data.filter(e => (e.nom || '').toLowerCase().includes(q) || (e.adresse || '').toLowerCase().includes(q) || (e.bp || '').toLowerCase().includes(q));
   }
-  if (!skipAlpha && alphaFilter) data = data.filter(e => (e.nom || '').charAt(0).toUpperCase() === alphaFilter);
+  if (cityFilter) {
+    if (cityFilter === 'Autre') {
+      const known = ['Douala', 'Yaoundé', 'Buéa', 'Limbé', 'Bamenda', 'Bafoussam', 'Maroua', 'Bangangté'];
+      data = data.filter(e => !known.includes(e.ville));
+    } else {
+      data = data.filter(e => e.ville === cityFilter);
+    }
+  }
+  if (!skipAlpha && alphaFilter) {
+    data = data.filter(e => (e.nom || '').charAt(0).toUpperCase() === alphaFilter);
+  }
   return data;
 }
 
 function renderPagination(totalPages) {
   if (totalPages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
   let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">←</button>`;
-  for (let i = 1; i <= Math.min(totalPages, 5); i++) html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
   if (totalPages > 5) html += `<span class="page-ellipsis">...</span><button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
   html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">→</button>`;
   document.getElementById('pagination').innerHTML = html;
-  document.querySelectorAll('.page-btn').forEach(btn => { btn.addEventListener('click', () => { if (!btn.disabled) { currentPage = parseInt(btn.dataset.page); renderCards(); } }); });
+  document.querySelectorAll('.page-btn').forEach(btn => {
+    btn.addEventListener('click', () => { if (!btn.disabled) { currentPage = parseInt(btn.dataset.page); renderCards(); } });
+  });
 }
 
 function renderStats() {
   const total = SECTIONS.reduce((s, sec) => s + RAW[sec.key].length, 0);
-  document.getElementById('statsGrid').innerHTML = `<div class="stat-card accent"><div class="stat-number">${total}</div><div class="stat-label">Total membres</div></div>` + SECTIONS.map(sec => `<div class="stat-card"><div class="stat-number">${RAW[sec.key].length}</div><div class="stat-label">${sec.short}</div></div>`).join('');
+  const statsGrid = document.getElementById('statsGrid');
+  statsGrid.innerHTML = `<div class="stat-card accent"><div class="stat-number">${total}</div><div class="stat-label">Total membres</div></div>` + SECTIONS.map(sec => `<div class="stat-card"><div class="stat-number">${RAW[sec.key].length}</div><div class="stat-label">${sec.short}</div></div>`).join('');
 }
 
 function renderTabs() {
@@ -1661,7 +1874,10 @@ function updateAlphaBar() {
   const letters = new Set(data.map(e => (e.nom || '').charAt(0).toUpperCase()).filter(l => /[A-Z]/.test(l)));
   const bar = document.getElementById('alphaBar');
   let btns = `<button class="alpha-btn ${alphaFilter === '' ? 'active' : ''}" data-letter="">Tous</button>`;
-  for (let i = 65; i <= 90; i++) { const l = String.fromCharCode(i); btns += `<button class="alpha-btn ${alphaFilter === l ? 'active' : ''} ${letters.has(l) ? '' : 'disabled'}" data-letter="${l}">${l}</button>`; }
+  for (let i = 65; i <= 90; i++) {
+    const l = String.fromCharCode(i);
+    btns += `<button class="alpha-btn ${alphaFilter === l ? 'active' : ''} ${letters.has(l) ? '' : 'disabled'}" data-letter="${l}">${l}</button>`;
+  }
   bar.innerHTML = btns;
   bar.querySelectorAll('.alpha-btn').forEach(btn => btn.addEventListener('click', () => { if (!btn.classList.contains('disabled')) { alphaFilter = btn.dataset.letter; currentPage = 1; updateAlphaBar(); renderCards(); } }));
 }
@@ -1670,19 +1886,34 @@ function renderCharts() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const textColor = isDark ? '#9a9ea6' : '#707070';
   const sectionData = SECTIONS.map(s => RAW[s.key].length);
+  const sectionLabels = SECTIONS.map(s => s.short);
+  const sectionColors = ['#021e79', '#1a3599', '#ffbf00', '#e6ac00'];
   if (chartSection) chartSection.destroy();
-  chartSection = new Chart(document.getElementById('chartSection'), { type: 'doughnut', data: { labels: SECTIONS.map(s => s.short), datasets: [{ data: sectionData, backgroundColor: ['#021e79', '#1a3599', '#ffbf00', '#e6ac00'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 11 } } } } } });
+  chartSection = new Chart(document.getElementById('chartSection'), {
+    type: 'doughnut',
+    data: { labels: sectionLabels, datasets: [{ data: sectionData, backgroundColor: sectionColors, borderWidth: 0 }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: textColor, font: { size: 11 } } } } }
+  });
   const allEntries = SECTIONS.flatMap(sec => RAW[sec.key]);
-  const cityMap = {}; allEntries.forEach(e => { const v = e.ville || 'Autre'; cityMap[v] = (cityMap[v] || 0) + 1; });
+  const cityMap = {};
+  allEntries.forEach(e => { const v = e.ville || 'Autre'; cityMap[v] = (cityMap[v] || 0) + 1; });
   const sorted = Object.entries(cityMap).sort((a, b) => b[1] - a[1]);
+  const barColors = sorted.map((_, i) => i === 0 ? '#ffbf00' : (isDark ? '#1a3599' : '#021e79'));
   if (chartCity) chartCity.destroy();
-  chartCity = new Chart(document.getElementById('chartCity'), { type: 'bar', data: { labels: sorted.map(c => c[0]), datasets: [{ data: sorted.map(c => c[1]), backgroundColor: isDark ? '#1a3599' : '#021e79', borderRadius: 4 }] }, options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor } }, y: { ticks: { color: textColor } } } } });
+  chartCity = new Chart(document.getElementById('chartCity'), {
+    type: 'bar',
+    data: { labels: sorted.map(c => c[0]), datasets: [{ data: sorted.map(c => c[1]), backgroundColor: barColors, borderRadius: 4 }] },
+    options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor } }, y: { ticks: { color: textColor } } } }
+  });
 }
 
 // ===== ADMIN FUNCTIONS =====
 function openEditMember(id) {
   let member = null;
-  for (const sec of SECTIONS) { member = RAW[sec.key].find(m => String(m.id) === String(id)); if (member) break; }
+  for (const sec of SECTIONS) {
+    member = RAW[sec.key].find(m => String(m.id) === String(id));
+    if (member) break;
+  }
   if (!member) return;
   const form = document.getElementById('memberForm');
   form.querySelector('[name="section"]').value = member.section;
@@ -1711,45 +1942,81 @@ async function deleteMember(id, name) {
 // ===== ADMIN ACCESS REQUESTS =====
 async function loadAdminAccessRequests() {
   try {
-    const response = await fetch('/api/admin/access-requests', { headers: { 'x-admin-auth': ADMIN_KEY } });
+    const response = await fetch('/api/admin/access-requests', {
+      headers: { 'x-admin-auth': ADMIN_KEY }
+    });
     const data = await response.json();
     const container = document.getElementById('adminAccessRequestsList');
     if (data.requests && data.requests.length > 0) {
       container.innerHTML = data.requests.map(req => `
         <div class="admin-request-card">
-          <div class="admin-request-header"><div><div class="admin-request-user">${escapeHtml(req.user_name)}</div><div class="admin-request-user-email">${escapeHtml(req.user_email)}</div></div><div class="admin-request-member">📌 ${escapeHtml(req.member_name)}</div></div>
-          <div class="admin-request-details"><div>📅 Demandé le ${new Date(req.created_at).toLocaleString('fr-FR')}</div><div>💰 Tarif: ${req.payment_amount ? req.payment_amount.toLocaleString() : '5 000'} FCFA</div></div>
-          <div class="admin-request-actions"><button class="btn-approve" onclick="window.approveAccessRequest(${req.id})">✅ Approuver</button><button class="btn-reject" onclick="window.rejectAccessRequest(${req.id})">❌ Rejeter</button></div>
-        </div>`).join('');
+          <div class="admin-request-header">
+            <div>
+              <div class="admin-request-user">${escapeHtml(req.user_name)}</div>
+              <div class="admin-request-user-email">${escapeHtml(req.user_email)}</div>
+            </div>
+            <div class="admin-request-member">📌 ${escapeHtml(req.member_name)}</div>
+          </div>
+          <div class="admin-request-details">
+            <div>📅 Demandé le ${new Date(req.created_at).toLocaleString('fr-FR')}</div>
+            <div>💰 Tarif: ${req.payment_amount ? req.payment_amount.toLocaleString() : '5 000'} FCFA</div>
+            <div>🆔 Référence: ${req.payment_reference || 'N/A'}</div>
+          </div>
+          <div class="admin-request-actions">
+            <button class="btn-approve" onclick="window.approveAccessRequest(${req.id})">✅ Approuver</button>
+            <button class="btn-reject" onclick="window.rejectAccessRequest(${req.id})">❌ Rejeter</button>
+          </div>
+        </div>
+      `).join('');
       document.getElementById('accessRequestsBadge').textContent = data.requests.length;
-    } else { container.innerHTML = '<div style="text-align:center;padding:40px;">Aucune demande en attente</div>'; document.getElementById('accessRequestsBadge').textContent = '0'; }
-  } catch (err) { console.error('Erreur chargement demandes:', err); document.getElementById('adminAccessRequestsList').innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Erreur de chargement</div>'; }
+    } else {
+      container.innerHTML = '<div style="text-align:center;padding:40px;">Aucune demande en attente</div>';
+      document.getElementById('accessRequestsBadge').textContent = '0';
+    }
+  } catch (err) {
+    console.error('Erreur chargement demandes:', err);
+    document.getElementById('adminAccessRequestsList').innerHTML = '<div style="text-align:center;padding:40px;color:#dc2626;">Erreur de chargement</div>';
+  }
 }
 
 window.approveAccessRequest = async function(requestId) {
   if (!confirm('Êtes-vous sûr de vouloir approuver cette demande ?')) return;
   try {
-    await fetch(`/api/admin/access-requests/${requestId}/approve`, { method: 'POST', headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' } });
+    await fetch(`/api/admin/access-requests/${requestId}/approve`, {
+      method: 'POST',
+      headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' }
+    });
     alert('✅ Demande approuvée !');
     await loadAdminAccessRequests();
     await loadMembers();
     renderAll();
-  } catch (err) { alert('Erreur lors de l\'approbation'); }
+  } catch (err) {
+    alert('Erreur lors de l\'approbation');
+  }
 }
 
 window.rejectAccessRequest = async function(requestId) {
   if (!confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')) return;
   try {
-    await fetch(`/api/admin/access-requests/${requestId}/reject`, { method: 'POST', headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' } });
+    await fetch(`/api/admin/access-requests/${requestId}/reject`, {
+      method: 'POST',
+      headers: { 'x-admin-auth': ADMIN_KEY, 'Content-Type': 'application/json' }
+    });
     alert('❌ Demande rejetée.');
     await loadAdminAccessRequests();
-  } catch (err) { alert('Erreur lors du rejet'); }
+  } catch (err) {
+    alert('Erreur lors du rejet');
+  }
 }
 
 // ===== DASHBOARD FUNCTIONS =====
 async function openDashboard() {
   const token = localStorage.getItem('userToken');
-  if (!token) { alert('Veuillez vous connecter'); window.location.href = '/auth.html'; return; }
+  if (!token) {
+    alert('Veuillez vous connecter');
+    window.location.href = '/auth.html';
+    return;
+  }
   document.getElementById('dashboardModal').classList.add('open');
   document.getElementById('dashboardUserName').textContent = `Bonjour ${localStorage.getItem('userName') || ''}`;
   await loadDashboardData();
@@ -1758,17 +2025,21 @@ async function openDashboard() {
 async function loadDashboardData() {
   const token = localStorage.getItem('userToken');
   try {
-    const response = await fetch('/api/user/dashboard', { headers: { 'Authorization': `Bearer ${token}` } });
+    const response = await fetch('/api/user/dashboard', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
     const data = await response.json();
     if (response.ok) {
       const stats = data.stats;
+      // Statistiques
       document.getElementById('dashboardStats').innerHTML = `
         <div class="stat-dashboard-card"><div class="stat-dashboard-number">${stats.total_requests || 0}</div><div class="stat-dashboard-label">Total demandes</div></div>
         <div class="stat-dashboard-card pending"><div class="stat-dashboard-number">${stats.pending_requests || 0}</div><div class="stat-dashboard-label">En attente</div></div>
         <div class="stat-dashboard-card approved"><div class="stat-dashboard-number">${stats.approved_requests || 0}</div><div class="stat-dashboard-label">Approuvées</div></div>
         <div class="stat-dashboard-card rejected"><div class="stat-dashboard-number">${stats.rejected_requests || 0}</div><div class="stat-dashboard-label">Rejetées</div></div>
-        <div class="stat-dashboard-card"><div class="stat-dashboard-number">${(stats.total_paid || 0).toLocaleString()} FCFA</div><div class="stat-dashboard-label">Total dépensé</div></div>`;
-      
+        <div class="stat-dashboard-card"><div class="stat-dashboard-number">${(stats.total_paid || 0).toLocaleString()} FCFA</div><div class="stat-dashboard-label">Total dépensé</div></div>
+      `;
+      // Demandes
       document.getElementById('dashboardRequestsList').innerHTML = (data.access_requests || []).map(req => {
         let statusClass = '', statusText = '';
         if (req.status === 'pending') { statusClass = 'status-pending'; statusText = '⏳ En attente'; }
@@ -1776,18 +2047,20 @@ async function loadDashboardData() {
         else { statusClass = 'status-rejected'; statusText = '❌ Rejeté'; }
         return `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title">${req.member_name || req.member_nom || `Membre #${req.member_id}`}</div><div class="request-status ${statusClass}">${statusText}</div></div><div class="dashboard-item-date">Demandé le ${new Date(req.created_at).toLocaleDateString('fr-FR')}</div></div>`;
       }).join('') || '<div class="dashboard-item" style="text-align:center">Aucune demande effectuée</div>';
-      
+      // Paiements
       document.getElementById('dashboardPaymentsList').innerHTML = (data.payments || []).map(p => `<div class="dashboard-item"><div class="dashboard-item-header"><div class="dashboard-item-title"><span class="payment-amount">${p.amount.toLocaleString()} FCFA</span></div><div class="payment-status-completed">${p.status === 'completed' ? '✅ Complété' : '⏳ En attente'}</div></div><div class="dashboard-item-date">${new Date(p.created_at).toLocaleDateString('fr-FR')}</div><div class="dashboard-item-details"><span>📱 ${p.method || 'Non spécifié'}</span><span>🆔 ${p.reference || 'N/A'}</span></div></div>`).join('') || '<div class="dashboard-item" style="text-align:center">Aucun paiement effectué</div>';
-      
+      // Abonnement
       document.getElementById('subscriptionInfo').innerHTML = stats.has_active_subscription ? 
         `<div class="subscription-active"><div style="font-size:48px">⭐</div><h3>Abonnement actif !</h3><p>Accès illimité à tous les membres</p><p>Expire le ${new Date(data.active_subscription.expires_at).toLocaleDateString('fr-FR')}</p></div><a href="/" class="dashboard-link">🔓 Accéder à tous les membres</a>` :
         `<div class="subscription-inactive"><div style="font-size:48px">🔒</div><h3>Aucun abonnement actif</h3><p>Débloquez un accès illimité</p><a href="/" class="dashboard-link">💰 Débloquer l'accès illimité</a></div>`;
     }
-  } catch (err) { console.error('Erreur:', err); }
+  } catch (err) {
+    console.error('Erreur:', err);
+  }
 }
 
 document.getElementById('dashboardBtn')?.addEventListener('click', openDashboard);
-document.getElementById('dashboardClose')?.addEventListener('click', () => document.getElementById('dashboardModal').classList.remove('close'));
+document.getElementById('dashboardClose')?.addEventListener('click', () => document.getElementById('dashboardModal').classList.remove('open'));
 document.querySelectorAll('.dashboard-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     const tabId = tab.dataset.tab;
@@ -1813,13 +2086,29 @@ themeToggle.addEventListener('click', () => {
 });
 
 // ===== EVENT LISTENERS =====
-document.getElementById('statsToggle')?.addEventListener('click', () => { document.getElementById('statsToggle').classList.toggle('open'); document.getElementById('statsBody').classList.toggle('open'); });
+document.getElementById('statsToggle')?.addEventListener('click', () => {
+  document.getElementById('statsToggle').classList.toggle('open');
+  document.getElementById('statsBody').classList.toggle('open');
+});
 document.getElementById('backToTop')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 window.addEventListener('scroll', () => document.getElementById('backToTop')?.classList.toggle('visible', window.scrollY > 400));
 
 let searchTimeout;
-document.getElementById('searchInput')?.addEventListener('input', (e) => { clearTimeout(searchTimeout); searchTimeout = setTimeout(() => { searchQuery = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); }, 200); });
-document.getElementById('cityFilter')?.addEventListener('change', (e) => { cityFilter = e.target.value; currentPage = 1; updateAlphaBar(); renderCards(); });
+document.getElementById('searchInput')?.addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    searchQuery = e.target.value;
+    currentPage = 1;
+    updateAlphaBar();
+    renderCards();
+  }, 200);
+});
+document.getElementById('cityFilter')?.addEventListener('change', (e) => {
+  cityFilter = e.target.value;
+  currentPage = 1;
+  updateAlphaBar();
+  renderCards();
+});
 
 // Contact form
 document.getElementById('contactFab')?.addEventListener('click', () => document.getElementById('contactModal').classList.add('open'));
@@ -1827,7 +2116,13 @@ document.getElementById('contactCancel')?.addEventListener('click', () => docume
 document.getElementById('contactForm')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const fd = new FormData(e.target);
-  await apiPost('/api/contact', { nom: fd.get('nom'), entreprise: fd.get('entreprise'), email: fd.get('email'), telephone: fd.get('telephone'), commentaire: fd.get('commentaire') }, false);
+  await apiPost('/api/contact', {
+    nom: fd.get('nom'),
+    entreprise: fd.get('entreprise'),
+    email: fd.get('email'),
+    telephone: fd.get('telephone'),
+    commentaire: fd.get('commentaire')
+  }, false);
   document.getElementById('contactSuccess').classList.add('show');
   setTimeout(() => document.getElementById('contactModal').classList.remove('open'), 2000);
 });
@@ -1835,27 +2130,58 @@ document.getElementById('contactForm')?.addEventListener('submit', async (e) => 
 // Admin panel
 if (isAdmin) {
   document.getElementById('adminToolbar').classList.add('visible');
-  document.getElementById('btnAddMember')?.addEventListener('click', () => { document.getElementById('memberForm').reset(); document.getElementById('memberFormId').value = ''; document.getElementById('memberModalTitle').textContent = 'Ajouter un membre'; document.getElementById('memberModal').classList.add('open'); });
+  document.getElementById('btnAddMember')?.addEventListener('click', () => {
+    document.getElementById('memberForm').reset();
+    document.getElementById('memberFormId').value = '';
+    document.getElementById('memberModalTitle').textContent = 'Ajouter un membre';
+    document.getElementById('memberModal').classList.add('open');
+  });
   document.getElementById('memberCancel')?.addEventListener('click', () => document.getElementById('memberModal').classList.remove('open'));
   document.getElementById('memberForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
-    const body = { section: fd.get('section'), nom: fd.get('nom'), inscription_num: fd.get('inscription_num'), inscription_date: fd.get('inscription_date'), bp: fd.get('bp'), tel1: fd.get('tel1'), tel2: fd.get('tel2'), email: fd.get('email'), adresse: fd.get('adresse'), ville: fd.get('ville') };
+    const body = {
+      section: fd.get('section'),
+      nom: fd.get('nom'),
+      inscription_num: fd.get('inscription_num') || '',
+      inscription_date: fd.get('inscription_date') || '',
+      bp: fd.get('bp') || '',
+      tel1: fd.get('tel1') || '',
+      tel2: fd.get('tel2') || '',
+      email: fd.get('email') || '',
+      adresse: fd.get('adresse') || '',
+      ville: fd.get('ville') || ''
+    };
     const id = document.getElementById('memberFormId').value;
-    if (id) await apiPut(`/api/admin/members/${id}`, body, true);
-    else await apiPost('/api/admin/members', body, true);
+    if (id) {
+      await apiPut(`/api/admin/members/${id}`, body, true);
+    } else {
+      await apiPost('/api/admin/members', body, true);
+    }
     document.getElementById('memberModal').classList.remove('open');
     await loadMembers();
     renderAll();
   });
-  document.getElementById('btnExitAdmin')?.addEventListener('click', () => { const url = new URL(window.location); url.searchParams.delete('admin'); window.location.href = url.toString(); });
-  document.getElementById('btnAccessRequests')?.addEventListener('click', async () => { await loadAdminAccessRequests(); document.getElementById('adminAccessRequestsPanel').classList.add('open'); });
-  document.getElementById('adminAccessRequestsClose')?.addEventListener('click', () => document.getElementById('adminAccessRequestsPanel').classList.remove('open'));
+  document.getElementById('btnExitAdmin')?.addEventListener('click', () => {
+    const url = new URL(window.location);
+    url.searchParams.delete('admin');
+    window.location.href = url.toString();
+  });
+  document.getElementById('btnAccessRequests')?.addEventListener('click', async () => {
+    await loadAdminAccessRequests();
+    document.getElementById('adminAccessRequestsPanel').classList.add('open');
+  });
+  document.getElementById('adminAccessRequestsClose')?.addEventListener('click', () => {
+    document.getElementById('adminAccessRequestsPanel').classList.remove('open');
+  });
   document.getElementById('contactsToggle')?.addEventListener('click', async () => {
     const res = await apiPost('/api/admin/toggle_contacts', {}, true);
     const track = document.getElementById('toggleTrack');
-    if (res.show_contacts) track.classList.add('on');
-    else track.classList.remove('on');
+    if (res.show_contacts) {
+      track.classList.add('on');
+    } else {
+      track.classList.remove('on');
+    }
     document.getElementById('toggleStatus').textContent = res.show_contacts ? 'ACTIVÉ' : 'DÉSACTIVÉ';
     await loadMembers();
     renderCards();
@@ -1866,7 +2192,11 @@ if (isAdmin) {
 
 // ===== RENDER ALL =====
 async function renderAll() {
-  renderStats(); renderCharts(); renderTabs(); updateAlphaBar(); await renderCards();
+  renderStats();
+  renderCharts();
+  renderTabs();
+  updateAlphaBar();
+  await renderCards();
 }
 
 // ===== INIT =====
